@@ -28,7 +28,117 @@ MENA freelancers and small businesses (Egypt, Saudi, UAE) manage their finances 
 
 ---
 
-## 2. Core Modules (MVP Scope)
+## 2. User Journey (End-to-End Flow)
+
+### 2.1 Full User Journey Map
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Landing Page                                 │
+│           Value prop · Feature highlights · CTA buttons             │
+└───────────────────────┬─────────────────────┬───────────────────────┘
+                        │                     │
+               [Sign Up]│                     │[Log In]
+                        ▼                     ▼
+              ┌──────────────┐       ┌─────────────────┐
+              │  Register    │       │  Login          │
+              │  (UC-001)    │       │  (UC-001)       │
+              └──────┬───────┘       └────────┬────────┘
+                     │                        │
+                     │ new user               │ check onboarding_completed
+                     ▼                        ├─── false ──▶ Onboarding wizard
+              ┌──────────────────────┐        │
+              │  Onboarding Wizard   │        │ true
+              │  (UC-001b)           │        │
+              │                      │        │
+              │  Step 1: Role        │        │
+              │  Step 2: Profile     │        │
+              └──────────┬───────────┘        │
+                         │                    │
+                         └──────────┬─────────┘
+                                    ▼
+              ┌─────────────────────────────────────┐
+              │             Dashboard               │
+              │                                     │
+              │  [Getting Started Checklist]        │
+              │   ✅ Account created                │
+              │   ⬜ Create payment link    [→]     │
+              │   ⬜ Set up a contract      [→]     │
+              │   ⬜ Add a subscription     [→]     │
+              │   ⬜ Connect Gmail          [→]     │
+              │                                     │
+              │  Income summary · Expense summary   │
+              │  Cash flow forecast widget          │
+              └──────────────┬──────────────────────┘
+                             │
+          ┌──────────────────┼────────────────────┐
+          ▼                  ▼                    ▼
+  ┌───────────────┐  ┌────────────────┐  ┌────────────────────┐
+  │ Payment Links │  │   Contracts    │  │ Expense / SaaS     │
+  │ & Contracts   │  │ & Milestones   │  │ Subscription Mgr   │
+  │ (Module 1)    │  │ (Module 1)     │  │ (Module 3 + 4)     │
+  └───────────────┘  └────────────────┘  └────────────────────┘
+          │                  │                    │
+          └──────────────────▼────────────────────┘
+                    ┌────────────────┐
+                    │ Income Manager │
+                    │  (Module 2)    │
+                    │ Auto + Manual  │
+                    └────────────────┘
+```
+
+### 2.2 Journey Phases
+
+| # | Phase | User state | Key screens | Use cases |
+|---|-------|-----------|-------------|-----------|
+| 1 | Discovery | Anonymous | Landing page | — |
+| 2 | Sign up | Unauthenticated | Register form | UC-001 |
+| 3 | Log in | Unauthenticated | Login form | UC-001 |
+| 4 | Initialization | Authenticated, not initialized | Onboarding wizard (2 steps) | UC-001b |
+| 5 | First use | Authenticated, initialized | Dashboard + Getting Started checklist | UC-001b |
+| 6 | Core actions | Authenticated | Payment links, contracts, income, expenses | UC-002+ |
+| 7 | Returning use | Authenticated | Dashboard → any module | all UCs |
+
+### 2.3 Onboarding Initialization (after first signup)
+
+After registration the user must complete a **2-step onboarding wizard** before reaching the dashboard. This collects the minimum data needed for all downstream modules to work correctly.
+
+**Step 1 — Role selection (1 question):**
+> "How do you use Financial OS?"
+- Freelancer — "I work independently for clients"
+- Small Business Owner — "I run a business or agency"
+
+**Step 2 — Profile setup (4 fields):**
+
+| Field | Purpose |
+|-------|---------|
+| Display name / Business name | Appears on every payment link and contract clients see |
+| Country | Drives currency default (Egypt → EGP, UAE/SA → USD) and tax brackets |
+| Preferred currency | Pre-fills all payment link and contract forms |
+| Profession (chips) | Developer · Designer · Marketer · Consultant · Content Creator · Other — auto-suggests relevant contract templates |
+
+**Design principles applied:**
+- **Progressive disclosure:** only what's needed for day-one use — no phone number, bank account, or logo at this stage
+- **Time-to-value under 90 seconds:** two steps, no long forms, no uploads
+- **Empty state prevention:** on first dashboard load the Getting Started checklist replaces any blank screen and drives the first action
+
+### 2.4 Getting Started Checklist (post-onboarding dashboard)
+
+Shown on the dashboard until dismissed or all items completed. Each item links directly to the relevant creation flow.
+
+```
+Getting started with Financial OS          [dismiss]
+────────────────────────────────────────────────────
+✅  Account created
+⬜  Create your first payment link          [→ Create]
+⬜  Set up a project contract               [→ Create]
+⬜  Add a subscription or expense           [→ Add]
+⬜  Connect Gmail to scan subscriptions     [→ Connect]
+```
+
+---
+
+## 3. Core Modules (MVP Scope)
 
 ### Module 1 — Payment Links & Project Contracts
 ### Module 2 — Income Manager
@@ -51,11 +161,14 @@ Allow freelancers and small businesses to create professional payment requests a
 | 1.3 | Freelancer / Small Business Owner | Track which payment links are paid/unpaid | I know who owes me money |
 | 1.4 | Freelancer / Small Business Owner | Send automatic payment reminders | I don't have to awkwardly ask for my money |
 | 1.5 | Client | Click a link and pay securely | I can pay without needing an app or account |
+| 1.6 | Freelancer / Small Business Owner | Set a default tax rate on my profile and override it per invoice | I don't re-enter my VAT rate every time but can still adjust it |
 
 ### 3.3 Features
 
 #### 3.3.1 Payment Link Generator
-- **Input:** Amount, currency (EGP / USD), description, client name, due date
+- **Input:** Amount (subtotal), currency (EGP / USD), description, client name, due date, tax rate (optional, defaults to profile setting)
+- **Tax calculation:** `tax_amount = subtotal × tax_rate / 100`; `total_amount = subtotal + tax_amount`. Both stored on the record.
+- **Client pays:** `total_amount` (subtotal + tax shown as a line breakdown on the pay page and receipt)
 - **Output:** Shareable link (e.g., `freelos.co/pay/xyz`)
 - **Accepted methods:** Cards (Visa/Mastercard), Fawry, Vodafone Cash, Orange Money
 - **Integration:** Paymob API or Fawaterk API (no commercial register required)
@@ -66,13 +179,15 @@ Allow freelancers and small businesses to create professional payment requests a
 - **Fields:**
   - Project name & description
   - Client name + email
-  - Total project value
-  - Milestone breakdown (name, %, amount, due date)
+  - Total project value (subtotal before tax)
+  - Tax rate (optional; defaults to profile `default_tax_rate`; overridable per contract)
+  - Milestone breakdown (name, %, pre-tax amount, due date)
   - Terms & conditions (template provided, editable)
+- **Tax on contracts:** Tax rate applies at the contract level. Each milestone's payment link amount = `milestone_subtotal + (milestone_subtotal × tax_rate / 100)`. The contract summary shows: subtotal, tax amount, and grand total.
 - **Flow:**
   1. Freelancer or small business owner creates contract
   2. System generates a unique contract URL
-  3. Client opens URL, reviews, clicks "I Agree" (digital acceptance with timestamp + IP)
+  3. Client opens URL, reviews contract including tax breakdown, clicks "I Agree" (digital acceptance with timestamp + IP)
   4. Each milestone triggers a payment link automatically when marked "Ready for payment"
 - **PDF export:** Auto-generate a professional PDF contract (Arabic + English bilingual)
 - **Status per milestone:** Pending → In Progress → Submitted → Paid
@@ -90,6 +205,8 @@ Allow freelancers and small businesses to create professional payment requests a
 - Single currency per contract (EGP or USD, not mixed)
 - Max 5 milestones per contract in MVP
 - e-sign = checkbox acceptance (not a certified digital signature for MVP)
+- Tax rate is a simple flat percentage (no compound tax, no tax-on-tax); default is 0% (tax-free) if not set
+- Tax applies uniformly to all milestones on a contract at the contract's tax rate
 
 ---
 
