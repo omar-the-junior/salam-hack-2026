@@ -84,13 +84,37 @@ Use small Laravel routes that return JSON **only where a non-Inertia client must
 - System shall persist basic profile fields (name, country, preferred currency)
 - System shall protect all finance data behind authenticated routes
 
+### FR-01c Default Tax Rate in Profile Settings
+
+- **Priority:** P0
+- System shall store a `default_tax_rate` field on the user profile (decimal, default `0`, range `0–100`)
+- User shall be able to set and update their default tax rate from the profile/settings page
+- `default_tax_rate` shall be used to pre-fill the tax rate field on all new payment links and contracts
+- A value of `0` means tax-free; no tax line is shown on pay pages or receipts when rate is 0
+
+### FR-01b Onboarding Wizard and Profile Initialization
+
+- **Priority:** P0
+- System shall detect new users (`onboarding_completed = false`) and redirect them to an onboarding wizard before the dashboard is accessible
+- Wizard shall consist of exactly two steps: role selection (step 1) and profile form (step 2)
+- Step 1 shall capture `role` (`freelancer` | `small_business`) via a single-choice UI; value shall be stored in session only until step 2 is submitted
+- Step 2 shall capture and persist: `display_name`, `country`, `preferred_currency`, `profession`, and `onboarding_completed = true` in a single atomic DB write
+- System shall expose a middleware guard (`EnsureOnboardingComplete`) that intercepts all authenticated routes except `/onboarding/*` and redirects incomplete users to `/onboarding/step/1`
+- On first post-onboarding dashboard load, system shall pass a `show_checklist = true` prop to the dashboard Inertia page
+- Dashboard Getting Started checklist shall display four items linking to the core creation flows (payment link, contract, expense card, Gmail connection)
+- Users with `onboarding_completed = true` shall never be redirected to the wizard again
+- All onboarding screens shall support Arabic/RTL layout (`NFR-07`)
+
 ### FR-02 Payment Link Creation
 
 - **Priority:** P0
-- User shall create a payment link with amount, currency, description, client info, and due date
+- User shall create a payment link with amount (subtotal), currency, description, client info, due date, and an optional tax rate
+- Tax rate shall default to the user's `default_tax_rate` (profile setting) but be overridable per link
+- System shall compute and store `tax_amount = subtotal × tax_rate / 100` and `total_amount = subtotal + tax_amount` at creation time
 - System shall generate a unique shareable payment URL
 - System shall store payment method/provider metadata and gateway reference ID
 - System shall support at least one live/demo payment gateway integration path
+- When `tax_rate = 0`, tax fields shall be hidden from the client-facing pay page and receipt
 
 ### FR-03 Payment Status Tracking
 
@@ -102,7 +126,10 @@ Use small Laravel routes that return JSON **only where a non-Inertia client must
 ### FR-04 Milestone Contract Builder
 
 - **Priority:** P0
-- User shall create contracts with project/client details and total value
+- User shall create contracts with project/client details and total value (subtotal, pre-tax)
+- Contract shall include a tax rate field (defaults to `default_tax_rate`; overridable per contract)
+- Milestone amounts are pre-tax subtotals derived from `total_value × percentage / 100`
+- System shall compute and display: contract subtotal, tax amount, and grand total on both the owner view and client review page
 - User shall define up to 5 milestones with percentage/amount and due date
 - System shall generate a unique contract URL for client review
 - Client shall be able to accept contract via checkbox-based e-sign action
@@ -111,7 +138,9 @@ Use small Laravel routes that return JSON **only where a non-Inertia client must
 ### FR-05 Milestone-to-Payment Trigger
 
 - **Priority:** P0
-- When milestone status becomes "Ready for payment", system shall generate linked payment request
+- When milestone status becomes "Ready for payment", system shall generate a linked payment request
+- The generated payment link shall inherit the contract's `tax_rate`; `tax_amount` and `total_amount` are computed from the milestone's pre-tax `amount`
+- The client pays `total_amount` (subtotal + tax) for each milestone payment link
 - Milestone status shall track lifecycle: `Pending -> In Progress -> Submitted -> Paid`
 
 ### FR-06 Income Entry and Aggregation
@@ -268,10 +297,12 @@ Use small Laravel routes that return JSON **only where a non-Inertia client must
 
 ### Day 1 (P0 Foundation)
 
-- Auth and profile
-- Payment link create/list/detail
-- Payment webhook status updates
-- Basic contract + milestones flow
+- Auth and profile (`FR-01`)
+- Onboarding wizard — 2-step initialization + middleware gate (`FR-01b`)
+- Getting Started checklist on dashboard (`FR-01b`)
+- Payment link create/list/detail (`FR-02`)
+- Payment webhook status updates (`FR-03`)
+- Basic contract + milestones flow (`FR-04`, `FR-05`)
 - DB schemas for income/expense/email scan records
 
 ### Day 2 (P0 Core Value)
