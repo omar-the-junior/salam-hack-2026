@@ -12,7 +12,7 @@ import { email } from '@/routes/password';
 export default function ForgotPassword({ status }: { status?: string }) {
     return (
         <>
-            <Head title="Forgot password" />
+            <Head title="نسيت كلمة المرور" />
 
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
@@ -25,14 +25,14 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">البريد الإلكتروني</Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     name="email"
                                     autoComplete="off"
                                     autoFocus
-                                    placeholder="email@example.com"
+                                    placeholder="name@example.com"
                                 />
 
                                 <InputError message={errors.email} />
@@ -47,7 +47,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                     {processing && (
                                         <LoaderCircle className="h-4 w-4 animate-spin" />
                                     )}
-                                    Email password reset link
+                                    إرسال رابط إعادة التعيين
                                 </Button>
                             </div>
                         </>
@@ -55,8 +55,8 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 </Form>
 
                 <div className="space-x-1 text-center text-sm text-muted-foreground">
-                    <span>Or, return to</span>
-                    <TextLink href={login()}>log in</TextLink>
+                    <span>أو العودة إلى</span>{' '}
+                    <TextLink href={login()}>تسجيل الدخول</TextLink>
                 </div>
             </div>
         </>
@@ -64,6 +64,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
 }
 
 ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
+    title: 'نسيت كلمة المرور',
+    description: 'أدخل بريدك الإلكتروني لاستلام رابط إعادة تعيين كلمة المرور',
 };

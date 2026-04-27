@@ -31,7 +31,7 @@ function GridScanIcon() {
                     {Array.from({ length: 5 }, (_, i) => (
                         <div
                             key={`col-${i + 1}`}
-                            className="border-r border-border last:border-r-0"
+                            className="border-e border-border last:border-e-0"
                         />
                     ))}
                 </div>
@@ -104,7 +104,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            أو أدخل الرمز يدوياً
                         </span>
                     </div>
 
@@ -124,7 +124,7 @@ function TwoFactorSetupStep({
                                     />
                                     <button
                                         onClick={() => copy(manualSetupKey)}
-                                        className="border-l border-border px-3 hover:bg-muted"
+                                        className="border-s border-border px-3 hover:bg-muted"
                                     >
                                         <IconComponent className="w-4" />
                                     </button>
@@ -209,7 +209,7 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                رجوع
                             </Button>
                             <Button
                                 type="submit"
@@ -218,7 +218,7 @@ function TwoFactorVerificationStep({
                                     processing || code.length < OTP_MAX_LENGTH
                                 }
                             >
-                                Confirm
+                                تأكيد
                             </Button>
                         </div>
                     </div>
@@ -261,27 +261,26 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
+                title: 'تم تفعيل المصادقة الثنائية',
                 description:
-                    'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                    'المصادقة الثنائية مفعّلة الآن. امسح رمز QR أو أدخل مفتاح الإعداد في تطبيق المصادقة.',
+                buttonText: 'إغلاق',
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
-                description:
-                    'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                title: 'تحقق من رمز المصادقة',
+                description: 'أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة',
+                buttonText: 'متابعة',
             };
         }
 
         return {
-            title: 'Enable two-factor authentication',
+            title: 'تفعيل المصادقة الثنائية',
             description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+                'لإكمال التفعيل، امسح رمز QR أو أدخل مفتاح الإعداد في تطبيق المصادقة على هاتفك',
+            buttonText: 'متابعة',
         };
     }, [twoFactorEnabled, showVerificationStep]);
 

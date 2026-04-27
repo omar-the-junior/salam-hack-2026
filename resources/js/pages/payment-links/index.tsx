@@ -5,7 +5,7 @@ import { index } from '@/routes/payment-links';
 export default function PaymentLinksIndex() {
     return (
         <>
-            <Head title="Payment links" />
+            <Head title="روابط الدفع" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="relative min-h-[40vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
@@ -18,7 +18,7 @@ export default function PaymentLinksIndex() {
 PaymentLinksIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Payment links',
+            title: 'روابط الدفع',
             href: index(),
         },
     ],

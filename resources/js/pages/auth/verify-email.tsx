@@ -9,12 +9,12 @@ import { send } from '@/routes/verification';
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
         <>
-            <Head title="Email verification" />
+            <Head title="تأكيد البريد الإلكتروني" />
 
             {status === 'verification-link-sent' && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
+                    تم إرسال رابط تحقق جديد إلى عنوان البريد الذي قدمته عند
+                    التسجيل.
                 </div>
             )}
 
@@ -23,14 +23,14 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     <>
                         <Button disabled={processing} variant="secondary">
                             {processing && <Spinner />}
-                            Resend verification email
+                            إعادة إرسال بريد التحقق
                         </Button>
 
                         <TextLink
                             href={logout()}
                             className="mx-auto block text-sm"
                         >
-                            Log out
+                            تسجيل الخروج
                         </TextLink>
                     </>
                 )}
@@ -40,7 +40,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
 }
 
 VerifyEmail.layout = {
-    title: 'Verify email',
+    title: 'تأكيد البريد الإلكتروني',
     description:
-        'Please verify your email address by clicking on the link we just emailed to you.',
+        'يرجى تأكيد بريدك الإلكتروني بالنقر على الرابط الذي أرسلناه إليك.',
 };

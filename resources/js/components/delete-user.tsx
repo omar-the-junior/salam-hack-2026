@@ -23,14 +23,14 @@ export default function DeleteUser() {
         <div className="space-y-6">
             <Heading
                 variant="small"
-                title="Delete account"
-                description="Delete your account and all of its resources"
+                title="حذف الحساب"
+                description="حذف حسابك وجميع البيانات المرتبطة به"
             />
             <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                 <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                    <p className="font-medium">Warning</p>
+                    <p className="font-medium">تحذير</p>
                     <p className="text-sm">
-                        Please proceed with caution, this cannot be undone.
+                        انتبه: هذا الإجراء لا يمكن التراجع عنه.
                     </p>
                 </div>
 
@@ -40,18 +40,17 @@ export default function DeleteUser() {
                             variant="destructive"
                             data-test="delete-user-button"
                         >
-                            Delete account
+                            حذف الحساب
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogTitle>
-                            Are you sure you want to delete your account?
+                            هل أنت متأكد من حذف حسابك؟
                         </DialogTitle>
                         <DialogDescription>
-                            Once your account is deleted, all of its resources
-                            and data will also be permanently deleted. Please
-                            enter your password to confirm you would like to
-                            permanently delete your account.
+                            بعد حذف الحساب ستُحذف جميع البيانات والموارد
+                            المرتبطة به نهائياً. أدخل كلمة المرور لتأكيد الحذف
+                            الدائم.
                         </DialogDescription>
 
                         <Form
@@ -70,14 +69,14 @@ export default function DeleteUser() {
                                             htmlFor="password"
                                             className="sr-only"
                                         >
-                                            Password
+                                            كلمة المرور
                                         </Label>
 
                                         <PasswordInput
                                             id="password"
                                             name="password"
                                             ref={passwordInput}
-                                            placeholder="Password"
+                                            placeholder="كلمة المرور"
                                             autoComplete="current-password"
                                         />
 
@@ -92,7 +91,7 @@ export default function DeleteUser() {
                                                     resetAndClearErrors()
                                                 }
                                             >
-                                                Cancel
+                                                إلغاء
                                             </Button>
                                         </DialogClose>
 
@@ -105,7 +104,7 @@ export default function DeleteUser() {
                                                 type="submit"
                                                 data-test="confirm-delete-user-button"
                                             >
-                                                Delete account
+                                                حذف الحساب
                                             </button>
                                         </Button>
                                     </DialogFooter>

@@ -32,32 +32,32 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'لوحة التحكم',
         href: dashboard(),
         icon: LayoutGrid,
     },
     {
-        title: 'Payment links',
+        title: 'روابط الدفع',
         href: paymentLinksIndex(),
         icon: Link2,
     },
     {
-        title: 'Contracts',
+        title: 'العقود',
         href: contractsCreate(),
         icon: FileText,
     },
     {
-        title: 'Income',
+        title: 'الإيرادات',
         href: incomeIndex(),
         icon: DollarSign,
     },
     {
-        title: 'Expenses',
+        title: 'المصروفات',
         href: expensesIndex(),
         icon: CreditCard,
     },
     {
-        title: 'Email scanner',
+        title: 'مسح البريد',
         href: emailScannerIndex(),
         icon: Mail,
     },
@@ -65,12 +65,12 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
+        title: 'المستودع',
         href: 'https://github.com/laravel/react-starter-kit',
         icon: FolderGit2,
     },
     {
-        title: 'Documentation',
+        title: 'التوثيق',
         href: 'https://laravel.com/docs/starter-kits#react',
         icon: BookOpen,
     },
