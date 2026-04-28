@@ -17,6 +17,13 @@ export default function Profile({
     status?: string;
 }) {
     const { auth } = usePage().props;
+    const displayNameValue = String(
+        auth.user.display_name ?? auth.user.name ?? '',
+    );
+    const professionValue = String(auth.user.profession ?? '');
+    const countryValue = String(auth.user.country ?? '');
+    const preferredCurrencyValue = String(auth.user.preferred_currency ?? 'EGP');
+    const defaultTaxRateValue = String(auth.user.default_tax_rate ?? '0');
 
     return (
         <>
@@ -28,7 +35,7 @@ export default function Profile({
                 <Heading
                     variant="small"
                     title="معلومات الملف الشخصي"
-                    description="تحديث الاسم والبريد الإلكتروني"
+                    description="تحديث بيانات الملف والإعدادات الافتراضية للفوترة"
                 />
 
                 <Form
@@ -79,6 +86,86 @@ export default function Profile({
                                 />
                             </div>
 
+                            <div className="grid gap-2 md:grid-cols-2">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="display_name">
+                                        الاسم المعروض
+                                    </Label>
+                                    <Input
+                                        id="display_name"
+                                        className="mt-1 block w-full"
+                                        defaultValue={displayNameValue}
+                                        name="display_name"
+                                        placeholder="الاسم الذي يظهر للعملاء"
+                                        disabled
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        متاح كواجهة فقط في هذه المرحلة. سيتم
+                                        تفعيله عند اكتمال الـ backend.
+                                    </p>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="profession">المهنة</Label>
+                                    <Input
+                                        id="profession"
+                                        className="mt-1 block w-full"
+                                        defaultValue={professionValue}
+                                        name="profession"
+                                        placeholder="مثال: مطور، مصمم، مستشار"
+                                        disabled
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        متاح كواجهة فقط في هذه المرحلة.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-2 md:grid-cols-3">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="country">بلد الإقامة</Label>
+                                    <Input
+                                        id="country"
+                                        className="mt-1 block w-full"
+                                        defaultValue={countryValue}
+                                        name="country"
+                                        placeholder="مصر"
+                                        disabled
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="preferred_currency">
+                                        العملة المفضلة
+                                    </Label>
+                                    <Input
+                                        id="preferred_currency"
+                                        className="mt-1 block w-full"
+                                        defaultValue={preferredCurrencyValue}
+                                        name="preferred_currency"
+                                        placeholder="EGP"
+                                        disabled
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="default_tax_rate">
+                                        نسبة الضريبة الافتراضية %
+                                    </Label>
+                                    <Input
+                                        id="default_tax_rate"
+                                        className="mt-1 block w-full dir-ltr text-start"
+                                        defaultValue={defaultTaxRateValue}
+                                        name="default_tax_rate"
+                                        placeholder="0"
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                            <p className="-mt-1 text-xs text-muted-foreground">
+                                ملاحظة: حقول البلد، العملة، المهنة، والضريبة
+                                الافتراضية ظاهرة الآن كتجهيز بصري لـ UC-001،
+                                وسيتم ربطها بالحفظ الفعلي بعد تنفيذ واجهة
+                                الخادم.
+                            </p>
+
                             {mustVerifyEmail &&
                                 auth.user.email_verified_at === null && (
                                     <div>
@@ -96,11 +183,11 @@ export default function Profile({
 
                                         {status ===
                                             'verification-link-sent' && (
-                                            <div className="mt-2 text-sm font-medium text-green-600">
-                                                تم إرسال رابط تحقق جديد إلى
-                                                بريدك الإلكتروني.
-                                            </div>
-                                        )}
+                                                <div className="mt-2 text-sm font-medium text-green-600">
+                                                    تم إرسال رابط تحقق جديد إلى
+                                                    بريدك الإلكتروني.
+                                                </div>
+                                            )}
                                     </div>
                                 )}
 

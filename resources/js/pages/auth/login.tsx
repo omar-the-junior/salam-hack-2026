@@ -63,6 +63,10 @@ export default function Login({
             >
                 {({ processing, errors: formErrors }) => (
                     <>
+                        <p className="-mt-1 text-center text-sm text-muted-foreground">
+                            سجّل دخولك للوصول إلى لوحة التحكم واستكمال رحلة
+                            الإعداد.
+                        </p>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="email">البريد الإلكتروني</Label>
@@ -85,6 +89,9 @@ export default function Login({
                                     />
                                 </div>
                                 <InputError message={formErrors.email} />
+                                <p className="text-xs text-muted-foreground">
+                                    استخدم نفس البريد الذي أنشأت به الحساب.
+                                </p>
                             </div>
 
                             <div className="flex flex-col gap-2">

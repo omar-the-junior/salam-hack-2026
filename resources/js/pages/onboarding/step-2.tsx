@@ -1,13 +1,13 @@
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import { step1, step2 } from '@/routes/onboarding';
-import { store as storeStep2 } from '@/routes/onboarding/step2';
+import type { FormEventHandler } from 'react';
+import AppLogo from '@/components/app-logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import AppLogo from '@/components/app-logo';
+import { step1, step2 } from '@/routes/onboarding';
+import { store as storeStep2 } from '@/routes/onboarding/step2';
 
 const professionSuggestions = ['مطور', 'مصمم', 'مسوق', 'مستشار', 'صانع محتوى', 'أخرى'] as const;
 
@@ -53,6 +53,9 @@ export default function OnboardingStep2({
                                 <span className="h-1 w-10 rounded-full bg-primary" />
                                 <span className="h-1 w-10 rounded-full bg-muted" />
                             </div>
+                            <p className="text-xs font-medium text-muted-foreground">
+                                الخطوة 2 من 2
+                            </p>
                             <div className="flex flex-col gap-1">
                                 <CardTitle className="text-3xl">إعداد ملفك الشخصي</CardTitle>
                                 <CardDescription>
@@ -125,6 +128,10 @@ export default function OnboardingStep2({
                                         )}
                                     </div>
                                 </div>
+                                <p className="-mt-2 text-xs text-muted-foreground">
+                                    هذه البيانات تُستخدم لتجهيز نماذج الدفع
+                                    والعقود بشكل أسرع.
+                                </p>
 
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="profession" className={errors.profession ? 'text-destructive' : ''}>
@@ -161,7 +168,7 @@ export default function OnboardingStep2({
                                         رجوع
                                     </Button>
                                     <Button type="submit" disabled={processing} size="lg" className="min-w-32">
-                                        ابدأ الآن
+                                        دخول لوحة التحكم
                                     </Button>
                                 </div>
                             </form>

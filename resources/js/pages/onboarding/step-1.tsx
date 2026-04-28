@@ -1,12 +1,12 @@
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
-import { step1 } from '@/routes/onboarding';
-import { store as storeStep1 } from '@/routes/onboarding/step1';
+import { Briefcase, Building2, CheckCircle2 } from 'lucide-react';
+import type { FormEventHandler } from 'react';
+import AppLogo from '@/components/app-logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Briefcase, Building2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import AppLogo from '@/components/app-logo';
+import { step1 } from '@/routes/onboarding';
+import { store as storeStep1 } from '@/routes/onboarding/step1';
 
 export default function OnboardingStep1({ role: initialRole = '' }: { role?: string }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -33,6 +33,9 @@ export default function OnboardingStep1({ role: initialRole = '' }: { role?: str
                                 <span className="h-1 w-10 rounded-full bg-muted" />
                                 <span className="h-1 w-10 rounded-full bg-muted" />
                             </div>
+                            <p className="text-xs font-medium text-muted-foreground">
+                                الخطوة 1 من 2
+                            </p>
                             <div className="flex flex-col gap-1">
                                 <CardTitle className="text-3xl">كيف ستستخدم مُسْتَحَقّ؟</CardTitle>
                                 <CardDescription>اختر الخيار الذي يصف عملك بشكل أفضل</CardDescription>
@@ -97,6 +100,10 @@ export default function OnboardingStep1({ role: initialRole = '' }: { role?: str
                                 {errors.role && (
                                     <p className="text-center text-sm font-medium text-destructive">{errors.role}</p>
                                 )}
+                                <p className="-mt-3 text-center text-xs text-muted-foreground">
+                                    الاختيار يساعدنا على تهيئة التجربة والمحتوى
+                                    المناسبين لعملك.
+                                </p>
                                 <div className="flex justify-center">
                                     <Button type="submit" disabled={processing || !data.role} size="lg" className="w-full max-w-64">
                                         متابعة

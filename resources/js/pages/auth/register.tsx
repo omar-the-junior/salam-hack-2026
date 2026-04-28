@@ -23,6 +23,9 @@ export default function Register() {
             >
                 {({ processing, errors }) => (
                     <>
+                        <p className="-mt-1 text-center text-sm text-muted-foreground">
+                            أنشئ حسابك خلال دقيقة، ثم أكمل الإعداد في خطوتين.
+                        </p>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="name">الاسم الكامل</Label>
@@ -47,6 +50,9 @@ export default function Register() {
                                     message={errors.name}
                                     className="mt-0.5"
                                 />
+                                <p className="text-xs text-muted-foreground">
+                                    سيظهر هذا الاسم في حسابك ويمكن تغييره لاحقًا.
+                                </p>
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -68,6 +74,9 @@ export default function Register() {
                                     />
                                 </div>
                                 <InputError message={errors.email} />
+                                <p className="text-xs text-muted-foreground">
+                                    سنستخدمه لتسجيل الدخول والتنبيهات المهمة.
+                                </p>
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -88,6 +97,9 @@ export default function Register() {
                                     />
                                 </div>
                                 <InputError message={errors.password} />
+                                <p className="text-xs text-muted-foreground">
+                                    يفضّل استخدام 8 أحرف أو أكثر.
+                                </p>
                             </div>
 
                             <div className="flex flex-col gap-2">

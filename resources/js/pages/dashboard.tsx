@@ -41,8 +41,8 @@ import {
     ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
-    type ChartConfig,
 } from '@/components/ui/chart';
+import type { ChartConfig } from '@/components/ui/chart';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
     DropdownMenu,
@@ -402,8 +402,8 @@ export default function Dashboard() {
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>ابدأ مع مُستحق</CardTitle>
                                 <CardDescription>
-                                    أكمل هذه الخطوات لتجهيز لوحة التحكم وربطها
-                                    بتدفقاتك المالية.
+                                    أكمل الخطوات الأساسية لبناء سير عملك المالي
+                                    من أول يوم.
                                 </CardDescription>
                             </div>
                             <Button
@@ -419,24 +419,34 @@ export default function Dashboard() {
                             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                                 {[
                                     {
+                                        label: 'تم إنشاء الحساب',
+                                        href: dashboard(),
+                                        checked: true,
+                                        cta: 'مكتمل',
+                                    },
+                                    {
                                         label: 'أنشئ أول رابط دفع',
                                         href: paymentLinkCreate(),
-                                        checked: true,
+                                        checked: false,
+                                        cta: 'ابدأ',
                                     },
                                     {
                                         label: 'أنشئ عقد مشروع',
                                         href: contractIndex(),
                                         checked: false,
+                                        cta: 'ابدأ',
                                     },
                                     {
                                         label: 'أضف مصروف/اشتراك',
                                         href: expenseCreate(),
                                         checked: false,
+                                        cta: 'ابدأ',
                                     },
                                     {
                                         label: 'اربط Gmail',
                                         href: emailScannerIndex(),
                                         checked: false,
+                                        cta: 'ربط',
                                     },
                                 ].map((item) => (
                                     <div
@@ -457,15 +467,21 @@ export default function Dashboard() {
                                             size="sm"
                                             asChild
                                             className="shrink-0"
+                                            disabled={item.cta === 'مكتمل'}
                                         >
                                             <Link href={item.href}>
-                                                ابدأ
+                                                {item.cta}
                                                 <ArrowLeft data-icon="inline-end" />
                                             </Link>
                                         </Button>
                                     </div>
                                 ))}
                             </div>
+                            <p className="mt-4 text-xs text-muted-foreground">
+                                حالة الإنجاز الحالية معروضة بشكل ثابت للواجهة
+                                فقط، وسيتم ربطها ببيانات حقيقية عند تنفيذ منطق
+                                الخلفية.
+                            </p>
                         </CardContent>
                     </Card>
                 )}
