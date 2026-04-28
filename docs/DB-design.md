@@ -29,7 +29,9 @@ erDiagram
     USERS {
         uuid id PK
         string email UK
-        string password_hash
+        string password_hash "nullable"
+        string provider_id "nullable, for OAuth login"
+        string avatar_url "nullable"
         string name
         string display_name
         enum role "freelancer|small_business"
