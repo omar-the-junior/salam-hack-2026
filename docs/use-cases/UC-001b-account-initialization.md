@@ -8,16 +8,32 @@
 | ----- | ----- |
 | Use case ID | `UC-001b` |
 | Title | Account initialization (onboarding wizard) |
-| Status | Draft |
+| Status | Implemented (MVP, core flow) |
 | Priority | P0 |
 | Owner | TBD |
-| Last updated | 2026-04-27 |
+| Last updated | 2026-04-28 |
 
 ---
 
 ## 2. Summary
 
 Immediately after a new user completes registration (`UC-001`), the system detects that their profile is incomplete and redirects them to a **two-step onboarding wizard** before they reach the dashboard. The wizard collects the minimum data needed to make every downstream feature (payment links, contracts, income tracking, expense cards) work correctly from the very first use. On completion the user lands on the dashboard with a **Getting Started checklist** — never a blank screen. Returning users who are already initialized bypass this flow entirely.
+
+---
+
+## Current implementation state (2026-04-28)
+
+- Implemented in app code and merged via commits `6fb6fd9` (static pages) and `3fb069d` (backend logic).
+- Onboarding gate is active and consistent across login paths:
+  - incomplete users are redirected to `/onboarding/step/1`
+  - completed users bypass onboarding
+- Step 1 role is stored in session; step 2 performs an atomic DB write for profile fields + `onboarding_completed`.
+- Session onboarding role is cleared after successful step 2 completion.
+- Dashboard checklist is now server-driven:
+  - checklist items are computed from user data/tables
+  - dismiss action is persisted using `onboarding_checklist_dismissed_at`
+  - safe fallback exists when some downstream module tables are not yet available
+- Related tracking issues `#2` and `#3` have been completed and closed.
 
 ---
 
@@ -183,7 +199,7 @@ users / profiles
 - [ ] Given a returning user with `onboarding_completed = true`, when they log in, then they go directly to the dashboard and never see the onboarding wizard
 - [ ] Given an incomplete user who navigates directly to `/dashboard`, then middleware redirects them to `/onboarding/step/1`
 - [ ] Given step 2 is submitted with a missing `display_name`, then no DB write occurs and the error is shown inline
-- [ ] Given a fresh post-onboarding dashboard visit, then the Getting Started checklist is visible with all 4 action items
+- [ ] Given a fresh post-onboarding dashboard visit, then the Getting Started checklist is visible with account-created plus 4 action items
 - [ ] Given Arabic locale, then both onboarding steps and the checklist render RTL correctly (`NFR-07`)
 - [ ] `display_name` value is reflected on the payment link creation form as a default client-visible name (`UC-002` dependency)
 
@@ -228,5 +244,5 @@ users / profiles
 | Role field scope | Two values only for MVP: `freelancer` / `small_business` |
 | Step 1 persistence | Laravel session (not DB) until full wizard is completed |
 | Middleware placement | Apply to all authenticated routes except `/onboarding/*` itself |
-| Checklist persistence | Shown until dismissed or all 4 items are completed; stored as a user preference flag |
+| Checklist persistence | Shown until dismissed or all items are completed (account-created + 4 action items); stored as a user preference flag |
 | `display_name` vs `name` | Keep both — `name` is the auth identity, `display_name` is the client-facing business name |

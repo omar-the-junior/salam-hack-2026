@@ -8,16 +8,30 @@
 | ----- | ----- |
 | Use case ID | `UC-001` |
 | Title | Register, login, and basic profile |
-| Status | Draft |
+| Status | Implemented (MVP) |
 | Priority | P0 |
 | Owner | TBD |
-| Last updated | 2026-04-27 |
+| Last updated | 2026-04-28 |
 
 ---
 
 ## 2. Summary
 
 A freelancer or small business owner can create an account, sign in, and have basic profile data (name, country, preferred currency) stored so every later flow (payment links, contracts, income, expenses) runs under a single authenticated identity. The app uses **Laravel MVC** with **Inertia.js v3** and **React** (no Blade for these screens): Laravel routes and controllers own auth and redirects, while Inertia renders React pages and passes server data as props. This use case is the foundation for all other P0 features and satisfies protected access to finance data behind Laravel middleware.
+
+---
+
+## Current implementation state (2026-04-28)
+
+- Implemented in app code and merged via commits `6fb6fd9` (static pages) and `3fb069d` (backend wiring).
+- Registration/login redirect behavior is active:
+  - new/incomplete users are routed to onboarding
+  - completed users are routed to dashboard
+- Profile update now persists UC-related fields:
+  - `display_name`, `country`, `preferred_currency`, `profession`, `default_tax_rate`
+- `default_tax_rate` server validation is enforced in range `0–100`.
+- Existing email verification behavior remains intact.
+- Related tracking issue `#1` has been completed and closed.
 
 ---
 
