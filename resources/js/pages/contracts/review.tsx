@@ -1,6 +1,6 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { CheckCircle2Icon } from 'lucide-react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogo from '@/components/app-logo';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -105,7 +105,7 @@ export default function ContractsReview({
                         className="flex items-center gap-2 font-medium"
                         prefetch
                     >
-                        <AppLogoIcon className="size-9 fill-current text-foreground" />
+                        <AppLogo className="h-8" />
                         <span className="sr-only">الرئيسية</span>
                     </Link>
                 </div>

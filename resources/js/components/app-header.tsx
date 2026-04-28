@@ -29,7 +29,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import { create as contractsCreate } from '@/routes/contracts';
+import { index as contractsIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
 import { index as incomeIndex } from '@/routes/income';
@@ -39,7 +39,7 @@ import type { NavItem } from '@/types';
 const mainNavItems: NavItem[] = [
     { title: 'لوحة التحكم', href: dashboard(), icon: LayoutGrid },
     { title: 'روابط الدفع', href: paymentLinksIndex(), icon: Link2 },
-    { title: 'العقود', href: contractsCreate(), icon: FileText },
+    { title: 'العقود', href: contractsIndex(), icon: FileText },
     { title: 'الإيرادات', href: incomeIndex(), icon: DollarSign },
     { title: 'المصروفات', href: expensesIndex(), icon: CreditCard },
     { title: 'مسح البريد', href: emailScannerIndex(), icon: Mail },

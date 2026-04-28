@@ -55,7 +55,7 @@ import { Progress } from '@/components/ui/progress';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import { create as contractCreate } from '@/routes/contracts';
+import { index as contractIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { create as expenseCreate, index as expenseIndex } from '@/routes/expenses';
 import { create as incomeCreate, index as incomeIndex } from '@/routes/income';
@@ -372,7 +372,7 @@ export default function Dashboard() {
                                 <DropdownMenuContent align="end" className="w-48">
                                     <DropdownMenuGroup>
                                         <DropdownMenuItem asChild>
-                                            <Link href={contractCreate()}>
+                                            <Link href={contractIndex()}>
                                                 <FileText />
                                                 عقد جديد
                                             </Link>
@@ -425,7 +425,7 @@ export default function Dashboard() {
                                     },
                                     {
                                         label: 'أنشئ عقد مشروع',
-                                        href: contractCreate(),
+                                        href: contractIndex(),
                                         checked: false,
                                     },
                                     {
@@ -901,7 +901,7 @@ export default function Dashboard() {
                         {
                             title: 'العقود والمراحل',
                             description: '2 عقود نشطة',
-                            href: contractCreate(),
+                            href: contractIndex(),
                             icon: FileText,
                         },
                         {
