@@ -29,7 +29,7 @@ export default function Welcome({
 
     return (
         <>
-            <Head title="مُسْتَحَقّ - نظام التشغيل المالي">
+            <Head title="مُسْتَحَقّ - رتّب دخلك ومدفوعاتك بسهولة">
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link
                     rel="preconnect"
@@ -144,16 +144,17 @@ export default function Welcome({
                         <div className="space-y-6 lg:col-span-5">
                             <div className="inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-sm font-semibold text-teal-700 shadow-sm ring-1 ring-teal-100">
                                 <Sparkles className="size-4" />
-                                نظام التشغيل المالي الذكي
+                                إدارة مالية أبسط لشغلك اليومي
                             </div>
                             <h1 className="font-display text-4xl leading-tight text-[#102a43] md:text-6xl">
-                                سيطر على أموالك
+                                رتّب مستحقاتك
                                 <br />
-                                <span className="text-teal-700">بوضوح زجاجي.</span>
+                                <span className="text-teal-700">واطمئن على دخلك.</span>
                             </h1>
                             <p className="max-w-xl text-base leading-8 text-slate-600 md:text-lg">
-                                ارتقِ بأعمالك المستقلة مع واجهة ذكية تحلل اشتراكاتك، تدير
-                                فواتيرك، وتمنحك تحكماً كاملاً كالأنظمة البنكية.
+                                كل ما تحتاجه لمتابعة روابط الدفع، العقود، المصاريف،
+                                والاشتراكات في مكان واحد، بدون جداول مشتتة أو متابعة يدوية
+                                كل يوم.
                             </p>
                             <div className="flex flex-col gap-3 sm:flex-row">
                                 <Button asChild size="lg" className="h-11 rounded-xl px-8">
@@ -166,7 +167,7 @@ export default function Welcome({
                                                     : login()
                                         }
                                     >
-                                        ابدأ تجربتك الآن
+                                        جرّبه مجاناً
                                     </Link>
                                 </Button>
                                 <Button
@@ -176,7 +177,7 @@ export default function Welcome({
                                     className="h-11 rounded-xl border border-white/80 bg-white/70 px-8 text-slate-700"
                                 >
                                     <Link href={auth.user ? dashboard() : login()} className="inline-flex items-center gap-2">
-                                        شاهد العرض التوضيحي
+                                        شاهد كيف يعمل
                                         <CirclePlay className="size-4" />
                                     </Link>
                                 </Button>
@@ -187,7 +188,7 @@ export default function Welcome({
                             <div className="rounded-3xl border border-teal-100/80 bg-white/70 p-4 shadow-[0_20px_60px_rgba(16,42,67,0.10)] backdrop-blur md:p-6">
                                 <img
                                     src="/images/dashboard-current-preview.png"
-                                    alt="واجهة لوحة تحكم مُستحق الحالية"
+                                    alt="معاينة لوحة تحكم مُستحق"
                                     className="h-auto w-full rounded-2xl border border-teal-100 object-cover"
                                 />
                             </div>
@@ -197,11 +198,11 @@ export default function Welcome({
                     <section id="features" className="mt-20">
                         <div className="mb-10 text-center">
                             <h2 className="font-display text-3xl text-[#102a43] md:text-4xl">
-                                مصمم بوضوح، مبني بقوة
+                                كل شيء واضح من أول نظرة
                             </h2>
                             <p className="mx-auto mt-3 max-w-2xl text-slate-600">
-                                نجمع بين شفافية التصميم وقوة الأداء البنكي لنمنحك تجربة
-                                استخدام لا مثيل لها.
+                                مُستحق يساعدك تعرف أين وصلت فلوسك، وما الذي عليك تحصيله،
+                                وما الذي يخرج من حسابك شهرياً.
                             </p>
                         </div>
 
@@ -211,11 +212,11 @@ export default function Welcome({
                                     <ShieldCheck className="size-5" />
                                 </div>
                                 <h3 className="mb-2 font-display text-xl text-[#102a43]">
-                                    استقرار بنكي موثوق
+                                    متابعة أوضح للمستحقات
                                 </h3>
                                 <p className="text-sm leading-7 text-slate-600">
-                                    بنية تحتية متينة تضمن أمان بياناتك المالية، مصممة لتحمل
-                                    ضغط العمل المستمر بمعايير المؤسسات الكبرى.
+                                    تابع روابط الدفع والعقود والمبالغ المتأخرة من شاشة واحدة،
+                                    وخذ قرارك بناءً على أرقام واضحة بدل التخمين.
                                 </p>
                             </div>
 
@@ -224,11 +225,11 @@ export default function Welcome({
                                     <Clock3 className="size-5" />
                                 </div>
                                 <h3 className="mb-2 font-display text-xl text-[#102a43]">
-                                    أتمتة الوقت
+                                    وقت أقل في المتابعة
                                 </h3>
                                 <p className="text-sm leading-7 text-slate-600">
-                                    دع الذكاء الاصطناعي يتولى المهام الروتينية والمتابعات
-                                    المالية بينما تركز أنت على الإبداع.
+                                    قلّل الرسائل والتذكيرات اليدوية، وخلّ مُستحق ينبهك لما
+                                    يحتاج انتباهك في الوقت المناسب.
                                 </p>
                             </div>
 
@@ -237,11 +238,11 @@ export default function Welcome({
                                     <Waves className="size-5" />
                                 </div>
                                 <h3 className="mb-2 font-display text-xl text-[#102a43]">
-                                    فواتير كوثائق
+                                    مستندات تليق بشغلك
                                 </h3>
                                 <p className="text-sm leading-7 text-slate-600">
-                                    مظهر دافئ يشبه الورق يضفي طابعاً إنسانياً واحترافياً على
-                                    مستنداتك المالية المرسلة للعملاء.
+                                    أنشئ روابط دفع وإيصالات وصفحات عقد مرتبة وواضحة، تعطي
+                                    عملاءك انطباعاً جاداً بدون تعقيد.
                                 </p>
                             </div>
 
@@ -249,11 +250,11 @@ export default function Welcome({
                                 <div className="flex flex-col items-center gap-4 md:flex-row">
                                     <div className="flex-1">
                                         <h3 className="mb-2 font-display text-xl text-[#102a43]">
-                                            تحكم شامل بالاشتراكات
+                                            اشتراكاتك تحت السيطرة
                                         </h3>
                                         <p className="text-sm leading-7 text-slate-600">
-                                            واجهة زجاجية شفافة تتيح لك رؤية كل هللة تخرج من
-                                            حسابك، مع تنبيهات ذكية لإلغاء ما لا تحتاجه.
+                                            راجع المصاريف المتكررة والاشتراكات التي قد تنساها،
+                                            واعرف ما يستحق البقاء وما الأفضل إيقافه.
                                         </p>
                                     </div>
                                     <div className="inline-flex size-14 items-center justify-center rounded-full bg-white text-teal-700 shadow-sm">
