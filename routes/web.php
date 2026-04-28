@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Middleware\EnsureOnboardingComplete;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +11,8 @@ Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name(
 Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');
 
 Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function (): void {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('dashboard/checklist-dismiss', [DashboardController::class, 'dismissChecklist'])->name('dashboard.checklist.dismiss');
 });
 
 require __DIR__.'/auth.php';

@@ -25,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
     'profession',
     'default_tax_rate',
     'onboarding_completed',
+    'onboarding_checklist_dismissed_at',
 ])]
 #[Hidden(['password', 'remember_token', 'provider_id'])]
 class User extends Authenticatable implements MustVerifyEmail
@@ -39,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'onboarding_completed' => 'boolean',
             'default_tax_rate' => 'decimal:2',
+            'onboarding_checklist_dismissed_at' => 'datetime',
         ];
     }
 

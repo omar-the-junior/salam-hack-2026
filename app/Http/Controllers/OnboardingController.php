@@ -6,6 +6,7 @@ use App\Http\Requests\Onboarding\StoreStep1Request;
 use App\Http\Requests\Onboarding\StoreStep2Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,7 +21,7 @@ class OnboardingController extends Controller
         }
 
         return Inertia::render('onboarding/step-1', [
-            'role' => $this->roleForInertia($user->role),
+            'role' => $request->session()->get('onboarding.role', $this->roleForInertia($user->role)),
         ]);
     }
 
@@ -31,8 +32,10 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $user->role = $this->roleForDatabase($request->validated('role'));
-        $user->save();
+        $request->session()->put(
+            'onboarding.role',
+            $this->roleForDatabase($request->validated('role')),
+        );
 
         return redirect()->route('onboarding.step2');
     }
@@ -45,13 +48,15 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        if (! $user->role) {
+        $role = $request->session()->get('onboarding.role', $user->role);
+
+        if (! $role) {
             return redirect()->route('onboarding.step1');
         }
 
         return Inertia::render('onboarding/step-2', [
             'name' => $user->display_name ?? $user->name ?? '',
-            'role' => $this->roleForInertia($user->role),
+            'role' => $this->roleForInertia($role),
             'country' => $user->country ?? '',
             'preferred_currency' => $user->preferred_currency ?: 'EGP',
             'profession' => $user->profession ?? '',
@@ -66,18 +71,27 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        if (! $user->role) {
+        $role = $request->session()->get('onboarding.role', $user->role);
+
+        if (! $role) {
             return redirect()->route('onboarding.step1');
         }
 
-        $user->fill($request->validated());
-        $user->onboarding_completed = true;
-        if (! $user->preferred_currency) {
-            $user->preferred_currency = 'EGP';
-        }
-        $user->save();
+        DB::transaction(function () use ($user, $request, $role): void {
+            $user->fill($request->validated());
+            $user->role = $role;
+            $user->onboarding_completed = true;
+            $user->onboarding_checklist_dismissed_at = null;
+
+            if (! $user->preferred_currency) {
+                $user->preferred_currency = 'EGP';
+            }
+
+            $user->save();
+        });
 
         $request->session()->flash('show_checklist', true);
+        $request->session()->forget('onboarding.role');
 
         return redirect()->route('dashboard');
     }

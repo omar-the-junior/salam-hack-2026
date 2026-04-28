@@ -24,4 +24,18 @@ class DashboardTest extends TestCase
         $response = $this->get(route('dashboard'));
         $response->assertOk();
     }
+
+    public function test_user_can_dismiss_onboarding_checklist()
+    {
+        $user = User::factory()->create([
+            'onboarding_completed' => true,
+            'onboarding_checklist_dismissed_at' => null,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('dashboard.checklist.dismiss'))
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertNotNull($user->refresh()->onboarding_checklist_dismissed_at);
+    }
 }

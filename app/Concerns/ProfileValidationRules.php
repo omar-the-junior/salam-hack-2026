@@ -18,6 +18,11 @@ trait ProfileValidationRules
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($userId),
+            'display_name' => ['nullable', 'string', 'max:255'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'preferred_currency' => ['nullable', 'string', 'in:EGP,USD,SAR,AED'],
+            'profession' => ['nullable', 'string', 'max:255'],
+            'default_tax_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ];
     }
 

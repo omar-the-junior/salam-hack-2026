@@ -30,7 +30,17 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+        if (! array_key_exists('display_name', $validated) || blank($validated['display_name'])) {
+            $validated['display_name'] = $validated['name'] ?? $request->user()->name;
+        }
+
+        if (! array_key_exists('preferred_currency', $validated) || blank($validated['preferred_currency'])) {
+            $validated['preferred_currency'] = $request->user()->preferred_currency ?: 'EGP';
+        }
+
+        $request->user()->fill($validated);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

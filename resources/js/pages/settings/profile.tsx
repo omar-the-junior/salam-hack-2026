@@ -97,11 +97,10 @@ export default function Profile({
                                         defaultValue={displayNameValue}
                                         name="display_name"
                                         placeholder="الاسم الذي يظهر للعملاء"
-                                        disabled
                                     />
                                     <p className="text-xs text-muted-foreground">
-                                        متاح كواجهة فقط في هذه المرحلة. سيتم
-                                        تفعيله عند اكتمال الـ backend.
+                                        يظهر هذا الاسم في روابط الدفع والعقود
+                                        التي يراها العميل.
                                     </p>
                                 </div>
                                 <div className="grid gap-2">
@@ -112,10 +111,10 @@ export default function Profile({
                                         defaultValue={professionValue}
                                         name="profession"
                                         placeholder="مثال: مطور، مصمم، مستشار"
-                                        disabled
                                     />
                                     <p className="text-xs text-muted-foreground">
-                                        متاح كواجهة فقط في هذه المرحلة.
+                                        يساعدنا هذا الحقل على تحسين تجربة
+                                        الإعداد مستقبلاً.
                                     </p>
                                 </div>
                             </div>
@@ -129,21 +128,29 @@ export default function Profile({
                                         defaultValue={countryValue}
                                         name="country"
                                         placeholder="مصر"
-                                        disabled
                                     />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="preferred_currency">
                                         العملة المفضلة
                                     </Label>
-                                    <Input
+                                    <select
                                         id="preferred_currency"
-                                        className="mt-1 block w-full"
+                                        className="mt-1 block h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
                                         defaultValue={preferredCurrencyValue}
                                         name="preferred_currency"
-                                        placeholder="EGP"
-                                        disabled
-                                    />
+                                    >
+                                        <option value="EGP">
+                                            جنيه مصري (EGP)
+                                        </option>
+                                        <option value="USD">دولار (USD)</option>
+                                        <option value="SAR">
+                                            ريال سعودي (SAR)
+                                        </option>
+                                        <option value="AED">
+                                            درهم إماراتي (AED)
+                                        </option>
+                                    </select>
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="default_tax_rate">
@@ -152,19 +159,16 @@ export default function Profile({
                                     <Input
                                         id="default_tax_rate"
                                         className="mt-1 block w-full dir-ltr text-start"
+                                        type="number"
+                                        min={0}
+                                        max={100}
+                                        step={0.01}
                                         defaultValue={defaultTaxRateValue}
                                         name="default_tax_rate"
                                         placeholder="0"
-                                        disabled
                                     />
                                 </div>
                             </div>
-                            <p className="-mt-1 text-xs text-muted-foreground">
-                                ملاحظة: حقول البلد، العملة، المهنة، والضريبة
-                                الافتراضية ظاهرة الآن كتجهيز بصري لـ UC-001،
-                                وسيتم ربطها بالحفظ الفعلي بعد تنفيذ واجهة
-                                الخادم.
-                            </p>
 
                             {mustVerifyEmail &&
                                 auth.user.email_verified_at === null && (

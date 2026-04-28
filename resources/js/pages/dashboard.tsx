@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     AlertCircle,
     ArrowLeft,
@@ -66,6 +66,18 @@ import {
 
 type PaymentStatus = 'paid' | 'pending' | 'overdue';
 type AttentionSeverity = 'danger' | 'warning' | 'info' | 'success';
+type ChecklistItem = {
+    key: string;
+    label: string;
+    href: string;
+    checked: boolean;
+    cta: string;
+};
+type DashboardChecklist = {
+    show: boolean;
+    items: ChecklistItem[];
+    is_static_fallback?: boolean;
+};
 
 const mockUser = {
     name: 'محمد أحمد',
@@ -295,8 +307,12 @@ function attentionClass(severity: AttentionSeverity) {
     });
 }
 
-export default function Dashboard() {
-    const [showChecklist, setShowChecklist] = useState(true);
+export default function Dashboard({
+    checklist,
+}: {
+    checklist?: DashboardChecklist;
+}) {
+    const [showChecklist, setShowChecklist] = useState(Boolean(checklist?.show));
     const [expandedRenewal, setExpandedRenewal] = useState(0);
     const [openRenewalMenu, setOpenRenewalMenu] = useState<number | null>(null);
     const [activeRenewalReminders, setActiveRenewalReminders] = useState<string[]>([]);
@@ -318,6 +334,44 @@ export default function Dashboard() {
                 ? previous.filter((item) => item !== service)
                 : [...previous, service],
         );
+
+    const resolvedChecklist = checklist?.items ?? [
+        {
+            key: 'account',
+            label: 'تم إنشاء الحساب',
+            href: dashboard(),
+            checked: true,
+            cta: 'مكتمل',
+        },
+        {
+            key: 'payment_link',
+            label: 'أنشئ أول رابط دفع',
+            href: paymentLinkCreate(),
+            checked: false,
+            cta: 'ابدأ',
+        },
+        {
+            key: 'contract',
+            label: 'أنشئ عقد مشروع',
+            href: contractIndex(),
+            checked: false,
+            cta: 'ابدأ',
+        },
+        {
+            key: 'expense',
+            label: 'أضف مصروف/اشتراك',
+            href: expenseCreate(),
+            checked: false,
+            cta: 'ابدأ',
+        },
+        {
+            key: 'gmail',
+            label: 'اربط Gmail',
+            href: emailScannerIndex(),
+            checked: false,
+            cta: 'ربط',
+        },
+    ];
 
     return (
         <>
@@ -410,47 +464,19 @@ export default function Dashboard() {
                                 variant="ghost"
                                 size="icon"
                                 aria-label="إخفاء قائمة البدء"
-                                onClick={() => setShowChecklist(false)}
+                                onClick={() => {
+                                    setShowChecklist(false);
+                                    router.post('/dashboard/checklist-dismiss');
+                                }}
                             >
                                 <X />
                             </Button>
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                                {[
-                                    {
-                                        label: 'تم إنشاء الحساب',
-                                        href: dashboard(),
-                                        checked: true,
-                                        cta: 'مكتمل',
-                                    },
-                                    {
-                                        label: 'أنشئ أول رابط دفع',
-                                        href: paymentLinkCreate(),
-                                        checked: false,
-                                        cta: 'ابدأ',
-                                    },
-                                    {
-                                        label: 'أنشئ عقد مشروع',
-                                        href: contractIndex(),
-                                        checked: false,
-                                        cta: 'ابدأ',
-                                    },
-                                    {
-                                        label: 'أضف مصروف/اشتراك',
-                                        href: expenseCreate(),
-                                        checked: false,
-                                        cta: 'ابدأ',
-                                    },
-                                    {
-                                        label: 'اربط Gmail',
-                                        href: emailScannerIndex(),
-                                        checked: false,
-                                        cta: 'ربط',
-                                    },
-                                ].map((item) => (
+                                {resolvedChecklist.map((item) => (
                                     <div
-                                        key={item.label}
+                                        key={item.key}
                                         className="flex items-center justify-between gap-3 rounded-xl border bg-card/70 p-3"
                                     >
                                         <div className="flex items-center gap-3">
@@ -478,9 +504,9 @@ export default function Dashboard() {
                                 ))}
                             </div>
                             <p className="mt-4 text-xs text-muted-foreground">
-                                حالة الإنجاز الحالية معروضة بشكل ثابت للواجهة
-                                فقط، وسيتم ربطها ببيانات حقيقية عند تنفيذ منطق
-                                الخلفية.
+                                {checklist?.is_static_fallback
+                                    ? 'بعض حالات القائمة تعمل بوضع تجريبي لحين اكتمال وحدات الدفع/المصروفات/ربط البريد.'
+                                    : 'هذه القائمة مرتبطة بحالة بياناتك الحالية ويتم تحديثها تلقائيًا.'}
                             </p>
                         </CardContent>
                     </Card>
