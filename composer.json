@@ -18,7 +18,7 @@
         "laravel/telescope": "^5.20",
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
-        "socialiteproviders/google": "*"
+        "socialiteproviders/google": "^4.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
