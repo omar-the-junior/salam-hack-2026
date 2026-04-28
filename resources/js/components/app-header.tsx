@@ -8,6 +8,7 @@ import {
     Mail,
     Menu,
     Settings,
+    Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,6 +30,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
+import { index as customersIndex } from '@/routes/customers';
 import { index as contractsIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
@@ -40,6 +42,7 @@ const mainNavItems: NavItem[] = [
     { title: 'لوحة التحكم', href: dashboard(), icon: LayoutGrid },
     { title: 'روابط الدفع', href: paymentLinksIndex(), icon: Link2 },
     { title: 'العقود', href: contractsIndex(), icon: FileText },
+    { title: 'العملاء', href: customersIndex(), icon: Users },
     { title: 'الإيرادات', href: incomeIndex(), icon: DollarSign },
     { title: 'المصروفات', href: expensesIndex(), icon: CreditCard },
     { title: 'مسح البريد', href: emailScannerIndex(), icon: Mail },

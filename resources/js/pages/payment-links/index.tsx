@@ -1,15 +1,187 @@
-import { Head } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import { index } from '@/routes/payment-links';
+import { Head, Link } from '@inertiajs/react';
+import { PlusIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { create, index, show } from '@/routes/payment-links';
 
-export default function PaymentLinksIndex() {
+type PaymentLinkRow = {
+    id: string;
+    client_name: string;
+    total_amount: string;
+    currency: string;
+    status: string;
+    due_date: string | null;
+};
+
+function formatMoney(value: string | number, currency: string): string {
+    const n = typeof value === 'string' ? Number.parseFloat(value) : value;
+
+    return new Intl.NumberFormat('ar-EG', {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 2,
+    }).format(Number.isNaN(n) ? 0 : n);
+}
+
+export default function PaymentLinksIndex({
+    paymentLinks,
+}: {
+    paymentLinks: PaymentLinkRow[];
+}) {
+    const total = paymentLinks.length;
+    const pending = paymentLinks.filter((link) => link.status === 'pending').length;
+    const paid = paymentLinks.filter((link) => link.status === 'paid').length;
+    const overdue = paymentLinks.filter((link) => link.status === 'overdue').length;
+
+    const statusBadge = (status: string) => {
+        if (status === 'paid') {
+            return <Badge>مدفوعة</Badge>;
+        }
+
+        if (status === 'overdue') {
+            return <Badge variant="destructive">متأخرة</Badge>;
+        }
+
+        return <Badge variant="secondary">بانتظار الدفع</Badge>;
+    };
+
     return (
         <>
             <Head title="روابط الدفع" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="relative min-h-[40vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4">
+                <Card>
+                    <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <CardTitle>روابط الدفع</CardTitle>
+                            <CardDescription>
+                                إدارة روابط الدفع التي أنشأتها ومشاركتها مع العملاء.
+                            </CardDescription>
+                        </div>
+                        <Button asChild>
+                            <Link href={create()}>
+                                <PlusIcon data-icon="inline-start" />
+                                إنشاء رابط جديد
+                            </Link>
+                        </Button>
+                    </CardHeader>
+                </Card>
+
+                <div className="grid gap-3 md:grid-cols-4">
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardDescription>إجمالي الروابط</CardDescription>
+                            <CardTitle>{total}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardDescription>بانتظار الدفع</CardDescription>
+                            <CardTitle>{pending}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardDescription>مدفوعة</CardDescription>
+                            <CardTitle>{paid}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardDescription>متأخرة</CardDescription>
+                            <CardTitle>{overdue}</CardTitle>
+                        </CardHeader>
+                    </Card>
                 </div>
+
+                <Card>
+                    <CardContent>
+                        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                            <Input placeholder="البحث برقم الرابط أو اسم العميل..." className="lg:max-w-sm" />
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <Select defaultValue="all">
+                                    <SelectTrigger className="sm:w-44">
+                                        <SelectValue placeholder="الحالة" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="all">جميع الحالات</SelectItem>
+                                            <SelectItem value="pending">بانتظار الدفع</SelectItem>
+                                            <SelectItem value="paid">مدفوعة</SelectItem>
+                                            <SelectItem value="overdue">متأخرة</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <Select defaultValue="newest">
+                                    <SelectTrigger className="sm:w-52">
+                                        <SelectValue placeholder="الترتيب" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="newest">تاريخ الإنشاء (الأحدث)</SelectItem>
+                                            <SelectItem value="oldest">تاريخ الإنشاء (الأقدم)</SelectItem>
+                                            <SelectItem value="amount-desc">المبلغ (الأعلى)</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>العميل</TableHead>
+                                    <TableHead>الإجمالي</TableHead>
+                                    <TableHead>الحالة</TableHead>
+                                    <TableHead>الاستحقاق</TableHead>
+                                    <TableHead>الإجراء</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {paymentLinks.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-muted-foreground">
+                                            لا توجد روابط دفع بعد.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    paymentLinks.map((paymentLink) => (
+                                        <TableRow key={paymentLink.id}>
+                                            <TableCell>{paymentLink.client_name}</TableCell>
+                                            <TableCell>
+                                                {formatMoney(paymentLink.total_amount, paymentLink.currency)}
+                                            </TableCell>
+                                            <TableCell>{statusBadge(paymentLink.status)}</TableCell>
+                                            <TableCell>{paymentLink.due_date ?? 'غير محدد'}</TableCell>
+                                            <TableCell>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={show(paymentLink.id)}>عرض</Link>
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
             </div>
         </>
     );

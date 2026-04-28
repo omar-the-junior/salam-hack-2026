@@ -8,6 +8,7 @@ import {
     LayoutGrid,
     Link2,
     Mail,
+    Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -23,6 +24,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as customersIndex } from '@/routes/customers';
 import { index as contractsIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
@@ -45,6 +47,11 @@ const mainNavItems: NavItem[] = [
         title: 'العقود',
         href: contractsIndex(),
         icon: FileText,
+    },
+    {
+        title: 'العملاء',
+        href: customersIndex(),
+        icon: Users,
     },
     {
         title: 'الإيرادات',
