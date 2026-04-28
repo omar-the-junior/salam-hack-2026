@@ -23,7 +23,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { create as contractsCreate } from '@/routes/contracts';
+import { index as contractsIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
 import { index as incomeIndex } from '@/routes/income';
@@ -43,7 +43,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'العقود',
-        href: contractsCreate(),
+        href: contractsIndex(),
         icon: FileText,
     },
     {

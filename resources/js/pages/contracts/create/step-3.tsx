@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import { create } from '@/routes/contracts';
-import { step2, step3 } from '@/routes/contracts/create';
+import { index } from '@/routes/contracts';
 
 export default function ContractsCreateStep3() {
     return (
@@ -19,16 +18,12 @@ export default function ContractsCreateStep3() {
 ContractsCreateStep3.layout = {
     breadcrumbs: [
         {
-            title: 'إنشاء عقد',
-            href: create(),
-        },
-        {
-            title: 'الخطوة 2 — المراحل',
-            href: step2(),
+            title: 'العقود',
+            href: index(),
         },
         {
             title: 'الخطوة 3 — الشروط',
-            href: step3(),
+            href: index(),
         },
     ],
 };
