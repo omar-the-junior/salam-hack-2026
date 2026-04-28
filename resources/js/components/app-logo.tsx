@@ -1,16 +1,22 @@
-import AppLogoIcon from '@/components/app-logo-icon';
+type AppLogoProps = {
+    variant?: 'primary' | 'white';
+    className?: string;
+};
 
-export default function AppLogo() {
+export default function AppLogo({
+    variant = 'primary',
+    className = '',
+}: AppLogoProps) {
+    const src =
+        variant === 'white'
+            ? '/logo/logo-full-white.svg'
+            : '/logo/logo-full-primary.svg';
+
     return (
-        <>
-            <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
-            </div>
-            <div className="ms-1 grid flex-1 text-start text-sm">
-                <span className="mb-0.5 truncate leading-tight font-semibold">
-                    مُسْتَحَقّ
-                </span>
-            </div>
-        </>
+        <img
+            src={src}
+            alt="Mustahaq"
+            className={`h-8 w-auto ${className}`.trim()}
+        />
     );
 }

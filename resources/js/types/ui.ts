@@ -13,9 +13,13 @@ export type FlashToast = {
     message: string;
 };
 
+export type AuthLayoutVariant = 'split' | 'narrow';
+
 export type AuthLayoutProps = {
     children?: ReactNode;
     name?: string;
     title?: string;
     description?: string;
+    /** `split`: login-style hero + quote panel. `narrow`: centered card (register, reset, etc.). */
+    variant?: AuthLayoutVariant;
 };
