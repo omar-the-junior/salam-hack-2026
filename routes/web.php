@@ -20,3 +20,8 @@ require __DIR__.'/email-scanner.php';
 require __DIR__.'/pay.php';
 
 require __DIR__.'/settings.php';
+
+use App\Http\Controllers\OAuthController;
+
+Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name('oauth.google.redirect');
+Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');
