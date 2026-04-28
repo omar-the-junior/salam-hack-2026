@@ -102,7 +102,7 @@ A client opens the shareable payment URL created in `UC-002`, sees a **branded p
    - Description and client name
    - Due date with a subtle urgency indicator if within 3 days
    - Payment section: for MVP a single **"Pay Now"** mock button (labelled with available methods: Card / Fawry / Vodafone Cash)
-   - Footer: "Powered by Financial OS" branding
+   - Footer: "Powered by مُسْتَحَقّ" branding
 
 > **If `status = Paid`:** render the receipt page directly (section 5.3) — the payment is already done.
 > **If `status = Overdue`:** render the pay page with an overdue banner; payment can still be attempted.

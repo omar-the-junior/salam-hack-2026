@@ -75,7 +75,7 @@ Newly registered freelancer or small business owner (authenticated, profile not 
 ### Step 1 — Who are you? (role selection)
 
 1. Controller returns `Inertia::render('Onboarding/Step1', [])`.
-2. The page shows a single question: **"How do you use Financial OS?"**
+2. The page shows a single question: **"How do you use مُسْتَحَقّ?"**
    - Option A: **Freelancer** — "I work independently for clients"
    - Option B: **Small Business Owner** — "I run a business or agency"
 3. User selects one option (large tap-friendly cards, not a dropdown).
@@ -105,7 +105,7 @@ Newly registered freelancer or small business owner (authenticated, profile not 
 2. Dashboard renders the **Getting Started checklist** component:
 
    ```
-   Getting started with Financial OS          [dismiss ×]
+   Getting started with مُسْتَحَقّ          [dismiss ×]
    ────────────────────────────────────────────────────
    ✅  Account created
    ⬜  Create your first payment link          [→ Create]

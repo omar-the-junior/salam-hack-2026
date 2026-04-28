@@ -1,4 +1,4 @@
-# Financial OS — Technical Specifications (Hackathon MVP)
+# مُسْتَحَقّ — Technical Specifications (Hackathon MVP)
 
 **Source:** Derived from `docs/prd.md`  
 **Scope:** 4-day Salam Hack build (Track 2)  

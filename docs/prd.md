@@ -1,4 +1,4 @@
-# Financial OS — Product Requirements Document (MVP)
+# مُسْتَحَقّ — Product Requirements Document (MVP)
 **Hackathon:** SalamHack · Track 2 · Fintech (Financial Tools for Freelancers & Small Businesses)
 **Version:** 1.0
 **Status:** MVP Scope
@@ -8,7 +8,7 @@
 ## 1. Product Overview
 
 ### 1.1 One-Line Pitch
-> We're building **Financial OS**, an Arabic-first financial operating system for MENA freelancers and small businesses that combines milestone contracts, payment links, income tracking, and AI-powered subscription management in one platform.
+> We're building **مُسْتَحَقّ**, an Arabic-first financial operating system for MENA freelancers and small businesses that combines milestone contracts, payment links, income tracking, and AI-powered subscription management in one platform.
 
 ### 1.2 Problem Statement
 MENA freelancers and small businesses (Egypt, Saudi, UAE) manage their finances across 5–10 disconnected tools:
@@ -104,7 +104,7 @@ MENA freelancers and small businesses (Egypt, Saudi, UAE) manage their finances 
 After registration the user must complete a **2-step onboarding wizard** before reaching the dashboard. This collects the minimum data needed for all downstream modules to work correctly.
 
 **Step 1 — Role selection (1 question):**
-> "How do you use Financial OS?"
+> "How do you use مُسْتَحَقّ?"
 - Freelancer — "I work independently for clients"
 - Small Business Owner — "I run a business or agency"
 
@@ -127,7 +127,7 @@ After registration the user must complete a **2-step onboarding wizard** before 
 Shown on the dashboard until dismissed or all items completed. Each item links directly to the relevant creation flow.
 
 ```
-Getting started with Financial OS          [dismiss]
+Getting started with مُسْتَحَقّ          [dismiss]
 ────────────────────────────────────────────────────
 ✅  Account created
 ⬜  Create your first payment link          [→ Create]
@@ -169,7 +169,7 @@ Allow freelancers and small businesses to create professional payment requests a
 - **Input:** Amount (subtotal), currency (EGP / USD), description, client name, due date, tax rate (optional, defaults to profile setting)
 - **Tax calculation:** `tax_amount = subtotal × tax_rate / 100`; `total_amount = subtotal + tax_amount`. Both stored on the record.
 - **Client pays:** `total_amount` (subtotal + tax shown as a line breakdown on the pay page and receipt)
-- **Output:** Shareable link (e.g., `freelos.co/pay/xyz`)
+- **Output:** Shareable link (e.g., `mustahaq.app/pay/xyz`)
 - **Accepted methods:** Cards (Visa/Mastercard), Fawry, Vodafone Cash, Orange Money
 - **Integration:** Paymob API or Fawaterk API (no commercial register required)
 - **Status tracking:** Pending → Paid → Overdue
@@ -230,7 +230,7 @@ A unified income dashboard that aggregates all earnings from multiple sources �
 #### 4.3.1 Income Sources
 | Source | How It Enters |
 |--------|--------------|
-| Financial OS payment links | Automatic via webhook from payment gateway |
+| مُسْتَحَقّ payment links | Automatic via webhook from payment gateway |
 | Manual entry | User inputs: amount, source, date, client, category |
 | Email parsing (AI Agent) | See Module 4 — scans for payment confirmation emails |
 | SMS/notification parsing | User pastes SMS text → AI extracts amount + sender |
@@ -437,7 +437,7 @@ These go beyond the base MVP and make the product genuinely valuable:
 - Detect annual vs monthly savings: *"Switching Canva to annual saves you $48/year"*
 
 ### 7.7 WhatsApp Bot Integration
-- Freelancer or small business owner can interact with their Financial OS via WhatsApp
+- Freelancer or small business owner can interact with مُسْتَحَقّ via WhatsApp
 - *"Send 5000 EGP link to Mohamed for logo design"* → generates payment link
 - *"What's my income this month?"* → responds with summary
 - *"Add expense Vercel $20 monthly"* → creates expense card
@@ -582,7 +582,7 @@ GET    /api/ai/cash-flow-forecast      30/60/90 day forecast
 
 ## 12. Competitive Differentiation
 
-| Feature | Financial OS | Polar.sh | Lemon Squeezy | Paymob | ezPayments |
+| Feature | مُسْتَحَقّ | Polar.sh | Lemon Squeezy | Paymob | ezPayments |
 |---------|-------------|----------|---------------|--------|------------|
 | Freelance service contracts | ✅ | ❌ | ❌ | ❌ | ❌ |
 | Milestone payments | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -597,4 +597,4 @@ GET    /api/ai/cash-flow-forecast      30/60/90 day forecast
 
 ---
 
-*Document prepared for SalamHack 2025 · Financial OS MVP*
+*Document prepared for SalamHack 2025 · مُسْتَحَقّ MVP*
