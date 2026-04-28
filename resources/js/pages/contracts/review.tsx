@@ -1,8 +1,15 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { CheckCircle2Icon } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { CheckCircle2Icon, PenLineIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -14,7 +21,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { home } from '@/routes';
 import { accept } from '@/routes/contracts';
 
 type MilestonePublic = {
@@ -96,22 +102,21 @@ export default function ContractsReview({
             : undefined;
 
     return (
-        <div className="bg-background min-h-svh">
+        <div className="min-h-svh bg-muted/30">
             <Head title="مراجعة العقد" />
-            <header className="border-b">
-                <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-4">
-                    <Link
-                        href={home()}
-                        className="flex items-center gap-2 font-medium"
-                        prefetch
+            <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+                <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4 md:px-6">
+                    <div className="text-primary text-lg font-bold">مُسْتَحَقّ</div>
+                    <Badge
+                        variant="secondary"
+                        className="rounded-full px-3 py-1 text-xs"
                     >
-                        <AppLogo className="h-8" />
-                        <span className="sr-only">الرئيسية</span>
-                    </Link>
+                        بانتظار الموافقة
+                    </Badge>
                 </div>
             </header>
 
-            <main className="mx-auto flex max-w-3xl flex-col gap-6 px-6 py-8">
+            <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8 pb-32 md:px-6">
                 {flashMsg ? (
                     <Alert>
                         <AlertTitle>تنبيه</AlertTitle>
@@ -129,121 +134,193 @@ export default function ContractsReview({
                     </Alert>
                 ) : null}
 
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-xl font-semibold leading-snug">
-                        عقد بين {freelancerName} و {contract.client_name}
+                <div className="text-center">
+                    <h1 className="text-2xl font-semibold leading-snug md:text-3xl">
+                        مراجعة العقد: {contract.project_name}
                     </h1>
-                    <p className="text-lg font-medium">{contract.project_name}</p>
-                    {contract.description ? (
-                        <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
-                            {contract.description}
-                        </p>
-                    ) : null}
-                    <p className="text-sm">
-                        إجمالي القيمة قبل الضريبة:{' '}
-                        <span className="font-medium">
-                            {formatMoney(
-                                contract.total_value,
-                                contract.currency,
-                            )}
-                        </span>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        بين {freelancerName} (المستقل) و {contract.client_name}{' '}
+                        (العميل)
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <h2 className="text-sm font-medium">المراحل</h2>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>الاسم</TableHead>
-                                <TableHead>النسبة</TableHead>
-                                <TableHead>قبل الضريبة</TableHead>
-                                <TableHead>الاستحقاق</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {contract.milestones.length === 0 ? (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={4}
-                                        className="text-muted-foreground text-center text-sm"
-                                    >
-                                        لا توجد مراحل مضافة بعد.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                contract.milestones.map((m) => (
-                                    <TableRow key={m.id}>
-                                        <TableCell>{m.title}</TableCell>
-                                        <TableCell>{m.percentage}%</TableCell>
-                                        <TableCell>
+                <article className="flex flex-col gap-10 rounded-2xl border bg-card p-5 shadow-sm md:p-8">
+                    <div className="flex items-start justify-between border-b pb-6">
+                        <div className="flex size-16 items-center justify-center rounded-lg border bg-muted/40">
+                            <span className="text-muted-foreground text-xs">
+                                شعار
+                            </span>
+                        </div>
+                        <div className="text-left">
+                            <p className="text-xs text-muted-foreground">
+                                رقم العقد
+                            </p>
+                            <p className="font-medium">
+                                #{contract.contract_token}
+                            </p>
+                        </div>
+                    </div>
+
+                    <Card className="border-muted/80 shadow-none">
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                وصف المشروع
+                            </CardTitle>
+                            <CardDescription>
+                                التفاصيل الأساسية لنطاق التنفيذ المتفق عليه
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-3 text-sm">
+                            <p className="leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                                {contract.description ?? 'لا يوجد وصف مضاف.'}
+                            </p>
+                            <p>
+                                إجمالي القيمة قبل الضريبة:{' '}
+                                <span className="font-semibold text-foreground">
+                                    {formatMoney(
+                                        contract.total_value,
+                                        contract.currency,
+                                    )}
+                                </span>
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-muted/80 shadow-none">
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                جدول الدفعات (المراحل)
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="overflow-x-auto rounded-lg border">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="text-right">
+                                                المرحلة
+                                            </TableHead>
+                                            <TableHead className="text-right">
+                                                النسبة
+                                            </TableHead>
+                                            <TableHead className="text-right">
+                                                القيمة
+                                            </TableHead>
+                                            <TableHead className="text-right">
+                                                تاريخ الاستحقاق
+                                            </TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {contract.milestones.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={4}
+                                                    className="text-center text-sm text-muted-foreground"
+                                                >
+                                                    لا توجد مراحل مضافة بعد.
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            contract.milestones.map((m) => (
+                                                <TableRow key={m.id}>
+                                                    <TableCell>
+                                                        {m.title}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {m.percentage}%
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {formatMoney(
+                                                            m.amount,
+                                                            contract.currency,
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell className="text-muted-foreground">
+                                                        {m.due_date
+                                                            ? formatDate(
+                                                                  m.due_date,
+                                                              )
+                                                            : 'فوري'}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {taxRateNum > 0 ? (
+                        <div className="flex justify-end">
+                            <Card className="w-full border-muted/80 shadow-none md:w-2/3">
+                                <CardHeader className="pb-3">
+                                    <CardTitle className="text-base">
+                                        الملخص المالي
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex flex-col gap-3 text-sm">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">
+                                            المجموع الفرعي
+                                        </span>
+                                        <span>
                                             {formatMoney(
-                                                m.amount,
+                                                contract.total_value,
                                                 contract.currency,
                                             )}
-                                        </TableCell>
-                                        <TableCell>
-                                            {m.due_date
-                                                ? formatDate(m.due_date)
-                                                : '—'}
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-
-                {taxRateNum > 0 ? (
-                    <div className="flex flex-col gap-2 rounded-lg border p-4">
-                        <h2 className="text-sm font-medium">الملخص المالي</h2>
-                        <div className="flex flex-col gap-1 text-sm">
-                            <p>
-                                المجموع الفرعي:{' '}
-                                {formatMoney(
-                                    contract.total_value,
-                                    contract.currency,
-                                )}
-                            </p>
-                            <p className="text-muted-foreground">
-                                الضريبة ({contract.tax_rate}%):{' '}
-                                {formatMoney(
-                                    contract.tax_amount,
-                                    contract.currency,
-                                )}
-                            </p>
-                            <p className="font-semibold">
-                                الإجمالي:{' '}
-                                {formatMoney(
-                                    contract.grand_total,
-                                    contract.currency,
-                                )}
-                            </p>
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">
+                                            ضريبة القيمة المضافة (
+                                            {contract.tax_rate}%)
+                                        </span>
+                                        <span>
+                                            {formatMoney(
+                                                contract.tax_amount,
+                                                contract.currency,
+                                            )}
+                                        </span>
+                                    </div>
+                                    <Separator />
+                                    <div className="flex items-end justify-between">
+                                        <span className="font-semibold">
+                                            الإجمالي المطلوب
+                                        </span>
+                                        <span className="text-lg font-bold text-primary">
+                                            {formatMoney(
+                                                contract.grand_total,
+                                                contract.currency,
+                                            )}
+                                        </span>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
-                    </div>
-                ) : null}
+                    ) : null}
 
-                {contract.terms ? (
-                    <div className="flex flex-col gap-2">
-                        <h2 className="text-sm font-medium">
-                            الشروط والأحكام
-                        </h2>
-                        <div className="bg-muted/30 rounded-lg border p-4">
-                            <p className="text-foreground text-sm leading-relaxed whitespace-pre-wrap">
-                                {contract.terms}
-                            </p>
-                        </div>
-                    </div>
-                ) : null}
+                    {contract.terms ? (
+                        <Card className="border-muted/80 shadow-none">
+                            <CardHeader>
+                                <CardTitle className="text-base">
+                                    الشروط والأحكام
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                                    {contract.terms}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    ) : null}
+                </article>
 
                 {!isSigned ? (
                     <>
-                        <Separator />
-                        <div className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold">
-                                القبول الرقمي
-                            </h2>
-                            <div className="flex flex-col gap-4">
+                        <footer className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 p-4 backdrop-blur md:p-5">
+                            <div className="mx-auto flex w-full max-w-3xl flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
                                 <div className="flex items-start gap-3">
                                     <Checkbox
                                         id="agreed"
@@ -259,12 +336,11 @@ export default function ContractsReview({
                                         htmlFor="agreed"
                                         className="text-sm leading-snug font-normal"
                                     >
-                                        أنا {contract.client_name}، قرأتُ الشروط
-                                        أعلاه و أوافق عليها.
+                                        أوافق على جميع شروط العقد
                                     </Label>
                                 </div>
                                 {form.errors.agreed ? (
-                                    <p className="text-destructive text-sm">
+                                    <p className="text-sm text-destructive">
                                         {form.errors.agreed}
                                     </p>
                                 ) : null}
@@ -279,10 +355,11 @@ export default function ContractsReview({
                                         )
                                     }
                                 >
-                                    توقيع وقبول
+                                    <PenLineIcon data-icon="inline-start" />
+                                    قبول وتوقيع العقد
                                 </Button>
                             </div>
-                        </div>
+                        </footer>
                     </>
                 ) : null}
             </main>

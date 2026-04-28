@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Edit3Icon, PlusIcon, SearchIcon, Trash2Icon } from 'lucide-react';
+import { Edit3Icon, Link2Icon, PlusIcon, SearchIcon, Trash2Icon, UserCheck2Icon, UserX2Icon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -128,6 +128,19 @@ export default function CustomersIndex({ customers }: { customers: Customer[] })
         });
     }, [customers, query, statusFilter]);
 
+    const stats = useMemo(() => {
+        const active = customers.filter((customer) => customer.payment_links_count > 0).length;
+        const inactive = customers.length - active;
+        const totalLinks = customers.reduce((sum, customer) => sum + customer.payment_links_count, 0);
+
+        return {
+            totalCustomers: customers.length,
+            activeCustomers: active,
+            inactiveCustomers: inactive,
+            totalLinks,
+        };
+    }, [customers]);
+
     const submitCreate = (): void => {
         setCreating(true);
         setCreateErrors({});
@@ -207,11 +220,16 @@ export default function CustomersIndex({ customers }: { customers: Customer[] })
             <Head title="العملاء" />
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                    <div className="space-y-1 text-right">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">العملاء</h1>
-                        <p className="text-sm font-medium text-foreground/80">
-                            إدارة وتتبع جميع عملائك في مكان واحد.
-                        </p>
+                    <div className="flex items-start gap-3 text-right">
+                        <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                            <UsersIcon className="size-5" aria-hidden />
+                        </span>
+                        <div className="flex flex-col gap-1">
+                            <h1 className="text-3xl font-bold tracking-tight text-foreground">العملاء</h1>
+                            <p className="text-sm font-medium text-foreground/80">
+                                إدارة وتتبع جميع عملائك في مكان واحد.
+                            </p>
+                        </div>
                     </div>
                     <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                         <DialogTrigger asChild>
@@ -304,6 +322,53 @@ export default function CustomersIndex({ customers }: { customers: Customer[] })
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-4">
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <UsersIcon className="size-4" aria-hidden />
+                            </div>
+                            <CardTitle className="text-sm text-muted-foreground">إجمالي العملاء</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-semibold text-foreground">{stats.totalCustomers}</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <UserCheck2Icon className="size-4" aria-hidden />
+                            </div>
+                            <CardTitle className="text-sm text-muted-foreground">العملاء النشطون</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-semibold text-foreground">{stats.activeCustomers}</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <UserX2Icon className="size-4" aria-hidden />
+                            </div>
+                            <CardTitle className="text-sm text-muted-foreground">العملاء غير النشطين</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-semibold text-foreground">{stats.inactiveCustomers}</p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <Link2Icon className="size-4" aria-hidden />
+                            </div>
+                            <CardTitle className="text-sm text-muted-foreground">روابط الدفع المرتبطة</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-2xl font-semibold text-foreground">{stats.totalLinks}</p>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 <Card className="border-border/80 shadow-sm">

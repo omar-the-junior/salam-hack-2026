@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { PlusIcon } from 'lucide-react';
+import { AlertTriangleIcon, CheckCircle2Icon, Clock3Icon, Link2Icon, PlusIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -69,11 +69,16 @@ export default function PaymentLinksIndex({
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4">
                 <Card>
                     <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
+                        <div className="flex items-start gap-3">
+                            <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+                                <Link2Icon className="size-5" aria-hidden />
+                            </span>
+                            <div>
                             <CardTitle>روابط الدفع</CardTitle>
                             <CardDescription>
                                 إدارة روابط الدفع التي أنشأتها ومشاركتها مع العملاء.
                             </CardDescription>
+                            </div>
                         </div>
                         <Button asChild>
                             <Link href={create()}>
@@ -87,24 +92,36 @@ export default function PaymentLinksIndex({
                 <div className="grid gap-3 md:grid-cols-4">
                     <Card>
                         <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <Link2Icon className="size-4" aria-hidden />
+                            </div>
                             <CardDescription>إجمالي الروابط</CardDescription>
                             <CardTitle>{total}</CardTitle>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <Clock3Icon className="size-4" aria-hidden />
+                            </div>
                             <CardDescription>بانتظار الدفع</CardDescription>
                             <CardTitle>{pending}</CardTitle>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <CheckCircle2Icon className="size-4" aria-hidden />
+                            </div>
                             <CardDescription>مدفوعة</CardDescription>
                             <CardTitle>{paid}</CardTitle>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-8 items-center justify-center rounded-md">
+                                <AlertTriangleIcon className="size-4" aria-hidden />
+                            </div>
                             <CardDescription>متأخرة</CardDescription>
                             <CardTitle>{overdue}</CardTitle>
                         </CardHeader>

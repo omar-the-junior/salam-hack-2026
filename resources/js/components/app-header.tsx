@@ -96,7 +96,9 @@ export function AppHeader() {
                                 >
                                     <span>{item.title}</span>
                                     {item.icon && (
-                                        <item.icon className="size-4 shrink-0 opacity-90" />
+                                        <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-background/10">
+                                            <item.icon className="size-3.5 opacity-90" aria-hidden />
+                                        </span>
                                     )}
                                 </Link>
                             ))}
@@ -126,7 +128,11 @@ export function AppHeader() {
                                     : 'text-background/65 hover:bg-background/10 hover:text-background',
                             )}
                         >
-                            {item.icon && <item.icon className="size-4 shrink-0" />}
+                            {item.icon && (
+                                <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-background/10">
+                                    <item.icon className="size-3.5" aria-hidden />
+                                </span>
+                            )}
                             {item.title}
                         </Link>
                     ))}

@@ -13,6 +13,16 @@ use Inertia\Response;
 
 class ContractController extends Controller
 {
+    public function create(): Response
+    {
+        return Inertia::render('contracts/create');
+    }
+
+    public function createMilestones(): Response
+    {
+        return Inertia::render('contracts/create-milestones');
+    }
+
     public function index(): Response
     {
         $contracts = Contract::where('user_id', auth()->id())

@@ -1,21 +1,10 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import { FileTextIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import ContractController from '@/actions/App/Http/Controllers/ContractController';
-import { Button } from '@/components/ui/button';
+import { Head, Link } from '@inertiajs/react';
+import { BadgeDollarSignIcon, Clock3Icon, CopyIcon, EyeIcon, FileCheck2Icon, FileTextIcon } from 'lucide-react';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import InputError from '@/components/input-error';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -25,15 +14,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { useClipboard } from '@/hooks/use-clipboard';
-import { cn } from '@/lib/utils';
-import { index, review, show } from '@/routes/contracts';
-import { toast } from 'sonner';
-
-const selectInputClassName = cn(
-    'border-input text-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm',
-    'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-    'disabled:cursor-not-allowed disabled:opacity-50',
-);
+import { create, index, review, show } from '@/routes/contracts';
 
 type ContractRow = {
     id: string;
@@ -48,6 +29,7 @@ type ContractRow = {
 
 function formatMoney(value: string | number, currency: string): string {
     const n = typeof value === 'string' ? Number.parseFloat(value) : value;
+
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
         currency,
@@ -61,6 +43,7 @@ function statusVariant(
     if (status === 'active') {
         return 'default';
     }
+
     if (status === 'draft') {
         return 'secondary';
     }
@@ -74,12 +57,11 @@ export default function ContractsIndex({
     contracts: ContractRow[];
 }) {
     const [, copy] = useClipboard();
-    const [createOpen, setCreateOpen] = useState(false);
-    const [createFormKey, setCreateFormKey] = useState(0);
-
-    const openCreateContractDialog = useCallback(() => {
-        setCreateOpen(true);
-    }, []);
+    const activeContracts = contracts.filter((contract) => contract.status === 'active').length;
+    const pendingSignature = contracts.filter((contract) => contract.status === 'draft').length;
+    const activeValue = contracts
+        .filter((contract) => contract.status === 'active')
+        .reduce((sum, contract) => sum + Number.parseFloat(contract.total_value || '0'), 0);
 
     const clientReviewHref = useCallback((token: string) => {
         return `${window.location.origin}${review.url(token)}`;
@@ -101,184 +83,81 @@ export default function ContractsIndex({
     return (
         <>
             <Head title="العقود" />
-            <Dialog
-                open={createOpen}
-                onOpenChange={(open) => {
-                    setCreateOpen(open);
-                    if (open) {
-                        setCreateFormKey((k) => k + 1);
-                    }
-                }}
-            >
-                <DialogContent className="max-h-[min(90vh,40rem)] overflow-y-auto sm:max-w-xl">
-                    <DialogHeader>
-                        <DialogTitle>عقد جديد</DialogTitle>
-                        <DialogDescription>
-                            أدخل بيانات المشروع والعميل. ستضيف المراحل من صفحة تفاصيل العقد.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <Form
-                        key={createFormKey}
-                        {...ContractController.store.form()}
-                        options={{ preserveScroll: true }}
-                        className="flex flex-col gap-4"
-                    >
-                        {({ processing, errors }) => (
-                            <>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="project_name">اسم المشروع</Label>
-                                    <Input
-                                        id="project_name"
-                                        name="project_name"
-                                        required
-                                    />
-                                    <InputError message={errors.project_name} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="description">
-                                        وصف المشروع (اختياري)
-                                    </Label>
-                                    <Textarea
-                                        id="description"
-                                        name="description"
-                                        rows={3}
-                                    />
-                                    <InputError message={errors.description} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="client_name">اسم العميل</Label>
-                                    <Input
-                                        id="client_name"
-                                        name="client_name"
-                                        required
-                                    />
-                                    <InputError message={errors.client_name} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="client_email">
-                                        البريد الإلكتروني للعميل
-                                    </Label>
-                                    <Input
-                                        id="client_email"
-                                        name="client_email"
-                                        type="email"
-                                        required
-                                    />
-                                    <InputError message={errors.client_email} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="total_value">
-                                        القيمة الإجمالية قبل الضريبة
-                                    </Label>
-                                    <Input
-                                        id="total_value"
-                                        name="total_value"
-                                        type="number"
-                                        min={0}
-                                        step={0.01}
-                                        required
-                                    />
-                                    <InputError message={errors.total_value} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="tax_rate">
-                                        نسبة الضريبة % (اختياري)
-                                    </Label>
-                                    <Input
-                                        id="tax_rate"
-                                        name="tax_rate"
-                                        type="number"
-                                        min={0}
-                                        max={100}
-                                        step={0.01}
-                                    />
-                                    <InputError message={errors.tax_rate} />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="currency">العملة</Label>
-                                    <select
-                                        id="currency"
-                                        name="currency"
-                                        defaultValue="EGP"
-                                        required
-                                        className={selectInputClassName}
-                                    >
-                                        <option value="EGP">جنيـه مصري (EGP)</option>
-                                        <option value="USD">دولار (USD)</option>
-                                    </select>
-                                    <InputError message={errors.currency} />
-                                </div>
-                                <div className="flex flex-col gap-4 sm:flex-row">
-                                    <div className="flex flex-1 flex-col gap-2">
-                                        <Label htmlFor="start_date">
-                                            تاريخ البدء (اختياري)
-                                        </Label>
-                                        <Input
-                                            id="start_date"
-                                            name="start_date"
-                                            type="date"
-                                        />
-                                        <InputError message={errors.start_date} />
-                                    </div>
-                                    <div className="flex flex-1 flex-col gap-2">
-                                        <Label htmlFor="end_date">
-                                            تاريخ الانتهاء (اختياري)
-                                        </Label>
-                                        <Input
-                                            id="end_date"
-                                            name="end_date"
-                                            type="date"
-                                        />
-                                        <InputError message={errors.end_date} />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="terms">الشروط (اختياري)</Label>
-                                    <Textarea id="terms" name="terms" rows={4} />
-                                    <InputError message={errors.terms} />
-                                </div>
-                                <DialogFooter>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => setCreateOpen(false)}
-                                    >
-                                        إلغاء
-                                    </Button>
-                                    <Button type="submit" disabled={processing}>
-                                        إنشاء العقد
-                                    </Button>
-                                </DialogFooter>
-                            </>
-                        )}
-                    </Form>
-                </DialogContent>
-            </Dialog>
-
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl bg-muted/20 p-4 md:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex flex-col gap-1">
-                        <h1 className="text-lg font-semibold">العقود</h1>
-                        <p className="text-muted-foreground text-sm">
-                            قائمة العقود وروابط المراجعة للعميل.
-                        </p>
+                    <div className="flex items-start gap-3">
+                        <span className="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-xl">
+                            <FileTextIcon aria-hidden />
+                        </span>
+                        <div className="flex flex-col gap-1">
+                            <h1 className="text-2xl font-semibold tracking-tight">العقود</h1>
+                            <p className="text-muted-foreground text-sm leading-6">
+                                قائمة العقود وروابط المراجعة للعميل.
+                            </p>
+                        </div>
                     </div>
-                    <Button type="button" onClick={openCreateContractDialog}>
-                        عقد جديد
+                    <Button type="button" asChild className="h-10 px-5 shadow-sm">
+                        <Link href={create()}>
+                            <FileTextIcon data-icon="inline-start" />
+                            عقد جديد
+                        </Link>
                     </Button>
                 </div>
 
-                <div className="relative min-h-[40vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <div className="p-4">
+                <div className="grid gap-3 md:grid-cols-3">
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-9 items-center justify-center rounded-lg">
+                                <FileCheck2Icon aria-hidden />
+                            </div>
+                            <CardDescription>إجمالي العقود النشطة</CardDescription>
+                            <CardTitle>{activeContracts}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-9 items-center justify-center rounded-lg">
+                                <BadgeDollarSignIcon aria-hidden />
+                            </div>
+                            <CardDescription>قيمة العقود النشطة</CardDescription>
+                            <CardTitle>{formatMoney(activeValue, 'EGP')}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-2">
+                            <div className="bg-muted text-muted-foreground mb-2 flex size-9 items-center justify-center rounded-lg">
+                                <Clock3Icon aria-hidden />
+                            </div>
+                            <CardDescription>قيد الانتظار</CardDescription>
+                            <CardTitle>{pendingSignature}</CardTitle>
+                        </CardHeader>
+                    </Card>
+                </div>
+
+                <Card className="min-h-[40vh] flex-1 overflow-hidden shadow-sm">
+                    <CardHeader className="border-b bg-muted/20">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Button type="button" variant="secondary" size="sm" className="rounded-full">
+                                الكل
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" className="rounded-full">
+                                نشط
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" className="rounded-full">
+                                مكتمل
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
                         {contracts.length === 0 ? (
                             <div className="text-muted-foreground flex flex-col items-center justify-center gap-4 py-16 text-center text-sm">
-                                <FileTextIcon className="size-10 opacity-50" />
+                                <FileTextIcon className="opacity-50" />
                                 <span>لا توجد عقود بعد.</span>
                                 <Button
                                     type="button"
-                                    onClick={openCreateContractDialog}
+                                    asChild
                                 >
-                                    إنشاء عقد
+                                    <Link href={create()}>إنشاء عقد</Link>
                                 </Button>
                             </div>
                         ) : (
@@ -301,7 +180,7 @@ export default function ContractsIndex({
                                             <TableCell className="font-medium">
                                                 {c.project_name}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="text-muted-foreground">
                                                 {c.client_name}
                                             </TableCell>
                                             <TableCell>
@@ -324,31 +203,19 @@ export default function ContractsIndex({
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-wrap items-center justify-end gap-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        asChild
-                                                    >
+                                                    <Button variant="outline" size="icon" asChild>
                                                         <Link
                                                             href={show({
                                                                 contract: c,
                                                             })}
                                                             prefetch
+                                                            aria-label="عرض التفاصيل"
                                                         >
-                                                            تفاصيل
+                                                            <EyeIcon />
                                                         </Link>
                                                     </Button>
-                                                    <Button
-                                                        variant="secondary"
-                                                        size="sm"
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handleCopyLink(
-                                                                c.contract_token,
-                                                            )
-                                                        }
-                                                    >
-                                                        نسخ رابط العميل
+                                                    <Button variant="outline" size="icon" type="button" onClick={() => handleCopyLink(c.contract_token)} aria-label="نسخ رابط العميل">
+                                                        <CopyIcon />
                                                     </Button>
                                                 </div>
                                             </TableCell>
@@ -357,8 +224,8 @@ export default function ContractsIndex({
                                 </TableBody>
                             </Table>
                         )}
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </>
     );
