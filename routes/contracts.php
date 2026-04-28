@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\ContractController;
+use App\Http\Middleware\EnsureOnboardingComplete;
 use Illuminate\Support\Facades\Route;
 
 Route::get('contracts/{token}/review', [ContractController::class, 'review'])
     ->name('contracts.review');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () {
     Route::get('contracts/create', [ContractController::class, 'create'])->name('contracts.create');
     Route::get('contracts/create/step/2', [ContractController::class, 'createStep2'])
         ->name('contracts.create.step2');

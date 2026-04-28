@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('profession')->nullable();
             $table->decimal('default_tax_rate', 5, 2)->default(0);
             $table->boolean('onboarding_completed')->default(false);
-            
+
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

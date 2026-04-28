@@ -1,16 +1,19 @@
 <?php
 
+use App\Http\Controllers\OAuthController;
+use App\Http\Middleware\EnsureOnboardingComplete;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+Route::inertia('/', 'welcome', ['canRegister' => true])->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name('oauth.google.redirect');
+Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');
+
+Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function (): void {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });
 
+require __DIR__.'/auth.php';
 require __DIR__.'/onboarding.php';
 require __DIR__.'/payment-links.php';
 require __DIR__.'/contracts.php';
@@ -20,8 +23,3 @@ require __DIR__.'/email-scanner.php';
 require __DIR__.'/pay.php';
 
 require __DIR__.'/settings.php';
-
-use App\Http\Controllers\OAuthController;
-
-Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name('oauth.google.redirect');
-Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class OAuthController extends Controller
 {
@@ -46,7 +46,7 @@ class OAuthController extends Controller
         Auth::login($user);
 
         // Required by UC-001 & UC-001b: Gate for un-onboarded users
-        if (!$user->onboarding_completed) {
+        if (! $user->onboarding_completed) {
             return redirect()->route('onboarding.step1');
         }
 
