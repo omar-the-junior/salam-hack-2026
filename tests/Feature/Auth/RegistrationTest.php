@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,5 +28,13 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('onboarding.step1', absolute: false));
+
+        $registeredUser = User::query()->where('email', 'test@example.com')->first();
+        $this->assertNotNull($registeredUser);
+        $this->assertDatabaseHas('user_wallets', [
+            'user_id' => $registeredUser->id,
+            'currency' => 'EGP',
+            'balance_cents' => 0,
+        ]);
     }
 }

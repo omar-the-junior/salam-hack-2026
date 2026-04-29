@@ -79,6 +79,13 @@ type DashboardChecklist = {
     is_static_fallback?: boolean;
 };
 
+type WalletBalanceRow = {
+    currency: string;
+    balance_cents: number;
+    balance: number;
+    formatted_balance: string;
+};
+
 const mockUser = {
     name: 'محمد أحمد',
     role: 'مستقل',
@@ -105,13 +112,6 @@ const mockKpis = [
         helper: 'تحتاج تذكير اليوم',
         icon: AlertCircle,
         tone: 'danger',
-    },
-    {
-        label: 'إجمالي الحرق الشهري',
-        value: 890,
-        helper: '6 اشتراكات نشطة',
-        icon: WalletCards,
-        tone: 'primary',
     },
 ];
 
@@ -273,6 +273,19 @@ const formatCurrency = (value: number) =>
         maximumFractionDigits: 0,
     }).format(value);
 
+function formatWalletDisplay(currency: string, balance: number): string {
+    try {
+        return new Intl.NumberFormat('ar-EG', {
+            style: 'currency',
+            currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(balance);
+    } catch {
+        return `${balance.toFixed(2)} ${currency}`;
+    }
+}
+
 function statusLabel(status: PaymentStatus) {
     return {
         paid: 'مدفوع',
@@ -309,8 +322,10 @@ function attentionClass(severity: AttentionSeverity) {
 
 export default function Dashboard({
     checklist,
+    walletBalances = [],
 }: {
     checklist?: DashboardChecklist;
+    walletBalances?: WalletBalanceRow[];
 }) {
     const [showChecklist, setShowChecklist] = useState(Boolean(checklist?.show));
     const [expandedRenewal, setExpandedRenewal] = useState(0);
@@ -334,6 +349,8 @@ export default function Dashboard({
                 ? previous.filter((item) => item !== service)
                 : [...previous, service],
         );
+
+    const primaryWallet = walletBalances[0] ?? null;
 
     const resolvedChecklist = checklist?.items ?? [
         {
@@ -516,6 +533,37 @@ export default function Dashboard({
                     aria-label="صف بطاقات الملخص"
                     className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
                 >
+                    {primaryWallet ? (
+                        <Card key="wallet-balance" className="shadow-sm">
+                            <CardHeader className="flex flex-row items-start justify-between gap-4">
+                                <div className="flex flex-col gap-1">
+                                    <CardDescription>رصيد المحفظة</CardDescription>
+                                    <CardTitle className="text-3xl tabular-nums">
+                                        {formatWalletDisplay(
+                                            primaryWallet.currency,
+                                            primaryWallet.balance,
+                                        )}
+                                    </CardTitle>
+                                </div>
+                                <div
+                                    className={cn(
+                                        'flex size-11 items-center justify-center rounded-2xl',
+                                        toneClass('primary'),
+                                    )}
+                                >
+                                    <WalletCards aria-hidden />
+                                </div>
+                            </CardHeader>
+                            <CardFooter>
+                                <Badge
+                                    variant="secondary"
+                                    className={cn('rounded-full', toneClass('primary'))}
+                                >
+                                    {primaryWallet.currency} · المحفظة الأساسية
+                                </Badge>
+                            </CardFooter>
+                        </Card>
+                    ) : null}
                     {mockKpis.map((item) => (
                         <Card key={item.label} className="shadow-sm">
                             <CardHeader className="flex flex-row items-start justify-between gap-4">

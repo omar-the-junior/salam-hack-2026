@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
@@ -23,6 +24,13 @@ class DashboardTest extends TestCase
 
         $response = $this->get(route('dashboard'));
         $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('dashboard')
+            ->has('walletBalances')
+            ->where('walletBalances.0.currency', 'EGP')
+            ->where('walletBalances.0.balance_cents', 0)
+            ->where('walletBalances.0.balance', 0)
+            ->where('walletBalances.0.formatted_balance', '0.00'));
     }
 
     public function test_user_can_dismiss_onboarding_checklist()

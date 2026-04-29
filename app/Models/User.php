@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Schema;
 
 #[Fillable([
     'name',
@@ -32,6 +33,22 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasUuids, Notifiable;
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user): void {
+            if (! Schema::hasTable('user_wallets')) {
+                return;
+            }
+
+            $currency = $user->preferred_currency ?: 'EGP';
+
+            $user->wallets()->firstOrCreate(
+                ['currency' => $currency],
+                ['balance_cents' => 0],
+            );
+        });
+    }
 
     protected function casts(): array
     {

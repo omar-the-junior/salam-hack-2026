@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserWallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,21 @@ class DashboardController extends Controller
         $showChecklist = (bool) $request->session()->get('show_checklist', false)
             || (! $allCompleted && $user->onboarding_checklist_dismissed_at === null);
 
+        $walletBalances = [];
+        if (Schema::hasTable('user_wallets')) {
+            $walletBalances = $user->wallets()
+                ->orderBy('currency')
+                ->get()
+                ->map(fn (UserWallet $wallet) => [
+                    'currency' => $wallet->currency,
+                    'balance_cents' => $wallet->balance_cents,
+                    'balance' => round($wallet->balance_cents / 100, 2),
+                    'formatted_balance' => number_format($wallet->balance_cents / 100, 2, '.', ''),
+                ])
+                ->values()
+                ->all();
+        }
+
         return Inertia::render('dashboard', [
             'checklist' => [
                 'show' => $showChecklist,
@@ -29,6 +45,7 @@ class DashboardController extends Controller
                     || ! Schema::hasTable('expense_cards')
                     || ! Schema::hasTable('connected_accounts'),
             ],
+            'walletBalances' => $walletBalances,
         ]);
     }
 
