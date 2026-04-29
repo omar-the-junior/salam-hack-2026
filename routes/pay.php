@@ -1,7 +1,16 @@
 <?php
 
 use App\Http\Controllers\PayController;
+use App\Http\Middleware\VerifyPaymobWebhook;
 use Illuminate\Support\Facades\Route;
 
 Route::get('pay/{token}', [PayController::class, 'show'])->name('pay.show');
-Route::get('pay/{token}/receipt', [PayController::class, 'receipt'])->name('pay.receipt');
+
+Route::post('payment/initiate/{token}', [PayController::class, 'initiate'])->name('pay.initiate');
+
+Route::get('payment/callback', [PayController::class, 'callback'])->name('pay.callback');
+
+Route::post('webhook/paymob', [PayController::class, 'webhook'])
+    ->middleware(VerifyPaymobWebhook::class)
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+    ->name('webhook.paymob');
