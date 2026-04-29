@@ -161,7 +161,12 @@ class PayController extends Controller
                         'paid_at' => now(),
                     ]);
 
-                    $transaction->paymentLink->update(['status' => 'paid']);
+                    $paymentLink = $transaction->paymentLink;
+                    $paymentLink->update(['status' => 'paid']);
+
+                    if ($paymentLink->milestone_id && $paymentLink->milestone?->status !== 'paid') {
+                        $paymentLink->milestone->update(['status' => 'paid']);
+                    }
 
                     UserWallet::firstOrCreate(
                         ['user_id' => $transaction->user_id, 'currency' => $transaction->currency],

@@ -245,6 +245,11 @@ class PaymobPaymentFlowTest extends TestCase
             'status' => 'paid',
         ]);
 
+        $this->assertDatabaseHas('milestones', [
+            'id' => $link->milestone_id,
+            'status' => 'paid',
+        ]);
+
         $this->assertDatabaseHas('user_wallets', [
             'user_id' => $freelancer->id,
             'currency' => 'EGP',
@@ -305,7 +310,16 @@ class PaymobPaymentFlowTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $this->assertDatabaseCount('user_wallets', 0);
+        $this->assertDatabaseHas('milestones', [
+            'id' => $link->milestone_id,
+            'status' => 'pending',
+        ]);
+
+        $this->assertDatabaseHas('user_wallets', [
+            'user_id' => $freelancer->id,
+            'currency' => 'EGP',
+            'balance_cents' => 0,
+        ]);
         Notification::assertNothingSent();
     }
 }
