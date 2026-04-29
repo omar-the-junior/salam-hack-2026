@@ -1,5 +1,6 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { CheckCircle2Icon, PenLineIcon } from 'lucide-react';
+import AppLogo from '@/components/app-logo';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -107,7 +108,7 @@ export default function ContractsReview({
             <Head title="مراجعة العقد" />
             <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
                 <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4 md:px-6">
-                    <div className="text-primary text-lg font-bold">مُسْتَحَقّ</div>
+                    <AppLogo className="h-8" />
                     <Badge
                         variant="secondary"
                         className="rounded-full px-3 py-1 text-xs"
@@ -148,9 +149,7 @@ export default function ContractsReview({
                 <article className="flex flex-col gap-10 rounded-2xl border bg-card p-5 shadow-sm md:p-8">
                     <div className="flex items-start justify-between border-b pb-6">
                         <div className="flex size-16 items-center justify-center rounded-lg border bg-muted/40">
-                            <span className="text-muted-foreground text-xs">
-                                شعار
-                            </span>
+                            <AppLogo className="h-6" />
                         </div>
                         <div className="text-left">
                             <p className="text-xs text-muted-foreground">
