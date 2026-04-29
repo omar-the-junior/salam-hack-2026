@@ -3,11 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Contract;
+use App\Models\IncomeEntry;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
 use App\Models\User;
 use App\Notifications\PaymentReceivedNotification;
-use App\Services\PaymobService;
+use App\Services\Payment\PaymobService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -257,6 +258,39 @@ class PaymobPaymentFlowTest extends TestCase
         ]);
 
         Notification::assertSentTo($freelancer, PaymentReceivedNotification::class);
+
+        $this->assertDatabaseHas('income_entries', [
+            'user_id' => $freelancer->id,
+            'reference_id' => $link->id,
+            'source' => 'payment_link',
+            'currency' => 'EGP',
+        ]);
+
+        $this->assertSame(1, IncomeEntry::query()->where('reference_id', $link->id)->count());
+    }
+
+    public function test_webhook_second_post_for_same_paid_transaction_does_not_duplicate_income(): void
+    {
+        Notification::fake();
+
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
+        $transaction = $this->makeTransaction($link, 'pending', 'ORD-DUPD');
+
+        $this->mock(PaymobService::class, function ($mock) {
+            $mock->shouldReceive('verifyHmac')->twice()->andReturn(true);
+        });
+
+        $payload = $this->buildWebhookPayload('ORD-DUPD', true, 'TXN-DUPD');
+
+        $first = $this->postJson(route('webhook.paymob').'?hmac=validhmac', $payload);
+        $first->assertOk();
+        $this->assertSame(1, IncomeEntry::query()->where('reference_id', $link->id)->count());
+
+        $second = $this->postJson(route('webhook.paymob').'?hmac=validhmac', $payload);
+        $second->assertOk();
+        $second->assertJson(['status' => 'already processed']);
+        $this->assertSame(1, IncomeEntry::query()->where('reference_id', $link->id)->count());
     }
 
     public function test_webhook_success_is_idempotent_for_already_paid_transaction(): void

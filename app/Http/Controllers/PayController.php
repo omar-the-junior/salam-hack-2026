@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IncomeEntry;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
 use App\Models\UserWallet;
 use App\Notifications\PaymentReceivedNotification;
-use App\Services\PaymobService;
+use App\Services\Payment\PaymobService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -193,6 +194,41 @@ class PayController extends Controller
             return response()->json(['status' => 'error'], 500);
         }
 
+        if ($success) {
+            $transaction->refresh();
+            if ($transaction->isPaid()) {
+                try {
+                    $this->recordIncomeEntryFromPaidPayment($transaction->paymentLink, $transaction);
+                } catch (Throwable $incomeThrowable) {
+                    Log::error('PaymobWebhook: income entry logging failed', [
+                        'payment_link_id' => $transaction->payment_link_id,
+                        'payment_transaction_id' => $transaction->id,
+                        'error' => $incomeThrowable->getMessage(),
+                    ]);
+                }
+            }
+        }
+
         return response()->json(['status' => 'ok'], 200);
+    }
+
+    private function recordIncomeEntryFromPaidPayment(PaymentLink $paymentLink, PaymentTransaction $transaction): void
+    {
+        $paidAt = $transaction->paid_at ?? now();
+
+        IncomeEntry::query()->firstOrCreate(
+            ['reference_id' => (string) $paymentLink->getKey()],
+            [
+                'user_id' => $paymentLink->user_id,
+                'amount' => $paymentLink->total_amount,
+                'currency' => $paymentLink->currency,
+                'date' => $paidAt->toDateString(),
+                'source' => 'payment_link',
+                'source_label' => null,
+                'client_name' => $paymentLink->client_name,
+                'category' => 'Freelance',
+                'description' => $paymentLink->description,
+            ]
+        );
     }
 }
