@@ -1,6 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { EllipsisVerticalIcon, Link2Icon, PlusIcon, ScanSearchIcon, TriangleAlertIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,86 +30,56 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import { create, edit, index } from '@/routes/expenses';
+import { create, destroy, edit, index, status } from '@/routes/expenses';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
+import { toast } from 'sonner';
 
 type ExpenseStatus = 'active' | 'paused' | 'cancelled';
 type ExpenseCategory = 'saas' | 'tool' | 'equipment' | 'marketing' | 'other';
 type BillingCycle = 'monthly' | 'annual' | 'one-time';
 
-type ExpenseCard = {
+export type ExpenseCardRow = {
     id: string;
     name: string;
     amount: number;
     currency: 'EGP' | 'USD';
     status: ExpenseStatus;
     category: ExpenseCategory;
+    type: 'recurring' | 'one-time';
     billingCycle: BillingCycle;
     nextRenewalDate: string | null;
     autoDetected: boolean;
     cancelUrl: string | null;
     cancelInstructions: string[];
-    note: string;
+    notes: string;
 };
 
-const MOCK_EXPENSES: ExpenseCard[] = [
-    {
-        id: 'exp_001',
-        name: 'Figma Pro',
-        amount: 15,
-        currency: 'USD',
-        status: 'active',
-        category: 'saas',
-        billingCycle: 'monthly',
-        nextRenewalDate: '2026-05-03',
-        autoDetected: true,
-        cancelUrl: 'https://www.figma.com/account/billing/',
-        cancelInstructions: ['افتح صفحة Billing.', 'اختر Manage Plan.', 'اضغط Cancel plan ثم أكد الإلغاء.'],
-        note: 'الإلغاء في منتصف الدورة لا يعيد المبلغ.',
-    },
-    {
-        id: 'exp_002',
-        name: 'Notion Plus',
-        amount: 120,
-        currency: 'USD',
-        status: 'active',
-        category: 'saas',
-        billingCycle: 'annual',
-        nextRenewalDate: '2026-06-18',
-        autoDetected: false,
-        cancelUrl: null,
-        cancelInstructions: [],
-        note: '',
-    },
-    {
-        id: 'exp_003',
-        name: 'Meta Ads',
-        amount: 3200,
-        currency: 'EGP',
-        status: 'paused',
-        category: 'marketing',
-        billingCycle: 'monthly',
-        nextRenewalDate: '2026-05-10',
-        autoDetected: false,
-        cancelUrl: null,
-        cancelInstructions: [],
-        note: '',
-    },
-    {
-        id: 'exp_004',
-        name: 'Adobe Creative Cloud',
-        amount: 29.99,
-        currency: 'USD',
-        status: 'cancelled',
-        category: 'saas',
-        billingCycle: 'monthly',
-        nextRenewalDate: null,
-        autoDetected: true,
-        cancelUrl: 'https://account.adobe.com/plans',
-        cancelInstructions: ['اذهب إلى Plans.', 'اختر Manage plan.', 'اختر Cancel your plan.'],
-        note: '',
-    },
-];
+export type ExpenseFilters = {
+    status: string;
+    category: string;
+    billing_cycle: string;
+    search: string;
+    sort: string;
+};
+
+type ExpenseSummary = {
+    preferred_currency: 'EGP' | 'USD';
+    monthly_burn: number;
+    annual_commitment: number;
+    by_currency: {
+        currency: string;
+        monthly_burn: number;
+        annual_commitment: number;
+    }[];
+};
+
+type ExpensesIndexProps = {
+    filters: ExpenseFilters;
+    preferredCurrency: 'EGP' | 'USD';
+    summary: ExpenseSummary;
+    hasAnyExpenseEver: boolean;
+    expenses: ExpenseCardRow[];
+};
 
 function formatMoney(amount: number, currency: 'EGP' | 'USD'): string {
     return new Intl.NumberFormat('ar-EG', {
@@ -127,7 +97,7 @@ function formatRenewalDate(value: string | null): string {
     return new Intl.DateTimeFormat('ar-EG', {
         month: 'long',
         day: 'numeric',
-    }).format(new Date(value));
+    }).format(new Date(`${value}T12:00:00`));
 }
 
 function daysUntil(date: string | null): number | null {
@@ -136,84 +106,70 @@ function daysUntil(date: string | null): number | null {
     }
 
     const now = new Date();
-    const diff = new Date(date).setHours(0, 0, 0, 0) - now.setHours(0, 0, 0, 0);
+    const diff = new Date(`${date}T12:00:00`).setHours(0, 0, 0, 0) - now.setHours(0, 0, 0, 0);
     return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-export default function ExpensesIndex() {
-    const [query, setQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | ExpenseStatus>('all');
-    const [categoryFilter, setCategoryFilter] = useState<'all' | ExpenseCategory>('all');
-    const [cycleFilter, setCycleFilter] = useState<'all' | BillingCycle>('all');
-    const [sortBy, setSortBy] = useState<'renewal' | 'amount' | 'name'>('renewal');
-    const [selectedExpense, setSelectedExpense] = useState<ExpenseCard | null>(null);
+function applyExpenseFilters(base: ExpenseFilters, partial: Partial<ExpenseFilters>): void {
+    const next: ExpenseFilters = {
+        status: partial.status ?? base.status,
+        category: partial.category ?? base.category,
+        billing_cycle: partial.billing_cycle ?? base.billing_cycle,
+        search: partial.search ?? base.search ?? '',
+        sort: partial.sort ?? base.sort,
+    };
 
-    const monthlyBurn = useMemo(() => {
-        return MOCK_EXPENSES.filter((expense) => expense.status === 'active')
-            .filter((expense) => expense.billingCycle !== 'one-time')
-            .reduce((sum, expense) => {
-                if (expense.billingCycle === 'annual') {
-                    return sum + expense.amount / 12;
-                }
+    router.get(
+        index.url({
+            query: next as unknown as Record<string, string>,
+        }),
+        {},
+        { preserveScroll: true },
+    );
+}
 
-                return sum + expense.amount;
-            }, 0);
-    }, []);
+export default function ExpensesIndex({
+    filters,
+    preferredCurrency,
+    summary,
+    hasAnyExpenseEver,
+    expenses,
+}: ExpensesIndexProps) {
+    const page = usePage();
+    const flash = (page.props as { flash?: { message?: string; type?: string } }).flash;
 
-    const annualCommitment = useMemo(() => {
-        return MOCK_EXPENSES.filter((expense) => expense.status === 'active')
-            .filter((expense) => expense.billingCycle !== 'one-time')
-            .reduce((sum, expense) => {
-                if (expense.billingCycle === 'annual') {
-                    return sum + expense.amount;
-                }
+    const [searchDraft, setSearchDraft] = useState(filters.search ?? '');
+    const [selectedExpense, setSelectedExpense] = useState<ExpenseCardRow | null>(null);
+    const [statusSaving, setStatusSaving] = useState(false);
 
-                return sum + expense.amount * 12;
-            }, 0);
-    }, []);
+    useEffect(() => {
+        setSearchDraft(filters.search ?? '');
+    }, [filters.search]);
 
-    const filteredExpenses = useMemo(() => {
-        const normalizedQuery = query.trim().toLowerCase();
-        const result = MOCK_EXPENSES.filter((expense) => {
-            if (statusFilter !== 'all' && expense.status !== statusFilter) {
-                return false;
-            }
+    useEffect(() => {
+        if (!flash?.message) {
+            return;
+        }
 
-            if (categoryFilter !== 'all' && expense.category !== categoryFilter) {
-                return false;
-            }
+        if (flash.type === 'success') {
+            toast.success(flash.message);
+            return;
+        }
 
-            if (cycleFilter !== 'all' && expense.billingCycle !== cycleFilter) {
-                return false;
-            }
+        toast.message(flash.message);
+    }, [flash?.message, flash?.type]);
 
-            if (!normalizedQuery) {
-                return true;
-            }
+    const otherCurrencyRows = summary.by_currency.filter(
+        (row) =>
+            row.currency !== preferredCurrency &&
+            (row.monthly_burn > 0 || row.annual_commitment > 0),
+    );
 
-            return expense.name.toLowerCase().includes(normalizedQuery);
-        });
-
-        return result.sort((a, b) => {
-            if (sortBy === 'amount') {
-                return b.amount - a.amount;
-            }
-
-            if (sortBy === 'name') {
-                return a.name.localeCompare(b.name, 'ar');
-            }
-
-            const aDate = a.nextRenewalDate ? new Date(a.nextRenewalDate).getTime() : Number.MAX_SAFE_INTEGER;
-            const bDate = b.nextRenewalDate ? new Date(b.nextRenewalDate).getTime() : Number.MAX_SAFE_INTEGER;
-            return aDate - bDate;
-        });
-    }, [categoryFilter, cycleFilter, query, sortBy, statusFilter]);
-
-    const statusBadge = (status: ExpenseStatus) => {
-        if (status === 'active') {
+    const statusBadge = (s: ExpenseStatus) => {
+        if (s === 'active') {
             return <Badge>نشط</Badge>;
         }
-        if (status === 'paused') {
+        if (s === 'paused') {
             return <Badge variant="secondary">متوقف مؤقتًا</Badge>;
         }
         return <Badge variant="outline">ملغي</Badge>;
@@ -232,6 +188,36 @@ export default function ExpensesIndex() {
         }
         return 'text-muted-foreground';
     };
+
+    function confirmCancellation(): void {
+        if (!selectedExpense) {
+            return;
+        }
+        setStatusSaving(true);
+        router.patch(
+            status.url({ expense: selectedExpense.id }),
+            { status: 'cancelled' },
+            {
+                preserveScroll: true,
+                onFinish: () => setStatusSaving(false),
+                onSuccess: () => setSelectedExpense(null),
+            },
+        );
+    }
+
+    function reactivateExpense(id: string): void {
+        router.patch(status.url({ expense: id }), { status: 'active' }, { preserveScroll: true });
+    }
+
+    function deleteExpense(id: string): void {
+        if (!window.confirm('حذف بطاقة المصروف نهائيًا؟')) {
+            return;
+        }
+        router.delete(destroy.url({ expense: id }), { preserveScroll: true });
+    }
+
+    const noCardsAtAll = !hasAnyExpenseEver && expenses.length === 0;
+    const filteredEmpty = hasAnyExpenseEver && expenses.length === 0;
 
     return (
         <>
@@ -266,13 +252,34 @@ export default function ExpensesIndex() {
                     <Card>
                         <CardHeader className="gap-1">
                             <CardDescription>إجمالي الحرق الشهري</CardDescription>
-                            <CardTitle>{formatMoney(monthlyBurn, 'EGP')}</CardTitle>
+                            <CardTitle>
+                                {formatMoney(summary.monthly_burn, preferredCurrency)}
+                            </CardTitle>
+                            {otherCurrencyRows.map((row) =>
+                                row.monthly_burn > 0 ? (
+                                    <CardDescription key={`mb-${row.currency}`} className="text-xs">
+                                        {formatMoney(row.monthly_burn, row.currency as 'EGP' | 'USD')}
+                                    </CardDescription>
+                                ) : null,
+                            )}
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="gap-1">
                             <CardDescription>إجمالي الالتزام السنوي</CardDescription>
-                            <CardTitle>{formatMoney(annualCommitment, 'EGP')}</CardTitle>
+                            <CardTitle>
+                                {formatMoney(summary.annual_commitment, preferredCurrency)}
+                            </CardTitle>
+                            {otherCurrencyRows.map((row) =>
+                                row.annual_commitment > 0 ? (
+                                    <CardDescription key={`ac-${row.currency}`} className="text-xs">
+                                        {formatMoney(
+                                            row.annual_commitment,
+                                            row.currency as 'EGP' | 'USD',
+                                        )}
+                                    </CardDescription>
+                                ) : null,
+                            )}
                         </CardHeader>
                     </Card>
                 </div>
@@ -282,11 +289,19 @@ export default function ExpensesIndex() {
                         <div className="flex flex-col gap-3">
                             <Input
                                 placeholder="ابحث باسم الخدمة..."
-                                value={query}
-                                onChange={(event) => setQuery(event.target.value)}
+                                value={searchDraft}
+                                onChange={(event) => setSearchDraft(event.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        applyExpenseFilters(filters, { search: searchDraft });
+                                    }
+                                }}
                             />
                             <div className="grid gap-3 md:grid-cols-4">
-                                <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as 'all' | ExpenseStatus)}>
+                                <Select
+                                    value={filters.status}
+                                    onValueChange={(value) => applyExpenseFilters(filters, { status: value })}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="الحالة" />
                                     </SelectTrigger>
@@ -300,7 +315,10 @@ export default function ExpensesIndex() {
                                     </SelectContent>
                                 </Select>
 
-                                <Select value={categoryFilter} onValueChange={(value) => setCategoryFilter(value as 'all' | ExpenseCategory)}>
+                                <Select
+                                    value={filters.category}
+                                    onValueChange={(value) => applyExpenseFilters(filters, { category: value })}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="التصنيف" />
                                     </SelectTrigger>
@@ -316,7 +334,12 @@ export default function ExpensesIndex() {
                                     </SelectContent>
                                 </Select>
 
-                                <Select value={cycleFilter} onValueChange={(value) => setCycleFilter(value as 'all' | BillingCycle)}>
+                                <Select
+                                    value={filters.billing_cycle}
+                                    onValueChange={(value) =>
+                                        applyExpenseFilters(filters, { billing_cycle: value })
+                                    }
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="دورة الفوترة" />
                                     </SelectTrigger>
@@ -330,7 +353,10 @@ export default function ExpensesIndex() {
                                     </SelectContent>
                                 </Select>
 
-                                <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'renewal' | 'amount' | 'name')}>
+                                <Select
+                                    value={filters.sort}
+                                    onValueChange={(value) => applyExpenseFilters(filters, { sort: value })}
+                                >
                                     <SelectTrigger>
                                         <SelectValue placeholder="الترتيب" />
                                     </SelectTrigger>
@@ -347,7 +373,22 @@ export default function ExpensesIndex() {
                     </CardContent>
                 </Card>
 
-                {filteredExpenses.length === 0 ? (
+                {noCardsAtAll ? (
+                    <Card>
+                        <CardContent className="flex flex-col items-center gap-4 py-14 text-center">
+                            <TriangleAlertIcon className="text-muted-foreground" />
+                            <p className="text-muted-foreground">لا توجد مصروفات مسجّلة بعد.</p>
+                            <div className="flex flex-wrap gap-2">
+                                <Button asChild>
+                                    <Link href={create()}>إضافة مصروف يدوي</Link>
+                                </Button>
+                                <Button asChild variant="outline">
+                                    <Link href={emailScannerIndex()}>فحص بريدي الإلكتروني</Link>
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ) : filteredEmpty ? (
                     <Card>
                         <CardContent className="flex flex-col items-center gap-4 py-14 text-center">
                             <TriangleAlertIcon className="text-muted-foreground" />
@@ -364,7 +405,7 @@ export default function ExpensesIndex() {
                     </Card>
                 ) : (
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                        {filteredExpenses.map((expense) => (
+                        {expenses.map((expense) => (
                             <Card key={expense.id} className={expense.status === 'cancelled' ? 'opacity-65' : undefined}>
                                 <CardHeader className="gap-3">
                                     <div className="flex items-start justify-between gap-2">
@@ -375,7 +416,12 @@ export default function ExpensesIndex() {
                                             <div className="flex flex-col gap-1">
                                                 <CardTitle className="text-base">{expense.name}</CardTitle>
                                                 <CardDescription>
-                                                    {formatMoney(expense.amount, expense.currency)} / {expense.billingCycle === 'monthly' ? 'شهر' : expense.billingCycle === 'annual' ? 'سنة' : 'مرة'}
+                                                    {formatMoney(expense.amount, expense.currency)} /{' '}
+                                                    {expense.billingCycle === 'monthly'
+                                                        ? 'شهر'
+                                                        : expense.billingCycle === 'annual'
+                                                          ? 'سنة'
+                                                          : 'مرة'}
                                                 </CardDescription>
                                             </div>
                                         </div>
@@ -388,13 +434,27 @@ export default function ExpensesIndex() {
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuGroup>
                                                     <DropdownMenuItem asChild>
-                                                        <Link href={edit(expense.id)}>تعديل</Link>
+                                                        <Link href={edit({ expense: expense.id })}>تعديل</Link>
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => setSelectedExpense(expense)}>
-                                                        إلغاء الاشتراك
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        إعادة تفعيل
+                                                    {expense.status !== 'cancelled' ? (
+                                                        <DropdownMenuItem
+                                                            onClick={() => setSelectedExpense(expense)}
+                                                        >
+                                                            إلغاء الاشتراك
+                                                        </DropdownMenuItem>
+                                                    ) : null}
+                                                    {expense.status !== 'active' ? (
+                                                        <DropdownMenuItem
+                                                            onClick={() => reactivateExpense(expense.id)}
+                                                        >
+                                                            إعادة تفعيل
+                                                        </DropdownMenuItem>
+                                                    ) : null}
+                                                    <DropdownMenuItem
+                                                        className="text-destructive focus:text-destructive"
+                                                        onClick={() => deleteExpense(expense.id)}
+                                                    >
+                                                        حذف
                                                     </DropdownMenuItem>
                                                 </DropdownMenuGroup>
                                             </DropdownMenuContent>
@@ -402,7 +462,9 @@ export default function ExpensesIndex() {
                                     </div>
                                     <div className="flex flex-wrap items-center gap-2">
                                         {statusBadge(expense.status)}
-                                        {expense.autoDetected ? <Badge variant="secondary">مكتشف تلقائيًا</Badge> : null}
+                                        {expense.autoDetected ? (
+                                            <Badge variant="secondary">مكتشف تلقائيًا</Badge>
+                                        ) : null}
                                     </div>
                                 </CardHeader>
                                 <CardContent className="pt-0">
@@ -422,9 +484,7 @@ export default function ExpensesIndex() {
                         <SheetTitle>
                             {selectedExpense ? `إلغاء ${selectedExpense.name}` : 'إلغاء الاشتراك'}
                         </SheetTitle>
-                        <SheetDescription>
-                            اتبع الخطوات ثم أكد الإلغاء بعد الانتهاء.
-                        </SheetDescription>
+                        <SheetDescription>اتبع الخطوات ثم أكد الإلغاء بعد الانتهاء.</SheetDescription>
                     </SheetHeader>
 
                     <div className="mt-6 flex flex-col gap-4 text-sm">
@@ -433,7 +493,12 @@ export default function ExpensesIndex() {
                                 <div className="bg-muted rounded-lg p-3">
                                     <p className="font-medium">رابط الإلغاء</p>
                                     {selectedExpense.cancelUrl ? (
-                                        <a href={selectedExpense.cancelUrl} className="text-primary text-xs underline underline-offset-2" target="_blank" rel="noreferrer">
+                                        <a
+                                            href={selectedExpense.cancelUrl}
+                                            className="text-primary text-xs underline underline-offset-2"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
                                             {selectedExpense.cancelUrl}
                                         </a>
                                     ) : (
@@ -445,14 +510,14 @@ export default function ExpensesIndex() {
                                         <li key={item}>{item}</li>
                                     ))}
                                 </ol>
-                                {selectedExpense.note ? (
-                                    <p className="text-muted-foreground text-xs">{selectedExpense.note}</p>
+                                {selectedExpense.notes ? (
+                                    <p className="text-muted-foreground text-xs">{selectedExpense.notes}</p>
                                 ) : null}
                             </>
                         ) : (
                             <div className="bg-muted rounded-lg p-4">
                                 <p className="mb-3">لا توجد تعليمات إلغاء محفوظة لهذه الخدمة بعد.</p>
-                                <Button variant="outline" className="w-full">
+                                <Button variant="outline" className="w-full" type="button" disabled>
                                     <Link2Icon data-icon="inline-start" />
                                     جلب تعليمات الإلغاء
                                 </Button>
@@ -470,7 +535,14 @@ export default function ExpensesIndex() {
                     </div>
 
                     <SheetFooter className="mt-8 gap-2 sm:flex-col sm:items-stretch">
-                        <Button variant="destructive">تأكيد الإلغاء</Button>
+                        <Button
+                            variant="destructive"
+                            type="button"
+                            disabled={statusSaving}
+                            onClick={() => confirmCancellation()}
+                        >
+                            تأكيد الإلغاء
+                        </Button>
                         <Button variant="outline" onClick={() => setSelectedExpense(null)}>
                             إغلاق
                         </Button>
