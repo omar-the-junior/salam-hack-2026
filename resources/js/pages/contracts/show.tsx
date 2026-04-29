@@ -1,8 +1,11 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Link2Icon } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import MilestoneController from '@/actions/App/Http/Controllers/MilestoneController';
-import { Button } from '@/components/ui/button';
+import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -13,7 +16,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import {
     Table,
@@ -26,7 +28,6 @@ import {
 import { useClipboard } from '@/hooks/use-clipboard';
 import { index, review } from '@/routes/contracts';
 import { show as milestoneShow } from '@/routes/milestones';
-import { toast } from 'sonner';
 
 type MilestoneRow = {
     id: string;
@@ -56,9 +57,11 @@ type ContractDetail = {
 
 function formatMoney(value: string | number, currency: string): string {
     const n = typeof value === 'string' ? Number.parseFloat(value) : value;
+    const safeCurrency = currency === 'USD' ? 'USD' : 'EGP';
+
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
-        currency,
+        currency: safeCurrency,
         minimumFractionDigits: 2,
     }).format(Number.isNaN(n) ? 0 : n);
 }
@@ -67,6 +70,7 @@ function formatDate(value: string | null): string {
     if (!value) {
         return '—';
     }
+
     return new Date(value).toLocaleDateString('ar-EG');
 }
 
@@ -76,6 +80,7 @@ function statusVariant(
     if (status === 'active') {
         return 'default';
     }
+
     if (status === 'draft') {
         return 'secondary';
     }
@@ -91,13 +96,10 @@ export default function ContractsShow({
     const [milestoneDialogOpen, setMilestoneDialogOpen] = useState(false);
     const [, copy] = useClipboard();
 
-    const [clientReviewUrl, setClientReviewUrl] = useState('');
-
-    useEffect(() => {
-        setClientReviewUrl(
-            `${window.location.origin}${review.url(contract.contract_token)}`,
-        );
-    }, [contract.contract_token]);
+    const clientReviewAbsoluteUrl =
+        typeof window !== 'undefined'
+            ? `${window.location.origin}${review.url(contract.contract_token)}`
+            : '';
 
     const canAddMilestone = contract.milestones.length < 5;
 
@@ -221,8 +223,7 @@ export default function ContractsShow({
                             مشاركة مع العميل
                         </h2>
                         <p className="text-muted-foreground break-all text-xs">
-                            {clientReviewUrl ||
-                                review.url(contract.contract_token)}
+                            {clientReviewAbsoluteUrl || review.url(contract.contract_token)}
                         </p>
                         <div className="flex flex-wrap gap-2">
                             <Button
@@ -232,6 +233,7 @@ export default function ContractsShow({
                                 onClick={async () => {
                                     const url = `${window.location.origin}${review.url(contract.contract_token)}`;
                                     const ok = await copy(url);
+
                                     if (ok) {
                                         toast.success('تم نسخ الرابط');
                                     } else {
@@ -309,6 +311,7 @@ export default function ContractsShow({
                                     <TableHead>المبلغ</TableHead>
                                     <TableHead>الاستحقاق</TableHead>
                                     <TableHead>الحالة</TableHead>
+                                    <TableHead className="text-end">رابط دفع</TableHead>
                                     <TableHead className="text-end">عرض</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -316,7 +319,7 @@ export default function ContractsShow({
                                 {contract.milestones.length === 0 ? (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="text-muted-foreground text-center text-sm"
                                         >
                                             لا توجد مراحل بعد. استخدم «إضافة مرحلة» لإنشاء مرحلة.
@@ -337,6 +340,14 @@ export default function ContractsShow({
                                                 {formatDate(m.due_date)}
                                             </TableCell>
                                             <TableCell>{m.status}</TableCell>
+                                            <TableCell className="text-end">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={`/payment-links/create?milestone=${m.id}`} prefetch>
+                                                        <Link2Icon data-icon="inline-start" />
+                                                        رابط دفع
+                                                    </Link>
+                                                </Button>
+                                            </TableCell>
                                             <TableCell className="text-end">
                                                 <Button
                                                     variant="link"

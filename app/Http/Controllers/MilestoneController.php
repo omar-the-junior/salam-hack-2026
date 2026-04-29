@@ -18,9 +18,15 @@ class MilestoneController extends Controller
 
         $milestone->load('contract');
 
+        $paymentLinks = $milestone->paymentLinks()
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
         return Inertia::render('milestones/show', [
             'contract' => $milestone->contract,
             'milestone' => $milestone,
+            'paymentLinks' => $paymentLinks,
         ]);
     }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentLinks\StorePaymentLinkRequest;
+use App\Models\Contract;
 use App\Models\Customer;
+use App\Models\Milestone;
 use App\Models\PaymentLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
@@ -16,6 +18,7 @@ class PaymentLinkController extends Controller
     {
         $paymentLinks = PaymentLink::query()
             ->where('user_id', auth()->id())
+            ->with(['milestone.contract'])
             ->latest()
             ->get();
 
@@ -33,6 +36,41 @@ class PaymentLinkController extends Controller
             ->latest()
             ->get(['id', 'name', 'email', 'phone']);
 
+        $contractsWithMilestones = Contract::query()
+            ->where('user_id', auth()->id())
+            ->with(['milestones' => fn ($q) => $q->orderBy('title')])
+            ->orderBy('project_name')
+            ->get()
+            ->map(fn (Contract $contract) => [
+                'id' => $contract->id,
+                'project_name' => $contract->project_name,
+                'client_name' => $contract->client_name,
+                'client_email' => $contract->client_email,
+                'currency' => $contract->currency,
+                'tax_rate' => $contract->tax_rate,
+                'milestones' => $contract->milestones->map(fn (Milestone $milestone) => [
+                    'id' => $milestone->id,
+                    'title' => $milestone->title,
+                    'amount' => $milestone->amount,
+                    'due_date' => $milestone->due_date?->toDateString(),
+                ])->values(),
+            ])
+            ->filter(fn (array $row) => $row['milestones']->isNotEmpty())
+            ->values();
+
+        $selectedMilestoneId = request()->query('milestone');
+        if (is_string($selectedMilestoneId) && Str::isUuid($selectedMilestoneId)) {
+            $valid = Milestone::query()
+                ->whereKey($selectedMilestoneId)
+                ->whereHas('contract', fn ($q) => $q->where('user_id', auth()->id()))
+                ->exists();
+            if (! $valid) {
+                $selectedMilestoneId = null;
+            }
+        } else {
+            $selectedMilestoneId = null;
+        }
+
         return Inertia::render('payment-links/create', [
             'defaults' => [
                 'currency' => $user?->preferred_currency === 'USD' ? 'USD' : 'EGP',
@@ -40,6 +78,8 @@ class PaymentLinkController extends Controller
             ],
             'customers' => $customers,
             'newCustomerId' => $newCustomerId,
+            'contractsWithMilestones' => $contractsWithMilestones,
+            'selectedMilestoneId' => $selectedMilestoneId,
         ]);
     }
 
@@ -55,6 +95,7 @@ class PaymentLinkController extends Controller
         $paymentLink = PaymentLink::create([
             'user_id' => auth()->id(),
             'customer_id' => $validated['customer_id'] ?? null,
+            'milestone_id' => $validated['milestone_id'],
             'public_token' => Str::lower(Str::ulid()->toBase32()),
             'amount' => $amount,
             'tax_rate' => $taxRate,
@@ -78,6 +119,8 @@ class PaymentLinkController extends Controller
     public function show(PaymentLink $paymentLink): Response
     {
         $this->authorizePaymentLink($paymentLink);
+
+        $paymentLink->loadMissing('milestone.contract');
 
         return Inertia::render('payment-links/show', [
             'paymentLink' => $paymentLink,

@@ -29,14 +29,23 @@ type PaymentLinkRow = {
     currency: string;
     status: string;
     due_date: string | null;
+    milestone?: {
+        id: string;
+        title: string;
+        contract?: {
+            id: string;
+            project_name: string;
+        } | null;
+    } | null;
 };
 
 function formatMoney(value: string | number, currency: string): string {
     const n = typeof value === 'string' ? Number.parseFloat(value) : value;
+    const safeCurrency = currency === 'USD' ? 'USD' : 'EGP';
 
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
-        currency,
+        currency: safeCurrency,
         minimumFractionDigits: 2,
     }).format(Number.isNaN(n) ? 0 : n);
 }
@@ -164,6 +173,7 @@ export default function PaymentLinksIndex({
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>المشروع / المرحلة</TableHead>
                                     <TableHead>العميل</TableHead>
                                     <TableHead>الإجمالي</TableHead>
                                     <TableHead>الحالة</TableHead>
@@ -174,13 +184,18 @@ export default function PaymentLinksIndex({
                             <TableBody>
                                 {paymentLinks.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center text-muted-foreground">
+                                        <TableCell colSpan={6} className="text-center text-muted-foreground">
                                             لا توجد روابط دفع بعد.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     paymentLinks.map((paymentLink) => (
                                         <TableRow key={paymentLink.id}>
+                                            <TableCell>
+                                                {paymentLink.milestone
+                                                    ? `${paymentLink.milestone.contract?.project_name ?? '—'} · ${paymentLink.milestone.title}`
+                                                    : '—'}
+                                            </TableCell>
                                             <TableCell>{paymentLink.client_name}</TableCell>
                                             <TableCell>
                                                 {formatMoney(paymentLink.total_amount, paymentLink.currency)}

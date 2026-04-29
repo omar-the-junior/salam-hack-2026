@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->enum('status', ['pending', 'paid', 'overdue'])->default('pending');
             $table->string('source')->nullable();
-            $table->foreignUuid('milestone_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('milestone_id')->constrained('milestones')->cascadeOnDelete();
             $table->string('mock_gateway_reference');
             $table->string('mock_provider')->default('mock-sandbox');
             $table->timestamps();

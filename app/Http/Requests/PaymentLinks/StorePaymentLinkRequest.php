@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\PaymentLinks;
 
+use App\Models\Milestone;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -19,6 +20,26 @@ class StorePaymentLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'milestone_id' => [
+                'required',
+                'uuid',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! is_string($value)) {
+                        $fail(__('validation.exists'));
+
+                        return;
+                    }
+
+                    $allowed = Milestone::query()
+                        ->whereKey($value)
+                        ->whereHas('contract', fn ($q) => $q->where('user_id', auth()->id()))
+                        ->exists();
+
+                    if (! $allowed) {
+                        $fail(__('validation.exists'));
+                    }
+                },
+            ],
             'amount' => ['required', 'numeric', 'min:0.01', 'max:99999999.99'],
             'tax_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'currency' => ['required', 'string', 'in:EGP,USD'],

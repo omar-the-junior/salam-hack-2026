@@ -1,5 +1,5 @@
-import { Head } from '@inertiajs/react';
-import { CopyIcon, LinkIcon, UserIcon } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { CopyIcon, FolderKanbanIcon, LinkIcon, UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useClipboard } from '@/hooks/use-clipboard';
+import { show as contractShow } from '@/routes/contracts';
+import { show as milestoneShow } from '@/routes/milestones';
 import { index } from '@/routes/payment-links';
 
 type PaymentLinkDetails = {
@@ -15,7 +17,7 @@ type PaymentLinkDetails = {
     tax_rate: string;
     tax_amount: string;
     total_amount: string;
-    currency: 'EGP' | 'USD';
+    currency: string;
     description: string;
     client_name: string;
     client_email: string;
@@ -23,6 +25,14 @@ type PaymentLinkDetails = {
     status: string;
     public_token: string;
     mock_gateway_reference: string;
+    milestone?: {
+        id: string;
+        title: string;
+        contract?: {
+            id: string;
+            project_name: string;
+        } | null;
+    } | null;
 };
 
 type PaymentLinksShowProps = {
@@ -32,10 +42,11 @@ type PaymentLinksShowProps = {
 
 function formatMoney(value: string | number, currency: string): string {
     const parsed = typeof value === 'string' ? Number.parseFloat(value) : value;
+    const safeCurrency = currency === 'USD' ? 'USD' : 'EGP';
 
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
-        currency,
+        currency: safeCurrency,
         minimumFractionDigits: 2,
     }).format(Number.isNaN(parsed) ? 0 : parsed);
 }
@@ -149,6 +160,51 @@ export default function PaymentLinksShow({ paymentLink, shareableUrl }: PaymentL
                                 <p className="text-sm">
                                     <span className="font-medium">البريد:</span> {paymentLink.client_email}
                                 </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <FolderKanbanIcon />
+                                    العقد والمرحلة
+                                </CardTitle>
+                                <CardDescription>رابط الدفع مرتبط بهذه المرحلة ضمن المشروع.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col gap-2">
+                                {paymentLink.milestone ? (
+                                    <>
+                                        <p className="text-sm">
+                                            <span className="font-medium">المشروع:</span>{' '}
+                                            {paymentLink.milestone.contract?.project_name ?? '—'}
+                                        </p>
+                                        <p className="text-sm">
+                                            <span className="font-medium">المرحلة:</span> {paymentLink.milestone.title}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2 pt-2">
+                                            {paymentLink.milestone.contract ? (
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link
+                                                        href={contractShow({ contract: paymentLink.milestone.contract })}
+                                                        prefetch
+                                                    >
+                                                        صفحة العقد
+                                                    </Link>
+                                                </Button>
+                                            ) : null}
+                                            <Button variant="outline" size="sm" asChild>
+                                                <Link
+                                                    href={milestoneShow({ milestone: paymentLink.milestone })}
+                                                    prefetch
+                                                >
+                                                    صفحة المرحلة
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="text-muted-foreground text-sm">لا توجد بيانات مرحلة.</p>
+                                )}
                             </CardContent>
                         </Card>
 

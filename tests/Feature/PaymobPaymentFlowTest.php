@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Contract;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
 use App\Models\User;
@@ -26,8 +27,34 @@ class PaymobPaymentFlowTest extends TestCase
 
     private function makeLink(User $user, string $status = 'pending'): PaymentLink
     {
+        $contract = Contract::create([
+            'user_id' => $user->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع دفع',
+            'description' => null,
+            'client_name' => 'أحمد سالم',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 14,
+            'tax_amount' => 140,
+            'grand_total' => 1140,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+        $milestone = $contract->milestones()->create([
+            'title' => 'مرحلة الدفع',
+            'percentage' => 50,
+            'amount' => 500,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+
         return PaymentLink::create([
             'user_id' => $user->id,
+            'milestone_id' => $milestone->id,
             'public_token' => Str::lower(Str::ulid()->toBase32()),
             'amount' => '500.00',
             'tax_rate' => '14.00',

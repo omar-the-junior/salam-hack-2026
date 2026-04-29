@@ -1,7 +1,9 @@
 import { Head, router } from '@inertiajs/react';
+/* eslint-disable react-hooks/incompatible-library -- react-hook-form watch() drives dependent fields in this form */
 import { CalendarDaysIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,6 +33,7 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
@@ -43,13 +46,33 @@ type PaymentLinkDefaults = {
     tax_rate: number;
 };
 
+type MilestoneOption = {
+    id: string;
+    title: string;
+    amount: string;
+    due_date: string | null;
+};
+
+type ContractWithMilestones = {
+    id: string;
+    project_name: string;
+    client_name: string;
+    client_email: string;
+    currency: string;
+    tax_rate: string;
+    milestones: MilestoneOption[];
+};
+
 type PaymentLinksCreateProps = {
     defaults: PaymentLinkDefaults;
     customers: CustomerOption[];
     newCustomerId?: string | null;
+    contractsWithMilestones: ContractWithMilestones[];
+    selectedMilestoneId: string | null;
 };
 
 type PaymentLinkFormData = {
+    milestone_id: string;
     customer_id: string;
     amount: string;
     currency: 'EGP' | 'USD';
@@ -68,9 +91,11 @@ type CustomerOption = {
 };
 
 function formatAmount(value: number, currency: 'EGP' | 'USD'): string {
+    const safeCurrency = currency === 'USD' ? 'USD' : 'EGP';
+
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
-        currency,
+        currency: safeCurrency,
         minimumFractionDigits: 2,
     }).format(value);
 }
@@ -111,10 +136,34 @@ function formatDateLabel(value: string): string {
     }).format(date);
 }
 
+function findMilestoneContext(
+    contracts: ContractWithMilestones[],
+    milestoneId: string,
+): { contract: ContractWithMilestones; milestone: MilestoneOption } | null {
+    for (const contract of contracts) {
+        const milestone = contract.milestones.find((m) => m.id === milestoneId);
+
+        if (milestone) {
+            return { contract, milestone };
+        }
+    }
+
+    return null;
+}
+
+function paymentLinkCurrency(contractCurrency: string): 'EGP' | 'USD' {
+    if (contractCurrency === 'USD') {
+        return 'USD';
+    }
+    return 'EGP';
+}
+
 export default function PaymentLinksCreate({
     defaults,
     customers,
     newCustomerId = null,
+    contractsWithMilestones,
+    selectedMilestoneId,
 }: PaymentLinksCreateProps) {
     const [processing, setProcessing] = useState(false);
     const [dueDateOpen, setDueDateOpen] = useState(false);
@@ -130,9 +179,10 @@ export default function PaymentLinksCreate({
     });
     const form = useForm<PaymentLinkFormData>({
         defaultValues: {
+            milestone_id: selectedMilestoneId ?? '',
             customer_id: '',
             amount: '',
-            currency: defaults.currency,
+            currency: defaults.currency === 'USD' ? 'USD' : 'EGP',
             description: '',
             client_name: '',
             client_email: '',
@@ -149,6 +199,35 @@ export default function PaymentLinksCreate({
     const customersById = useMemo(() => {
         return new Map(customers.map((customer) => [customer.id, customer]));
     }, [customers]);
+
+    const applyMilestonePrefill = useCallback(
+        (milestoneId: string) => {
+            const ctx = findMilestoneContext(contractsWithMilestones, milestoneId);
+
+            if (!ctx) {
+                return;
+            }
+
+            const { contract, milestone } = ctx;
+
+            setValue('amount', String(milestone.amount));
+            setValue('currency', paymentLinkCurrency(contract.currency));
+            setValue('tax_rate', String(contract.tax_rate ?? 0));
+            setValue('client_name', contract.client_name);
+            setValue('client_email', contract.client_email);
+            setValue('due_date', milestone.due_date ?? '');
+            setValue('description', `دفعة — ${milestone.title}`);
+        },
+        [contractsWithMilestones, setValue],
+    );
+
+    useEffect(() => {
+        if (!selectedMilestoneId) {
+            return;
+        }
+
+        applyMilestonePrefill(selectedMilestoneId);
+    }, [selectedMilestoneId, applyMilestonePrefill]);
 
     const subtotal = Number.parseFloat(amountValue);
     const taxRate = Number.parseFloat(taxRateValue);
@@ -247,6 +326,66 @@ export default function PaymentLinksCreate({
                 <Form {...form}>
                     <form onSubmit={submit} className="grid items-start gap-4 lg:grid-cols-12">
                         <div className="flex flex-col gap-4 lg:col-span-8">
+                            {contractsWithMilestones.length === 0 ? (
+                                <Alert variant="destructive">
+                                    <AlertTitle>لا توجد مراحل</AlertTitle>
+                                    <AlertDescription>
+                                        أضف عقداً ومراحل دفع أولاً من صفحة العقود قبل إنشاء رابط دفع مرتبط بمرحلة.
+                                    </AlertDescription>
+                                </Alert>
+                            ) : null}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>العقد والمرحلة</CardTitle>
+                                    <CardDescription>
+                                        اختر المشروع (العقد) والمرحلة التي يخصّص لها رابط الدفع هذا.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <FormField
+                                        control={control}
+                                        name="milestone_id"
+                                        rules={{ required: 'يرجى اختيار مرحلة' }}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>مرحلة الدفع</FormLabel>
+                                                <Select
+                                                    value={field.value}
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value);
+                                                        applyMilestonePrefill(value);
+                                                    }}
+                                                    disabled={contractsWithMilestones.length === 0}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger className="h-10 w-full">
+                                                            <SelectValue placeholder="اختر عقداً ومرحلة..." />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {contractsWithMilestones.map((contract) => (
+                                                            <SelectGroup key={contract.id}>
+                                                                <SelectLabel className="text-start">
+                                                                    {contract.project_name} · {contract.client_name}
+                                                                </SelectLabel>
+                                                                {contract.milestones.map((milestone) => (
+                                                                    <SelectItem key={milestone.id} value={milestone.id}>
+                                                                        {milestone.title} ({milestone.amount})
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormDescription>
+                                                    كل رابط دفع يجب أن يكون مرتبطاً بمرحلة واحدة ضمن أحد عقودك.
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </CardContent>
+                            </Card>
                             <Card>
                                 <CardHeader>
                                     <CardTitle>تفاصيل المبلغ</CardTitle>
@@ -560,7 +699,7 @@ export default function PaymentLinksCreate({
                                         </span>
                                     </div>
 
-                                    <Button type="submit" disabled={processing}>
+                                    <Button type="submit" disabled={processing || contractsWithMilestones.length === 0}>
                                         إنشاء رابط الدفع
                                     </Button>
                                 </CardContent>
