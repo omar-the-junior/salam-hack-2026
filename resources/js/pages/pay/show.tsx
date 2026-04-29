@@ -29,6 +29,7 @@ type PayShowProps = {
 
 function formatMoney(value: string | number, currency: string): string {
     const n = typeof value === 'string' ? Number.parseFloat(value) : value;
+
     return new Intl.NumberFormat('ar-EG', { style: 'currency', currency, minimumFractionDigits: 2 }).format(
         Number.isNaN(n) ? 0 : n,
     );

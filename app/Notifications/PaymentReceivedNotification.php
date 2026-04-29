@@ -22,7 +22,7 @@ class PaymentReceivedNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $link        = $this->transaction->paymentLink;
+        $link = $this->transaction->paymentLink;
         $amountFormatted = number_format($this->transaction->amount_cents / 100, 2).' '.$this->transaction->currency;
 
         return (new MailMessage)

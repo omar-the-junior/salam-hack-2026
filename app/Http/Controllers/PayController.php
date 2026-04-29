@@ -31,17 +31,17 @@ class PayController extends Controller
         }
 
         return Inertia::render('pay/show', [
-            'paymentLink'  => [
-                'amount'       => $link->amount,
-                'tax_rate'     => $link->tax_rate,
-                'tax_amount'   => $link->tax_amount,
+            'paymentLink' => [
+                'amount' => $link->amount,
+                'tax_rate' => $link->tax_rate,
+                'tax_amount' => $link->tax_amount,
                 'total_amount' => $link->total_amount,
-                'currency'     => $link->currency,
-                'description'  => $link->description,
-                'due_date'     => $link->due_date?->toDateString(),
-                'state'        => $state,
+                'currency' => $link->currency,
+                'description' => $link->description,
+                'due_date' => $link->due_date?->toDateString(),
+                'state' => $state,
             ],
-            'initiateUrl'  => route('pay.initiate', $token),
+            'initiateUrl' => route('pay.initiate', $token),
             'paymentState' => request()->query('payment', ''),
         ]);
     }
@@ -55,24 +55,24 @@ class PayController extends Controller
         $amountCents = (int) round($link->total_amount * 100);
 
         $billingData = [
-            'first_name'      => $link->client_name ?? 'Client',
-            'last_name'       => '.',
-            'email'           => $link->client_email ?? 'client@placeholder.com',
-            'phone_number'    => '+201000000000',
-            'apartment'       => 'NA',
-            'floor'           => 'NA',
-            'street'          => 'NA',
-            'building'        => 'NA',
+            'first_name' => $link->client_name ?? 'Client',
+            'last_name' => '.',
+            'email' => $link->client_email ?? 'client@placeholder.com',
+            'phone_number' => '+201000000000',
+            'apartment' => 'NA',
+            'floor' => 'NA',
+            'street' => 'NA',
+            'building' => 'NA',
             'shipping_method' => 'NA',
-            'postal_code'     => 'NA',
-            'city'            => 'NA',
-            'country'         => 'EG',
-            'state'           => 'NA',
+            'postal_code' => 'NA',
+            'city' => 'NA',
+            'country' => 'EG',
+            'state' => 'NA',
         ];
 
         try {
-            $authToken  = $paymob->authenticate();
-            $orderId    = $paymob->createOrder($authToken, $amountCents, $link->currency);
+            $authToken = $paymob->authenticate();
+            $orderId = $paymob->createOrder($authToken, $amountCents, $link->currency);
             $paymentKey = $paymob->getPaymentKey($authToken, $orderId, $amountCents, $link->currency, $billingData);
         } catch (Throwable $e) {
             Log::error('Paymob initiate failed', ['token' => $token, 'error' => $e->getMessage()]);
@@ -83,11 +83,11 @@ class PayController extends Controller
 
         PaymentTransaction::create([
             'payment_link_id' => $link->id,
-            'user_id'         => $link->user_id,
+            'user_id' => $link->user_id,
             'paymob_order_id' => $orderId,
-            'amount_cents'    => $amountCents,
-            'currency'        => $link->currency,
-            'status'          => 'pending',
+            'amount_cents' => $amountCents,
+            'currency' => $link->currency,
+            'status' => 'pending',
         ]);
 
         return redirect()->away($paymob->buildIframeUrl($paymentKey));
@@ -96,7 +96,7 @@ class PayController extends Controller
     public function callback(Request $request): RedirectResponse
     {
         $paymobTxnId = $request->query('id');
-        $orderId     = $request->query('order');
+        $orderId = $request->query('order');
 
         $transaction = null;
 
@@ -116,9 +116,9 @@ class PayController extends Controller
         $publicToken = $transaction->paymentLink->public_token;
 
         $payment = match ($transaction->status) {
-            'paid'  => 'success',
+            'paid' => 'success',
             'failed' => 'failed',
-            default  => 'pending',
+            default => 'pending',
         };
 
         return redirect()->route('pay.show', $publicToken)->with('payment', $payment);
@@ -126,9 +126,9 @@ class PayController extends Controller
 
     public function webhook(Request $request): JsonResponse
     {
-        $payload  = $request->all();
-        $obj      = $payload['obj'] ?? [];
-        $orderId  = (string) ($obj['order']['id'] ?? '');
+        $payload = $request->all();
+        $obj = $payload['obj'] ?? [];
+        $orderId = (string) ($obj['order']['id'] ?? '');
 
         if (! $orderId) {
             return response()->json(['status' => 'ignored'], 200);
@@ -138,6 +138,7 @@ class PayController extends Controller
 
         if (! $transaction) {
             Log::warning('PaymobWebhook: unknown order', ['paymob_order_id' => $orderId]);
+
             return response()->json(['status' => 'not_found'], 200);
         }
 
@@ -151,13 +152,13 @@ class PayController extends Controller
             DB::transaction(function () use ($transaction, $obj, $payload, $success): void {
                 if ($success) {
                     $transaction->update([
-                        'status'                 => 'paid',
-                        'paymob_transaction_id'  => (string) ($obj['id'] ?? ''),
-                        'card_last_four'         => $obj['source_data']['pan'] ?? null,
-                        'card_brand'             => $obj['source_data']['sub_type'] ?? null,
-                        'gateway_response'       => $payload,
-                        'hmac_verified'          => true,
-                        'paid_at'                => now(),
+                        'status' => 'paid',
+                        'paymob_transaction_id' => (string) ($obj['id'] ?? ''),
+                        'card_last_four' => $obj['source_data']['pan'] ?? null,
+                        'card_brand' => $obj['source_data']['sub_type'] ?? null,
+                        'gateway_response' => $payload,
+                        'hmac_verified' => true,
+                        'paid_at' => now(),
                     ]);
 
                     $transaction->paymentLink->update(['status' => 'paid']);
@@ -170,18 +171,18 @@ class PayController extends Controller
                     $transaction->user->notify(new PaymentReceivedNotification($transaction));
                 } else {
                     $transaction->update([
-                        'status'                => 'failed',
+                        'status' => 'failed',
                         'paymob_transaction_id' => (string) ($obj['id'] ?? ''),
-                        'failure_reason'        => $obj['data']['message'] ?? null,
-                        'gateway_response'      => $payload,
-                        'hmac_verified'         => true,
+                        'failure_reason' => $obj['data']['message'] ?? null,
+                        'gateway_response' => $payload,
+                        'hmac_verified' => true,
                     ]);
                 }
             });
         } catch (Throwable $e) {
             Log::error('PaymobWebhook: DB update failed', [
                 'paymob_order_id' => $orderId,
-                'error'           => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json(['status' => 'error'], 500);

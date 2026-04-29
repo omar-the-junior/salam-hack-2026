@@ -16,7 +16,7 @@ class VerifyPaymobWebhook
 
         if (! $hmac || ! app(PaymobService::class)->verifyHmac($request->all(), $hmac)) {
             Log::warning('PaymobWebhook: invalid HMAC', [
-                'ip'   => $request->ip(),
+                'ip' => $request->ip(),
                 'hmac' => substr($hmac, 0, 8).'...',
             ]);
 

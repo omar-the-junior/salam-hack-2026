@@ -31,8 +31,8 @@ class PaymentTransaction extends Model
     {
         return [
             'gateway_response' => 'array',
-            'hmac_verified'    => 'boolean',
-            'paid_at'          => 'datetime',
+            'hmac_verified' => 'boolean',
+            'paid_at' => 'datetime',
         ];
     }
 

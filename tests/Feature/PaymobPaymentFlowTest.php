@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
 use App\Models\User;
-use App\Models\UserWallet;
 use App\Notifications\PaymentReceivedNotification;
 use App\Services\PaymobService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,20 +27,20 @@ class PaymobPaymentFlowTest extends TestCase
     private function makeLink(User $user, string $status = 'pending'): PaymentLink
     {
         return PaymentLink::create([
-            'user_id'                => $user->id,
-            'public_token'           => Str::lower(Str::ulid()->toBase32()),
-            'amount'                 => '500.00',
-            'tax_rate'               => '14.00',
-            'tax_amount'             => '70.00',
-            'total_amount'           => '570.00',
-            'currency'               => 'EGP',
-            'description'            => 'خدمة تصميم',
-            'client_name'            => 'أحمد سالم',
-            'client_email'           => 'client@example.com',
-            'status'                 => $status,
+            'user_id' => $user->id,
+            'public_token' => Str::lower(Str::ulid()->toBase32()),
+            'amount' => '500.00',
+            'tax_rate' => '14.00',
+            'tax_amount' => '70.00',
+            'total_amount' => '570.00',
+            'currency' => 'EGP',
+            'description' => 'خدمة تصميم',
+            'client_name' => 'أحمد سالم',
+            'client_email' => 'client@example.com',
+            'status' => $status,
             'mock_gateway_reference' => 'mock_'.Str::upper(Str::random(12)),
-            'mock_provider'          => 'mock-sandbox',
-            'source'                 => 'manual',
+            'mock_provider' => 'mock-sandbox',
+            'source' => 'manual',
         ]);
     }
 
@@ -49,11 +48,11 @@ class PaymobPaymentFlowTest extends TestCase
     {
         return PaymentTransaction::create([
             'payment_link_id' => $link->id,
-            'user_id'         => $link->user_id,
+            'user_id' => $link->user_id,
             'paymob_order_id' => $orderId,
-            'amount_cents'    => 57000,
-            'currency'        => 'EGP',
-            'status'          => $status,
+            'amount_cents' => 57000,
+            'currency' => 'EGP',
+            'status' => $status,
         ]);
     }
 
@@ -61,25 +60,25 @@ class PaymobPaymentFlowTest extends TestCase
     {
         return [
             'obj' => [
-                'id'                     => $txnId,
-                'success'                => $success,
-                'order'                  => ['id' => $orderId],
-                'amount_cents'           => 57000,
-                'currency'               => 'EGP',
-                'created_at'             => now()->toIso8601String(),
-                'error_occured'          => false,
+                'id' => $txnId,
+                'success' => $success,
+                'order' => ['id' => $orderId],
+                'amount_cents' => 57000,
+                'currency' => 'EGP',
+                'created_at' => now()->toIso8601String(),
+                'error_occured' => false,
                 'has_parent_transaction' => false,
-                'integration_id'         => 99999,
-                'is_3d_secure'           => false,
-                'is_auth'                => false,
-                'is_capture'             => false,
-                'is_refunded'            => false,
-                'is_standalone_payment'  => true,
-                'is_voided'              => false,
-                'owner'                  => 1,
-                'pending'                => false,
-                'source_data'            => ['pan' => '1234', 'sub_type' => 'VISA', 'type' => 'card'],
-                'data'                   => ['message' => 'Do not honor'],
+                'integration_id' => 99999,
+                'is_3d_secure' => false,
+                'is_auth' => false,
+                'is_capture' => false,
+                'is_refunded' => false,
+                'is_standalone_payment' => true,
+                'is_voided' => false,
+                'owner' => 1,
+                'pending' => false,
+                'source_data' => ['pan' => '1234', 'sub_type' => 'VISA', 'type' => 'card'],
+                'data' => ['message' => 'Do not honor'],
             ],
         ];
     }
@@ -89,7 +88,7 @@ class PaymobPaymentFlowTest extends TestCase
     public function test_guest_can_view_pending_payment_link(): void
     {
         $freelancer = $this->makeFreelancer();
-        $link       = $this->makeLink($freelancer);
+        $link = $this->makeLink($freelancer);
 
         $response = $this->get(route('pay.show', $link->public_token));
 
@@ -103,7 +102,7 @@ class PaymobPaymentFlowTest extends TestCase
     public function test_guest_sees_paid_state_when_link_already_paid(): void
     {
         $freelancer = $this->makeFreelancer();
-        $link       = $this->makeLink($freelancer, 'paid');
+        $link = $this->makeLink($freelancer, 'paid');
 
         $response = $this->get(route('pay.show', $link->public_token));
 
@@ -117,7 +116,7 @@ class PaymobPaymentFlowTest extends TestCase
     public function test_initiate_creates_pending_transaction_and_redirects_to_paymob(): void
     {
         $freelancer = $this->makeFreelancer();
-        $link       = $this->makeLink($freelancer);
+        $link = $this->makeLink($freelancer);
 
         $this->mock(PaymobService::class, function ($mock) {
             $mock->shouldReceive('authenticate')->once()->andReturn('auth-token');
@@ -132,16 +131,16 @@ class PaymobPaymentFlowTest extends TestCase
 
         $this->assertDatabaseHas('payment_transactions', [
             'payment_link_id' => $link->id,
-            'user_id'         => $freelancer->id,
+            'user_id' => $freelancer->id,
             'paymob_order_id' => 'PAYMOB-ORDER-999',
-            'status'          => 'pending',
+            'status' => 'pending',
         ]);
     }
 
     public function test_initiate_does_not_create_transaction_on_paymob_api_failure(): void
     {
         $freelancer = $this->makeFreelancer();
-        $link       = $this->makeLink($freelancer);
+        $link = $this->makeLink($freelancer);
 
         $this->mock(PaymobService::class, function ($mock) {
             $mock->shouldReceive('authenticate')->once()->andThrow(new \RuntimeException('auth failed'));
@@ -155,8 +154,8 @@ class PaymobPaymentFlowTest extends TestCase
 
     public function test_callback_redirects_to_pay_page_with_pending_state(): void
     {
-        $freelancer  = $this->makeFreelancer();
-        $link        = $this->makeLink($freelancer);
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
         $transaction = $this->makeTransaction($link, 'pending', 'ORD-CALLBACK');
 
         $response = $this->get(route('pay.callback', ['order' => 'ORD-CALLBACK']));
@@ -166,15 +165,15 @@ class PaymobPaymentFlowTest extends TestCase
 
     public function test_callback_does_not_update_database(): void
     {
-        $freelancer  = $this->makeFreelancer();
-        $link        = $this->makeLink($freelancer);
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
         $this->makeTransaction($link, 'pending', 'ORD-NOCHANGE');
 
         $this->get(route('pay.callback', ['order' => 'ORD-NOCHANGE', 'success' => '1']));
 
         $this->assertDatabaseHas('payment_transactions', [
             'paymob_order_id' => 'ORD-NOCHANGE',
-            'status'          => 'pending',
+            'status' => 'pending',
         ]);
     }
 
@@ -193,35 +192,35 @@ class PaymobPaymentFlowTest extends TestCase
     {
         Notification::fake();
 
-        $freelancer  = $this->makeFreelancer();
-        $link        = $this->makeLink($freelancer);
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
         $transaction = $this->makeTransaction($link, 'pending', 'ORD-SUCCESS');
 
         $this->mock(PaymobService::class, function ($mock) {
             $mock->shouldReceive('verifyHmac')->once()->andReturn(true);
         });
 
-        $payload  = $this->buildWebhookPayload('ORD-SUCCESS', true, 'TXN-001');
+        $payload = $this->buildWebhookPayload('ORD-SUCCESS', true, 'TXN-001');
         $response = $this->postJson(route('webhook.paymob').'?hmac=validhmac', $payload);
 
         $response->assertOk();
         $response->assertJson(['status' => 'ok']);
 
         $this->assertDatabaseHas('payment_transactions', [
-            'paymob_order_id'       => 'ORD-SUCCESS',
-            'status'                => 'paid',
+            'paymob_order_id' => 'ORD-SUCCESS',
+            'status' => 'paid',
             'paymob_transaction_id' => 'TXN-001',
-            'hmac_verified'         => true,
+            'hmac_verified' => true,
         ]);
 
         $this->assertDatabaseHas('payment_links', [
-            'id'     => $link->id,
+            'id' => $link->id,
             'status' => 'paid',
         ]);
 
         $this->assertDatabaseHas('user_wallets', [
-            'user_id'       => $freelancer->id,
-            'currency'      => 'EGP',
+            'user_id' => $freelancer->id,
+            'currency' => 'EGP',
             'balance_cents' => 57000,
         ]);
 
@@ -232,15 +231,15 @@ class PaymobPaymentFlowTest extends TestCase
     {
         Notification::fake();
 
-        $freelancer  = $this->makeFreelancer();
-        $link        = $this->makeLink($freelancer, 'paid');
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer, 'paid');
         $transaction = $this->makeTransaction($link, 'paid', 'ORD-DUPE');
 
         $this->mock(PaymobService::class, function ($mock) {
             $mock->shouldReceive('verifyHmac')->once()->andReturn(true);
         });
 
-        $payload  = $this->buildWebhookPayload('ORD-DUPE', true, 'TXN-DUPE');
+        $payload = $this->buildWebhookPayload('ORD-DUPE', true, 'TXN-DUPE');
         $response = $this->postJson(route('webhook.paymob').'?hmac=validhmac', $payload);
 
         $response->assertOk();
@@ -253,15 +252,15 @@ class PaymobPaymentFlowTest extends TestCase
     {
         Notification::fake();
 
-        $freelancer  = $this->makeFreelancer();
-        $link        = $this->makeLink($freelancer);
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
         $transaction = $this->makeTransaction($link, 'pending', 'ORD-FAIL');
 
         $this->mock(PaymobService::class, function ($mock) {
             $mock->shouldReceive('verifyHmac')->once()->andReturn(true);
         });
 
-        $payload  = $this->buildWebhookPayload('ORD-FAIL', false, 'TXN-FAIL');
+        $payload = $this->buildWebhookPayload('ORD-FAIL', false, 'TXN-FAIL');
         $response = $this->postJson(route('webhook.paymob').'?hmac=validhmac', $payload);
 
         $response->assertOk();
@@ -269,13 +268,13 @@ class PaymobPaymentFlowTest extends TestCase
 
         $this->assertDatabaseHas('payment_transactions', [
             'paymob_order_id' => 'ORD-FAIL',
-            'status'          => 'failed',
-            'failure_reason'  => 'Do not honor',
-            'hmac_verified'   => true,
+            'status' => 'failed',
+            'failure_reason' => 'Do not honor',
+            'hmac_verified' => true,
         ]);
 
         $this->assertDatabaseHas('payment_links', [
-            'id'     => $link->id,
+            'id' => $link->id,
             'status' => 'pending',
         ]);
 
