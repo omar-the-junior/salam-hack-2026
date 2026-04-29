@@ -1,12 +1,14 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { CircleIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { index } from '@/routes/contracts';
+import { index, store } from '@/routes/contracts';
 
 type ContractCreateFormValues = {
     project_name: string;
@@ -21,6 +23,8 @@ type ContractCreateFormValues = {
 };
 
 export default function ContractsCreate() {
+    const [processing, setProcessing] = useState(false);
+
     const form = useForm<ContractCreateFormValues>({
         defaultValues: {
             project_name: '',
@@ -29,10 +33,27 @@ export default function ContractsCreate() {
             client_email: '',
             total_value: '',
             tax_rate: '',
-            currency: 'EGP / USD',
+            currency: 'EGP',
             start_date: '',
             end_date: '',
         },
+    });
+
+    const onSubmit = form.handleSubmit((values) => {
+        setProcessing(true);
+        router.post(store.url(), values, {
+            onError: (errors) => {
+                Object.entries(errors).forEach(([key, message]) => {
+                    if (key in values) {
+                        form.setError(key as keyof ContractCreateFormValues, {
+                            type: 'server',
+                            message,
+                        });
+                    }
+                });
+            },
+            onFinish: () => setProcessing(false),
+        });
     });
 
     return (
@@ -71,7 +92,7 @@ export default function ContractsCreate() {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-5">
                             <Form {...form}>
-                                <form className="grid gap-4 md:grid-cols-2">
+                                <form id="contract-create-form" onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
                                     <FormField
                                         control={form.control}
                                         name="project_name"
@@ -165,9 +186,19 @@ export default function ContractsCreate() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>العملة</FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} readOnly className="bg-background/90" />
-                                                </FormControl>
+                                                <Select value={field.value} onValueChange={field.onChange}>
+                                                    <FormControl>
+                                                        <SelectTrigger className="bg-background/90">
+                                                            <SelectValue placeholder="اختر العملة" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectItem value="EGP">جنيه مصري (EGP)</SelectItem>
+                                                            <SelectItem value="USD">دولار أمريكي (USD)</SelectItem>
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -207,8 +238,8 @@ export default function ContractsCreate() {
                         <Button type="button" variant="outline" asChild>
                             <Link href={index()}>السابق</Link>
                         </Button>
-                        <Button type="button" asChild>
-                            <Link href="/contracts/create/milestones">التالي: بناء مراحل الدفع</Link>
+                        <Button type="submit" form="contract-create-form" disabled={processing}>
+                            {processing ? 'جارٍ الحفظ…' : 'التالي: بناء مراحل الدفع'}
                         </Button>
                     </div>
                 </div>

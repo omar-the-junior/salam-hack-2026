@@ -1,13 +1,24 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { CheckCircle2Icon, CircleIcon, PlusIcon, Trash2Icon } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { index } from '@/routes/contracts';
+import { create, index } from '@/routes/contracts';
+
+type ContractSummary = {
+    id: string;
+    project_name: string;
+    total_value: string;
+    currency: string;
+};
+
+type ContractsCreateMilestonesProps = {
+    contract: ContractSummary | null;
+};
 
 type MilestoneDraft = {
     title: string;
@@ -19,22 +30,15 @@ type MilestonesFormValues = {
     milestones: MilestoneDraft[];
 };
 
-const CONTRACT_TOTAL = 10000;
+export default function ContractsCreateMilestones({ contract }: ContractsCreateMilestonesProps) {
+    const [processing, setProcessing] = useState(false);
 
-export default function ContractsCreateMilestones() {
+    const contractTotal = contract ? Number.parseFloat(contract.total_value) : 0;
+
     const form = useForm<MilestonesFormValues>({
         defaultValues: {
             milestones: [
-                {
-                    title: 'توقيع العقد',
-                    percentage: 30,
-                    due_date: '2026-05-15',
-                },
-                {
-                    title: 'تسليم النسخة الأولى',
-                    percentage: 30,
-                    due_date: '2026-05-28',
-                },
+                { title: '', percentage: 0, due_date: '' },
             ],
         },
     });
@@ -47,22 +51,52 @@ export default function ContractsCreateMilestones() {
     const milestones = form.watch('milestones');
 
     const allocatedPercentage = useMemo(
-        () =>
-            milestones.reduce(
-                (sum, milestone) => sum + (Number.isNaN(milestone.percentage) ? 0 : milestone.percentage),
-                0,
-            ),
+        () => milestones.reduce((sum, m) => sum + (Number.isNaN(m.percentage) ? 0 : m.percentage), 0),
         [milestones],
     );
     const remainingPercentage = Math.max(0, 100 - allocatedPercentage);
 
     const addMilestone = () => {
-        if (fields.length >= 5) {
-            return;
-        }
-
+        if (fields.length >= 5) return;
         append({ title: '', percentage: 0, due_date: '' });
     };
+
+    const onSubmit = form.handleSubmit((values) => {
+        if (!contract) return;
+
+        setProcessing(true);
+        router.post(`/contracts/${contract.id}/milestones/bulk`, values, {
+            onError: (errors) => {
+                Object.entries(errors).forEach(([key, message]) => {
+                    const match = key.match(/^milestones\.(\d+)\.(.+)$/);
+                    if (match) {
+                        form.setError(`milestones.${match[1]}.${match[2]}` as keyof MilestonesFormValues, {
+                            type: 'server',
+                            message,
+                        });
+                    }
+                });
+            },
+            onFinish: () => setProcessing(false),
+        });
+    });
+
+    if (!contract) {
+        return (
+            <>
+                <Head title="إنشاء عقد: بناء المراحل" />
+                <div className="bg-surface min-h-svh px-4 py-10">
+                    <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
+                        <CardTitle className="text-3xl">لم يتم تحديد عقد</CardTitle>
+                        <p className="text-muted-foreground">يرجى البدء من الخطوة الأولى.</p>
+                        <Button asChild>
+                            <Link href={create()}>ابدأ من الخطوة الأولى</Link>
+                        </Button>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -89,6 +123,14 @@ export default function ContractsCreateMilestones() {
                                 الشروط والمراجعة
                             </span>
                         </div>
+                        <p className="text-muted-foreground text-sm">
+                            {contract.project_name} · إجمالي العقد:{' '}
+                            {new Intl.NumberFormat('ar-EG', {
+                                style: 'currency',
+                                currency: contract.currency === 'USD' ? 'USD' : 'EGP',
+                                minimumFractionDigits: 2,
+                            }).format(contractTotal)}
+                        </p>
                     </div>
 
                     <Card className="border-sand bg-papyrus shadow-sm">
@@ -102,10 +144,10 @@ export default function ContractsCreateMilestones() {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <Form {...form}>
-                                <form className="flex flex-col gap-4">
+                                <form id="milestones-form" onSubmit={onSubmit} className="flex flex-col gap-4">
                                     {fields.map((field, index) => {
                                         const percentage = milestones[index]?.percentage ?? 0;
-                                        const amount = CONTRACT_TOTAL * (percentage / 100);
+                                        const amount = contractTotal * (percentage / 100);
 
                                         return (
                                             <Card key={field.id} className="bg-background/90">
@@ -127,6 +169,7 @@ export default function ContractsCreateMilestones() {
                                                     <FormField
                                                         control={form.control}
                                                         name={`milestones.${index}.title`}
+                                                        rules={{ required: 'عنوان المرحلة مطلوب' }}
                                                         render={({ field: titleField }) => (
                                                             <FormItem>
                                                                 <FormLabel>عنوان المرحلة</FormLabel>
@@ -140,6 +183,7 @@ export default function ContractsCreateMilestones() {
                                                     <FormField
                                                         control={form.control}
                                                         name={`milestones.${index}.percentage`}
+                                                        rules={{ required: 'النسبة مطلوبة', min: { value: 0.01, message: 'يجب أن تكون النسبة أكبر من 0' } }}
                                                         render={({ field: percentageField }) => (
                                                             <FormItem>
                                                                 <FormLabel>النسبة المئوية %</FormLabel>
@@ -148,6 +192,7 @@ export default function ContractsCreateMilestones() {
                                                                         type="number"
                                                                         min={0}
                                                                         max={100}
+                                                                        step={0.01}
                                                                         value={percentageField.value}
                                                                         onChange={(event) =>
                                                                             percentageField.onChange(
@@ -164,7 +209,8 @@ export default function ContractsCreateMilestones() {
                                                         <FormLabel>المبلغ (تلقائي)</FormLabel>
                                                         <FormControl>
                                                             <div className="flex h-10 items-center rounded-md border border-dashed px-3 text-sm font-medium">
-                                                                {new Intl.NumberFormat('ar-EG').format(amount)} ج.م
+                                                                {new Intl.NumberFormat('ar-EG').format(amount)}{' '}
+                                                                {contract.currency}
                                                             </div>
                                                         </FormControl>
                                                     </FormItem>
@@ -203,10 +249,10 @@ export default function ContractsCreateMilestones() {
 
                     <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
                         <Button type="button" variant="outline" asChild>
-                            <Link href="/contracts/create">السابق</Link>
+                            <Link href={index()}>تخطي الآن (أضف المراحل لاحقاً)</Link>
                         </Button>
-                        <Button type="button" asChild>
-                            <Link href={index()}>التالي: الشروط والمراجعة</Link>
+                        <Button type="submit" form="milestones-form" disabled={processing}>
+                            {processing ? 'جارٍ الحفظ…' : 'التالي: الشروط والمراجعة'}
                         </Button>
                     </div>
                 </div>

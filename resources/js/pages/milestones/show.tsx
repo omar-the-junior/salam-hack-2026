@@ -57,6 +57,40 @@ function formatDate(value: string | null): string {
     return new Date(value).toLocaleDateString('ar-EG');
 }
 
+function milestoneStatusVariant(
+    status: string,
+): 'default' | 'secondary' | 'outline' | 'destructive' {
+    if (status === 'paid') {
+        return 'default';
+    }
+
+    if (status === 'submitted') {
+        return 'secondary';
+    }
+
+    if (status === 'in_progress') {
+        return 'outline';
+    }
+
+    return 'secondary';
+}
+
+function milestoneStatusLabel(status: string): string {
+    if (status === 'paid') {
+        return 'مدفوعة';
+    }
+
+    if (status === 'submitted') {
+        return 'مقدمة';
+    }
+
+    if (status === 'in_progress') {
+        return 'قيد التنفيذ';
+    }
+
+    return 'بانتظار البدء';
+}
+
 export default function MilestonesShow({
     contract,
     milestone,
@@ -105,7 +139,9 @@ export default function MilestonesShow({
                             <TableRow>
                                 <TableCell className="text-muted-foreground w-40">الحالة</TableCell>
                                 <TableCell>
-                                    <Badge variant="secondary">{milestone.status}</Badge>
+                                    <Badge variant={milestoneStatusVariant(milestone.status)}>
+                                        {milestoneStatusLabel(milestone.status)}
+                                    </Badge>
                                 </TableCell>
                             </TableRow>
                             <TableRow>

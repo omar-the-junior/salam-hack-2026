@@ -20,6 +20,7 @@ Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () 
     Route::put('contracts/{contract}', [ContractController::class, 'update'])->name('contracts.update');
 
     Route::post('contracts/{contract}/milestones', [MilestoneController::class, 'store'])->name('milestones.store');
+    Route::post('contracts/{contract}/milestones/bulk', [MilestoneController::class, 'storeBulk'])->name('milestones.store-bulk');
     Route::get('milestones/{milestone}', [MilestoneController::class, 'show'])->name('milestones.show');
     Route::put('milestones/{milestone}', [MilestoneController::class, 'update'])->name('milestones.update');
 });

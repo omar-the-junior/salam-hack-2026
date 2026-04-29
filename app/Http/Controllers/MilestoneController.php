@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Milestones\StoreBulkMilestonesRequest;
 use App\Http\Requests\Milestones\StoreMilestoneRequest;
 use App\Http\Requests\Milestones\UpdateMilestoneRequest;
 use App\Models\Contract;
@@ -46,6 +47,26 @@ class MilestoneController extends Controller
 
         return redirect()->route('contracts.show', $contract->id)
             ->with('flash', ['type' => 'success', 'message' => 'تمت إضافة المرحلة بنجاح']);
+    }
+
+    public function storeBulk(StoreBulkMilestonesRequest $request, Contract $contract): RedirectResponse
+    {
+        $this->authorizeContract($contract);
+
+        $validated = $request->validated();
+
+        foreach ($validated['milestones'] as $milestoneData) {
+            $contract->milestones()->create([
+                'title' => $milestoneData['title'],
+                'percentage' => $milestoneData['percentage'],
+                'amount' => $contract->total_value * $milestoneData['percentage'] / 100,
+                'due_date' => $milestoneData['due_date'] ?? null,
+                'status' => 'pending',
+            ]);
+        }
+
+        return redirect()->route('contracts.show', $contract->id)
+            ->with('flash', ['type' => 'success', 'message' => 'تم إنشاء العقد ومراحله بنجاح']);
     }
 
     public function update(UpdateMilestoneRequest $request, Milestone $milestone): RedirectResponse

@@ -20,7 +20,18 @@ class ContractController extends Controller
 
     public function createMilestones(): Response
     {
-        return Inertia::render('contracts/create-milestones');
+        $contractId = request()->query('contract_id');
+        $contract = null;
+
+        if ($contractId) {
+            $contract = Contract::where('id', $contractId)
+                ->where('user_id', auth()->id())
+                ->first();
+        }
+
+        return Inertia::render('contracts/create-milestones', [
+            'contract' => $contract,
+        ]);
     }
 
     public function index(): Response
@@ -72,8 +83,7 @@ class ContractController extends Controller
             'status' => 'draft',
         ]);
 
-        return redirect()->route('contracts.show', $contract->id)
-            ->with('flash', ['type' => 'success', 'message' => 'تم إنشاء العقد بنجاح']);
+        return redirect()->route('contracts.create.milestones', ['contract_id' => $contract->id]);
     }
 
     public function update(UpdateContractRequest $request, Contract $contract): RedirectResponse

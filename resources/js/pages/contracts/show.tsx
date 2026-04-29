@@ -88,6 +88,40 @@ function statusVariant(
     return 'outline';
 }
 
+function milestoneStatusVariant(
+    status: string,
+): 'default' | 'secondary' | 'outline' | 'destructive' {
+    if (status === 'paid') {
+        return 'default';
+    }
+
+    if (status === 'submitted') {
+        return 'secondary';
+    }
+
+    if (status === 'in_progress') {
+        return 'outline';
+    }
+
+    return 'secondary';
+}
+
+function milestoneStatusLabel(status: string): string {
+    if (status === 'paid') {
+        return 'مدفوعة';
+    }
+
+    if (status === 'submitted') {
+        return 'مقدمة';
+    }
+
+    if (status === 'in_progress') {
+        return 'قيد التنفيذ';
+    }
+
+    return 'بانتظار البدء';
+}
+
 export default function ContractsShow({
     contract,
 }: {
@@ -339,7 +373,11 @@ export default function ContractsShow({
                                             <TableCell>
                                                 {formatDate(m.due_date)}
                                             </TableCell>
-                                            <TableCell>{m.status}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={milestoneStatusVariant(m.status)}>
+                                                    {milestoneStatusLabel(m.status)}
+                                                </Badge>
+                                            </TableCell>
                                             <TableCell className="text-end">
                                                 <Button variant="outline" size="sm" asChild>
                                                     <Link href={`/payment-links/create?milestone=${m.id}`} prefetch>
