@@ -70,8 +70,18 @@ const mediaQuery = (): MediaQueryList | null => {
 
 const handleSystemThemeChange = (): void => applyTheme(currentAppearance);
 
+// When dark mode is ready to ship, remove this constant and uncomment the
+// getStoredAppearance() call below to restore full appearance switching.
+const FORCE_LIGHT_MODE = true;
+
 export function initializeTheme(): void {
     if (typeof window === 'undefined') {
+        return;
+    }
+
+    if (FORCE_LIGHT_MODE) {
+        currentAppearance = 'light';
+        applyTheme('light');
         return;
     }
 
