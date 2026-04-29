@@ -1,6 +1,16 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { EllipsisVerticalIcon, Link2Icon, PlusIcon, ScanSearchIcon, TriangleAlertIcon } from 'lucide-react';
+import {
+    EllipsisVerticalIcon,
+    ExternalLinkIcon,
+    Loader2Icon,
+    PlusIcon,
+    RefreshCwIcon,
+    ScanSearchIcon,
+    SparklesIcon,
+    TriangleAlertIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +31,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import {
     Sheet,
     SheetContent,
@@ -29,14 +40,14 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
-import { create, destroy, edit, index, status } from '@/routes/expenses';
+import { create, destroy, edit, fetchCancelInstructions, index, status } from '@/routes/expenses';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { toast } from 'sonner';
 
 type ExpenseStatus = 'active' | 'paused' | 'cancelled';
 type ExpenseCategory = 'saas' | 'tool' | 'equipment' | 'marketing' | 'other';
 type BillingCycle = 'monthly' | 'annual' | 'one-time';
+type Confidence = 'high' | 'medium' | 'low';
 
 export type ExpenseCardRow = {
     id: string;
@@ -50,7 +61,7 @@ export type ExpenseCardRow = {
     nextRenewalDate: string | null;
     autoDetected: boolean;
     cancelUrl: string | null;
-    cancelInstructions: string[];
+    cancelInstructions: string | null;
     notes: string;
 };
 
@@ -79,6 +90,12 @@ type ExpensesIndexProps = {
     summary: ExpenseSummary;
     hasAnyExpenseEver: boolean;
     expenses: ExpenseCardRow[];
+};
+
+type FetchResult = {
+    cancelUrl: string | null;
+    cancelInstructions: string | null;
+    confidence: Confidence;
 };
 
 function formatMoney(amount: number, currency: 'EGP' | 'USD'): string {
@@ -128,19 +145,49 @@ function applyExpenseFilters(base: ExpenseFilters, partial: Partial<ExpenseFilte
     );
 }
 
+function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
+    if (confidence === 'high') {
+        return (
+            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                ثقة عالية
+            </Badge>
+        );
+    }
+    if (confidence === 'medium') {
+        return (
+            <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                ثقة متوسطة
+            </Badge>
+        );
+    }
+    return (
+        <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            ثقة منخفضة
+        </Badge>
+    );
+}
+
 export default function ExpensesIndex({
     filters,
     preferredCurrency,
     summary,
     hasAnyExpenseEver,
-    expenses,
+    expenses: initialExpenses,
 }: ExpensesIndexProps) {
     const page = usePage();
     const flash = (page.props as { flash?: { message?: string; type?: string } }).flash;
 
     const [searchDraft, setSearchDraft] = useState(filters.search ?? '');
+    const [expenses, setExpenses] = useState<ExpenseCardRow[]>(initialExpenses);
     const [selectedExpense, setSelectedExpense] = useState<ExpenseCardRow | null>(null);
     const [statusSaving, setStatusSaving] = useState(false);
+    const [fetchingInstructions, setFetchingInstructions] = useState(false);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+    const [fetchedConfidence, setFetchedConfidence] = useState<Confidence | null>(null);
+
+    useEffect(() => {
+        setExpenses(initialExpenses);
+    }, [initialExpenses]);
 
     useEffect(() => {
         setSearchDraft(filters.search ?? '');
@@ -158,6 +205,11 @@ export default function ExpensesIndex({
 
         toast.message(flash.message);
     }, [flash?.message, flash?.type]);
+
+    useEffect(() => {
+        setFetchError(null);
+        setFetchedConfidence(null);
+    }, [selectedExpense?.id]);
 
     const otherCurrencyRows = summary.by_currency.filter(
         (row) =>
@@ -188,6 +240,60 @@ export default function ExpensesIndex({
         }
         return 'text-muted-foreground';
     };
+
+    function applyFetchResult(expenseId: string, result: FetchResult): void {
+        const updater = (card: ExpenseCardRow): ExpenseCardRow =>
+            card.id === expenseId
+                ? {
+                      ...card,
+                      cancelUrl: result.cancelUrl ?? card.cancelUrl,
+                      cancelInstructions: result.cancelInstructions,
+                  }
+                : card;
+
+        setExpenses((prev) => prev.map(updater));
+        setSelectedExpense((prev) => (prev ? updater(prev) : null));
+        setFetchedConfidence(result.confidence);
+    }
+
+    function fetchInstructions(expenseId: string): void {
+        setFetchingInstructions(true);
+        setFetchError(null);
+        setFetchedConfidence(null);
+
+        fetch(fetchCancelInstructions.url({ expense: expenseId }), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN':
+                    (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)
+                        ?.content ?? '',
+                Accept: 'application/json',
+            },
+        })
+            .then(async (res) => {
+                const data = (await res.json()) as
+                    | FetchResult
+                    | { error: string };
+
+                if (!res.ok) {
+                    setFetchError(
+                        'error' in data
+                            ? data.error
+                            : 'تعذّر جلب التعليمات. حاول مرة أخرى أو ابحث يدويًا.',
+                    );
+                    return;
+                }
+
+                applyFetchResult(expenseId, data as FetchResult);
+            })
+            .catch(() => {
+                setFetchError('تعذّر جلب التعليمات. حاول مرة أخرى أو ابحث يدويًا.');
+            })
+            .finally(() => {
+                setFetchingInstructions(false);
+            });
+    }
 
     function confirmCancellation(): void {
         if (!selectedExpense) {
@@ -479,7 +585,7 @@ export default function ExpensesIndex({
             </div>
 
             <Sheet open={selectedExpense !== null} onOpenChange={(isOpen) => !isOpen && setSelectedExpense(null)}>
-                <SheetContent>
+                <SheetContent className="overflow-y-auto">
                     <SheetHeader>
                         <SheetTitle>
                             {selectedExpense ? `إلغاء ${selectedExpense.name}` : 'إلغاء الاشتراك'}
@@ -488,39 +594,96 @@ export default function ExpensesIndex({
                     </SheetHeader>
 
                     <div className="mt-6 flex flex-col gap-4 text-sm">
-                        {selectedExpense?.cancelInstructions.length ? (
+                        {fetchingInstructions ? (
+                            <div className="flex flex-col items-center gap-3 py-8">
+                                <Loader2Icon className="text-muted-foreground size-6 animate-spin" />
+                                <p className="text-muted-foreground text-xs">
+                                    جارٍ جلب تعليمات الإلغاء من الذكاء الاصطناعي…
+                                </p>
+                            </div>
+                        ) : selectedExpense?.cancelInstructions ? (
                             <>
-                                <div className="bg-muted rounded-lg p-3">
-                                    <p className="font-medium">رابط الإلغاء</p>
-                                    {selectedExpense.cancelUrl ? (
+                                <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <SparklesIcon className="text-muted-foreground size-4" />
+                                        <span className="text-muted-foreground text-xs">تعليمات الإلغاء</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        {fetchedConfidence ? (
+                                            <ConfidenceBadge confidence={fetchedConfidence} />
+                                        ) : null}
+                                        <button
+                                            type="button"
+                                            className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs underline underline-offset-2 transition-colors"
+                                            disabled={fetchingInstructions}
+                                            onClick={() => selectedExpense && fetchInstructions(selectedExpense.id)}
+                                        >
+                                            <RefreshCwIcon className="size-3" />
+                                            تحديث
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {selectedExpense.cancelUrl ? (
+                                    <div className="bg-muted rounded-lg p-3">
+                                        <p className="mb-1 font-medium">رابط الإلغاء</p>
                                         <a
                                             href={selectedExpense.cancelUrl}
-                                            className="text-primary text-xs underline underline-offset-2"
+                                            className="text-primary flex items-center gap-1 text-xs underline underline-offset-2"
                                             target="_blank"
                                             rel="noreferrer"
                                         >
                                             {selectedExpense.cancelUrl}
+                                            <ExternalLinkIcon className="size-3 shrink-0" />
                                         </a>
-                                    ) : (
-                                        <p className="text-muted-foreground text-xs">غير متوفر</p>
-                                    )}
-                                </div>
-                                <ol className="list-inside list-decimal space-y-1">
-                                    {selectedExpense.cancelInstructions.map((item) => (
-                                        <li key={item}>{item}</li>
-                                    ))}
-                                </ol>
-                                {selectedExpense.notes ? (
-                                    <p className="text-muted-foreground text-xs">{selectedExpense.notes}</p>
+                                    </div>
                                 ) : null}
+
+                                <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none [&_ol]:list-decimal [&_ol]:ps-4 [&_blockquote]:rounded-md [&_blockquote]:border-l-4 [&_blockquote]:border-amber-400 [&_blockquote]:bg-amber-50 [&_blockquote]:p-3 [&_blockquote]:text-amber-900 dark:[&_blockquote]:bg-amber-950 dark:[&_blockquote]:text-amber-100">
+                                    <ReactMarkdown>
+                                        {selectedExpense.cancelInstructions}
+                                    </ReactMarkdown>
+                                </div>
                             </>
                         ) : (
                             <div className="bg-muted rounded-lg p-4">
-                                <p className="mb-3">لا توجد تعليمات إلغاء محفوظة لهذه الخدمة بعد.</p>
-                                <Button variant="outline" className="w-full" type="button" disabled>
-                                    <Link2Icon data-icon="inline-start" />
-                                    جلب تعليمات الإلغاء
-                                </Button>
+                                {fetchError ? (
+                                    <>
+                                        <p className="text-destructive mb-3 text-xs">{fetchError}</p>
+                                        {selectedExpense ? (
+                                            <a
+                                                href={`https://www.google.com/search?q=how+to+cancel+${encodeURIComponent(selectedExpense.name)}+subscription`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-primary text-xs underline underline-offset-2"
+                                            >
+                                                ابحث على Google عن طريقة الإلغاء ←
+                                            </a>
+                                        ) : null}
+                                        <Button
+                                            variant="outline"
+                                            className="mt-3 w-full"
+                                            type="button"
+                                            onClick={() => selectedExpense && fetchInstructions(selectedExpense.id)}
+                                        >
+                                            <SparklesIcon data-icon="inline-start" />
+                                            إعادة المحاولة
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="mb-3">لا توجد تعليمات إلغاء محفوظة لهذه الخدمة بعد.</p>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full"
+                                            type="button"
+                                            onClick={() => selectedExpense && fetchInstructions(selectedExpense.id)}
+                                        >
+                                            <SparklesIcon data-icon="inline-start" />
+                                            جلب تعليمات الإلغاء ←
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         )}
 

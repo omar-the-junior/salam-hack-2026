@@ -6,7 +6,9 @@ use App\Http\Requests\ExpenseCards\StoreExpenseCardRequest;
 use App\Http\Requests\ExpenseCards\UpdateExpenseCardRequest;
 use App\Http\Requests\ExpenseCards\UpdateExpenseCardStatusRequest;
 use App\Models\ExpenseCard;
+use App\Services\Expense\CancelSubscriptionInstructionService;
 use App\Services\Expense\ExpenseCardService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -166,6 +168,27 @@ class ExpenseController extends Controller
 
         return redirect()->back()
             ->with('flash', ['type' => 'success', 'message' => 'تم تحديث حالة المصروف.']);
+    }
+
+    public function fetchCancelInstructions(
+        ExpenseCard $expense,
+        CancelSubscriptionInstructionService $cancelService,
+    ): JsonResponse {
+        abort_unless($expense->user_id === auth()->id(), 403);
+
+        $result = $cancelService->fetch($expense);
+
+        if (! $result['success']) {
+            return response()->json(['error' => $result['error']], 422);
+        }
+
+        $expense->refresh();
+
+        return response()->json([
+            'cancelUrl' => $result['cancel_url'],
+            'cancelInstructions' => $result['cancel_instructions'],
+            'confidence' => $result['confidence'],
+        ]);
     }
 
     public function destroy(ExpenseCard $expense): RedirectResponse

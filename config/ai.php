@@ -39,6 +39,19 @@ return [
     ],
 
     /*
+    | Cancel-instruction assistant.
+    | Primary:  Gemini with WebSearch (free tier: gemini-3-flash-preview).
+    |           Set GEMINI_CANCEL_SUBSCRIPTION_MODEL=gemini-3.1-pro-preview when billing is enabled.
+    | Fallback: OpenRouter (no WebSearch; uses model training knowledge + JSON prompt).
+    |           Default: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free (free tier).
+    */
+    'cancel_subscription' => [
+        'model' => env('GEMINI_CANCEL_SUBSCRIPTION_MODEL', 'gemini-3-flash-preview'),
+        'openrouter_model' => env('OPENROUTER_CANCEL_SUBSCRIPTION_MODEL', 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free'),
+        'timeout' => env('GEMINI_CANCEL_SUBSCRIPTION_TIMEOUT', 30),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------

@@ -11,5 +11,6 @@ Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () 
     Route::get('expenses/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
     Route::match(['put', 'patch'], 'expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
     Route::match(['put', 'patch'], 'expenses/{expense}/status', [ExpenseController::class, 'status'])->name('expenses.status');
+    Route::post('expenses/{expense}/fetch-cancel-instructions', [ExpenseController::class, 'fetchCancelInstructions'])->name('expenses.fetchCancelInstructions');
     Route::delete('expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
 });

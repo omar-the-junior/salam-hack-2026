@@ -151,22 +151,10 @@ class ExpenseCardService
             'nextRenewalDate' => $card->next_renewal_date?->toDateString(),
             'autoDetected' => $card->auto_detected,
             'cancelUrl' => $card->cancel_url,
-            'cancelInstructions' => $this->cancelInstructionsToList($card->cancel_instructions),
+            'cancelInstructions' => ($card->cancel_instructions !== null && $card->cancel_instructions !== '')
+                ? $card->cancel_instructions
+                : null,
             'notes' => $card->notes ?? '',
         ];
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function cancelInstructionsToList(?string $raw): array
-    {
-        if ($raw === null || $raw === '') {
-            return [];
-        }
-
-        $lines = preg_split("/\r\n|\n|\r/", $raw);
-
-        return array_values(array_filter(array_map('trim', $lines), fn (string $line): bool => $line !== ''));
     }
 }

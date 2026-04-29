@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ExpenseCard;
 use App\Models\User;
+use App\Services\Expense\CancelSubscriptionInstructionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -191,5 +192,114 @@ class ExpenseCardTest extends TestCase
 
         $response->assertForbidden();
         $this->assertDatabaseHas('expense_cards', ['id' => $card->id]);
+    }
+
+    public function test_fetch_cancel_instructions_persists_and_returns_markdown(): void
+    {
+        $user = User::factory()->create(['email' => 'ai-fetch@example.com']);
+        $card = ExpenseCard::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Notion',
+            'cancel_instructions' => null,
+            'cancel_url' => null,
+        ]);
+
+        $this->instance(
+            CancelSubscriptionInstructionService::class,
+            new class extends CancelSubscriptionInstructionService
+            {
+                public function fetch(ExpenseCard $card): array
+                {
+                    $card->update([
+                        'cancel_url' => 'https://www.notion.so/billing',
+                        'cancel_instructions' => "1. Go to notion.so\n2. Cancel plan",
+                    ]);
+
+                    return [
+                        'success' => true,
+                        'cancel_url' => 'https://www.notion.so/billing',
+                        'cancel_instructions' => "1. Go to notion.so\n2. Cancel plan",
+                        'confidence' => 'high',
+                        'error' => null,
+                    ];
+                }
+            },
+        );
+
+        $response = $this->actingAs($user)
+            ->postJson(route('expenses.fetchCancelInstructions', ['expense' => $card]));
+
+        $response->assertOk();
+        $response->assertJsonStructure(['cancelUrl', 'cancelInstructions', 'confidence']);
+        $response->assertJsonPath('confidence', 'high');
+
+        $this->assertDatabaseHas('expense_cards', [
+            'id' => $card->id,
+            'cancel_url' => 'https://www.notion.so/billing',
+        ]);
+        $this->assertNotNull($card->fresh()->cancel_instructions);
+    }
+
+    public function test_fetch_cancel_instructions_returns_422_when_ai_fails(): void
+    {
+        $user = User::factory()->create(['email' => 'ai-fail@example.com']);
+        $card = ExpenseCard::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'BrokenSaaS',
+            'cancel_instructions' => null,
+        ]);
+
+        $this->instance(
+            CancelSubscriptionInstructionService::class,
+            new class extends CancelSubscriptionInstructionService
+            {
+                public function fetch(ExpenseCard $card): array
+                {
+                    return [
+                        'success' => false,
+                        'cancel_url' => null,
+                        'cancel_instructions' => null,
+                        'confidence' => null,
+                        'error' => 'Couldn\'t fetch instructions right now.',
+                    ];
+                }
+            },
+        );
+
+        $response = $this->actingAs($user)
+            ->postJson(route('expenses.fetchCancelInstructions', ['expense' => $card]));
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['error']);
+
+        $this->assertDatabaseHas('expense_cards', [
+            'id' => $card->id,
+            'cancel_instructions' => null,
+        ]);
+    }
+
+    public function test_fetch_cancel_instructions_requires_authentication(): void
+    {
+        $owner = User::factory()->create(['email' => 'ai-noauth@example.com']);
+        $card = ExpenseCard::factory()->create(['user_id' => $owner->id]);
+
+        $response = $this->postJson(route('expenses.fetchCancelInstructions', ['expense' => $card]));
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_fetch_cancel_instructions_rejects_other_users_card(): void
+    {
+        $owner = User::factory()->create(['email' => 'ai-owner@example.com']);
+        $intruder = User::factory()->create(['email' => 'ai-intruder@example.com']);
+        $card = ExpenseCard::factory()->create([
+            'user_id' => $owner->id,
+            'name' => 'Figma Pro',
+        ]);
+
+        $response = $this->actingAs($intruder)
+            ->postJson(route('expenses.fetchCancelInstructions', ['expense' => $card]));
+
+        $response->assertForbidden();
     }
 }
