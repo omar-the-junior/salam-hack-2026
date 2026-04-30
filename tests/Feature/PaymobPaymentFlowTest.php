@@ -214,15 +214,112 @@ class PaymobPaymentFlowTest extends TestCase
         $this->assertDatabaseCount('payment_transactions', 0);
     }
 
-    public function test_callback_redirects_to_pay_page_with_pending_state(): void
+    public function test_callback_renders_public_status_page_for_pending_transaction(): void
     {
         $freelancer = $this->makeFreelancer();
         $link = $this->makeLink($freelancer);
-        $transaction = $this->makeTransaction($link, 'pending', 'ORD-CALLBACK');
+        $this->makeTransaction($link, 'pending', 'ORD-CALLBACK');
 
         $response = $this->get(route('pay.callback', ['order' => 'ORD-CALLBACK']));
 
-        $response->assertRedirect(route('pay.show', $link->public_token));
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('pay/receipt')
+            ->where('status', 'pending')
+            ->where('transaction.order_id', 'ORD-CALLBACK')
+            ->where('retry_url', route('pay.show', $link->public_token))
+        );
+    }
+
+    public function test_callback_renders_public_status_page_for_paid_transaction(): void
+    {
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer, 'paid');
+        PaymentTransaction::create([
+            'payment_link_id' => $link->id,
+            'user_id' => $link->user_id,
+            'paymob_order_id' => 'ORD-PAID',
+            'paymob_transaction_id' => 'TXN-PAID',
+            'amount_cents' => 57000,
+            'currency' => 'EGP',
+            'status' => 'paid',
+            'card_last_four' => '2346',
+            'card_brand' => 'MasterCard',
+            'hmac_verified' => true,
+            'paid_at' => now(),
+        ]);
+
+        $response = $this->get(route('pay.callback', ['id' => 'TXN-PAID', 'order' => 'ORD-PAID']));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('pay/receipt')
+            ->where('status', 'success')
+            ->where('transaction.id', 'TXN-PAID')
+            ->where('transaction.card_last_four', '2346')
+            ->where('transaction.card_brand', 'MasterCard')
+        );
+    }
+
+    public function test_callback_renders_public_status_page_for_failed_transaction(): void
+    {
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
+        PaymentTransaction::create([
+            'payment_link_id' => $link->id,
+            'user_id' => $link->user_id,
+            'paymob_order_id' => 'ORD-FAILED',
+            'paymob_transaction_id' => 'TXN-FAILED',
+            'amount_cents' => 57000,
+            'currency' => 'EGP',
+            'status' => 'failed',
+            'failure_reason' => 'Declined',
+            'hmac_verified' => true,
+        ]);
+
+        $response = $this->get(route('pay.callback', ['id' => 'TXN-FAILED', 'order' => 'ORD-FAILED']));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('pay/receipt')
+            ->where('status', 'failed')
+            ->where('transaction.id', 'TXN-FAILED')
+            ->where('transaction.order_id', 'ORD-FAILED')
+        );
+    }
+
+    public function test_callback_uses_verified_payload_when_transaction_is_unknown(): void
+    {
+        $this->mock(PaymobService::class, function ($mock) {
+            $mock->shouldReceive('verifyHmac')->once()->andReturn(true);
+        });
+
+        $response = $this->get(route('pay.callback', [
+            'id' => 'TXN-UNKNOWN',
+            'order' => 'ORD-UNKNOWN',
+            'amount_cents' => '3372',
+            'currency' => 'EGP',
+            'success' => 'true',
+            'pending' => 'false',
+            'source_data_pan' => '2346',
+            'source_data_sub_type' => 'MasterCard',
+            'data_message' => 'Approved',
+            'hmac' => 'valid-hmac',
+        ]));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('pay/receipt')
+            ->where('status', 'success')
+            ->where('isVerifiedCallback', true)
+            ->where('transaction.id', 'TXN-UNKNOWN')
+            ->where('transaction.order_id', 'ORD-UNKNOWN')
+            ->where('transaction.amount_cents', 3372)
+            ->where('transaction.card_last_four', '2346')
+            ->where('transaction.card_brand', 'MasterCard')
+            ->where('transaction.message', 'Approved')
+            ->where('retry_url', null)
+        );
     }
 
     public function test_callback_does_not_update_database(): void
@@ -231,7 +328,15 @@ class PaymobPaymentFlowTest extends TestCase
         $link = $this->makeLink($freelancer);
         $this->makeTransaction($link, 'pending', 'ORD-NOCHANGE');
 
-        $this->get(route('pay.callback', ['order' => 'ORD-NOCHANGE', 'success' => '1']));
+        $this->mock(PaymobService::class, function ($mock) {
+            $mock->shouldReceive('verifyHmac')->once()->andReturn(true);
+        });
+
+        $this->get(route('pay.callback', [
+            'order' => 'ORD-NOCHANGE',
+            'success' => 'true',
+            'hmac' => 'valid-hmac',
+        ]));
 
         $this->assertDatabaseHas('payment_transactions', [
             'paymob_order_id' => 'ORD-NOCHANGE',

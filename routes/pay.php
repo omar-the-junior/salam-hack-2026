@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PayController;
 use App\Http\Middleware\VerifyPaymobWebhook;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::get('pay/{token}', [PayController::class, 'show'])->name('pay.show');
@@ -12,5 +13,5 @@ Route::get('payment/callback', [PayController::class, 'callback'])->name('pay.ca
 
 Route::post('webhook/paymob', [PayController::class, 'webhook'])
     ->middleware(VerifyPaymobWebhook::class)
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+    ->withoutMiddleware([ValidateCsrfToken::class])
     ->name('webhook.paymob');

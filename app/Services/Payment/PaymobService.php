@@ -7,16 +7,12 @@ use RuntimeException;
 
 class PaymobService
 {
-    private string $apiKey;
-
-    private string $integrationId;
-
-    private string $iframeId;
-
-    private string $hmacSecret;
-
-    public function __construct()
-    {
+    public function __construct(
+        private string $apiKey = '',
+        private string $integrationId = '',
+        private string $iframeId = '',
+        private string $hmacSecret = '',
+    ) {
         $this->apiKey = config('services.paymob.api_key');
         $this->integrationId = config('services.paymob.integration_id');
         $this->iframeId = config('services.paymob.iframe_id');
@@ -91,29 +87,27 @@ class PaymobService
      */
     public function verifyHmac(array $payload, string $receivedHmac): bool
     {
-        $obj = $payload['obj'] ?? [];
-
         $fields = [
-            'amount_cents' => $this->normalize($obj['amount_cents'] ?? ''),
-            'created_at' => $this->normalize($obj['created_at'] ?? ''),
-            'currency' => $this->normalize($obj['currency'] ?? ''),
-            'error_occured' => $this->normalize($obj['error_occured'] ?? ''),
-            'has_parent_transaction' => $this->normalize($obj['has_parent_transaction'] ?? ''),
-            'id' => $this->normalize($obj['id'] ?? ''),
-            'integration_id' => $this->normalize($obj['integration_id'] ?? ''),
-            'is_3d_secure' => $this->normalize($obj['is_3d_secure'] ?? ''),
-            'is_auth' => $this->normalize($obj['is_auth'] ?? ''),
-            'is_capture' => $this->normalize($obj['is_capture'] ?? ''),
-            'is_refunded' => $this->normalize($obj['is_refunded'] ?? ''),
-            'is_standalone_payment' => $this->normalize($obj['is_standalone_payment'] ?? ''),
-            'is_voided' => $this->normalize($obj['is_voided'] ?? ''),
-            'order' => $this->normalize($obj['order']['id'] ?? ''),
-            'owner' => $this->normalize($obj['owner'] ?? ''),
-            'pending' => $this->normalize($obj['pending'] ?? ''),
-            'source_data_pan' => $this->normalize($obj['source_data']['pan'] ?? ''),
-            'source_data_sub_type' => $this->normalize($obj['source_data']['sub_type'] ?? ''),
-            'source_data_type' => $this->normalize($obj['source_data']['type'] ?? ''),
-            'success' => $this->normalize($obj['success'] ?? ''),
+            'amount_cents' => $this->normalize($this->hmacField($payload, 'amount_cents')),
+            'created_at' => $this->normalize($this->hmacField($payload, 'created_at')),
+            'currency' => $this->normalize($this->hmacField($payload, 'currency')),
+            'error_occured' => $this->normalize($this->hmacField($payload, 'error_occured')),
+            'has_parent_transaction' => $this->normalize($this->hmacField($payload, 'has_parent_transaction')),
+            'id' => $this->normalize($this->hmacField($payload, 'id')),
+            'integration_id' => $this->normalize($this->hmacField($payload, 'integration_id')),
+            'is_3d_secure' => $this->normalize($this->hmacField($payload, 'is_3d_secure')),
+            'is_auth' => $this->normalize($this->hmacField($payload, 'is_auth')),
+            'is_capture' => $this->normalize($this->hmacField($payload, 'is_capture')),
+            'is_refunded' => $this->normalize($this->hmacField($payload, 'is_refunded')),
+            'is_standalone_payment' => $this->normalize($this->hmacField($payload, 'is_standalone_payment')),
+            'is_voided' => $this->normalize($this->hmacField($payload, 'is_voided')),
+            'order' => $this->normalize($this->hmacField($payload, 'order')),
+            'owner' => $this->normalize($this->hmacField($payload, 'owner')),
+            'pending' => $this->normalize($this->hmacField($payload, 'pending')),
+            'source_data_pan' => $this->normalize($this->hmacField($payload, 'source_data_pan')),
+            'source_data_sub_type' => $this->normalize($this->hmacField($payload, 'source_data_sub_type')),
+            'source_data_type' => $this->normalize($this->hmacField($payload, 'source_data_type')),
+            'success' => $this->normalize($this->hmacField($payload, 'success')),
         ];
 
         $concatenated = implode('', array_values($fields));
@@ -130,5 +124,28 @@ class PaymobService
         }
 
         return (string) $value;
+    }
+
+    private function hmacField(array $payload, string $field): mixed
+    {
+        return match ($field) {
+            'order' => data_get($payload, 'obj.order.id')
+                ?? data_get($payload, 'obj.order')
+                ?? $payload['order']
+                ?? '',
+            'source_data_pan' => data_get($payload, 'obj.source_data.pan')
+                ?? data_get($payload, 'source_data.pan')
+                ?? $payload['source_data_pan']
+                ?? '',
+            'source_data_sub_type' => data_get($payload, 'obj.source_data.sub_type')
+                ?? data_get($payload, 'source_data.sub_type')
+                ?? $payload['source_data_sub_type']
+                ?? '',
+            'source_data_type' => data_get($payload, 'obj.source_data.type')
+                ?? data_get($payload, 'source_data.type')
+                ?? $payload['source_data_type']
+                ?? '',
+            default => data_get($payload, "obj.{$field}") ?? $payload[$field] ?? '',
+        };
     }
 }

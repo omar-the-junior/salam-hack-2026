@@ -9,7 +9,6 @@ use App\Models\UserWallet;
 use App\Notifications\PaymentReceivedNotification;
 use App\Services\Payment\PaymobService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -113,11 +112,13 @@ class PayController extends Controller
         }
     }
 
-    public function callback(Request $request): RedirectResponse
+    public function callback(Request $request, PaymobService $paymob): Response
     {
         try {
             $paymobTxnId = $request->query('id');
             $orderId = $request->query('order');
+            $hmac = (string) $request->query('hmac', '');
+            $isVerifiedCallback = $hmac !== '' && $paymob->verifyHmac($request->query(), $hmac);
 
             $transaction = null;
 
@@ -129,19 +130,42 @@ class PayController extends Controller
                 $transaction = PaymentTransaction::where('paymob_order_id', $orderId)->first();
             }
 
-            if (! $transaction) {
-                return redirect()->back()->with('payment', 'pending');
-            }
-
-            $publicToken = $transaction->paymentLink->public_token;
-
-            $payment = match ($transaction->status) {
-                'paid' => 'success',
-                'failed' => 'failed',
+            $status = match (true) {
+                $transaction?->status === 'paid' => 'success',
+                $transaction?->status === 'failed' => 'failed',
+                $transaction !== null => 'pending',
+                $isVerifiedCallback && $request->boolean('pending') => 'pending',
+                $isVerifiedCallback && $request->boolean('success') => 'success',
+                $isVerifiedCallback => 'failed',
                 default => 'pending',
             };
 
-            return redirect()->route('pay.show', $publicToken)->with('payment', $payment);
+            $paymentLink = $transaction?->paymentLink;
+            $amountCents = $transaction?->amount_cents;
+            if (! $amountCents && $isVerifiedCallback) {
+                $amountCents = (int) $request->query('amount_cents', 0);
+            }
+
+            $currency = $transaction?->currency;
+            if (! $currency && $isVerifiedCallback) {
+                $currency = (string) $request->query('currency', 'EGP');
+            }
+
+            return Inertia::render('pay/receipt', [
+                'status' => $status,
+                'isVerifiedCallback' => $isVerifiedCallback,
+                'transaction' => [
+                    'id' => (string) ($transaction?->paymob_transaction_id ?: $paymobTxnId ?: ''),
+                    'order_id' => (string) ($transaction?->paymob_order_id ?: $orderId ?: ''),
+                    'amount_cents' => $amountCents ?: 0,
+                    'currency' => $currency ?: 'EGP',
+                    'card_last_four' => $transaction?->card_last_four ?: ($isVerifiedCallback ? (string) $request->query('source_data_pan', '') : ''),
+                    'card_brand' => $transaction?->card_brand ?: ($isVerifiedCallback ? (string) $request->query('source_data_sub_type', '') : ''),
+                    'message' => $isVerifiedCallback ? (string) $request->query('data_message', '') : '',
+                    'paid_at' => $transaction?->paid_at?->toIso8601String(),
+                ],
+                'retry_url' => $paymentLink ? route('pay.show', $paymentLink->public_token) : null,
+            ]);
         } catch (Throwable $e) {
             Log::error(static::class.'@callback', [
                 'exception' => $e::class,
