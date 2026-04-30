@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\ConnectedAccount;
 use App\Models\EmailScan;
 use App\Models\EmailScanResult;
+use App\Notifications\EmailScanCompletedNotification;
 use App\Services\Email\EmailParserService;
 use App\Services\Gmail\GmailScannerService;
 use Illuminate\Bus\Queueable;
@@ -68,6 +69,9 @@ class ScanEmailsJob implements ShouldQueue
             }
 
             $scan->markCompleted($found);
+
+            $scan->loadMissing('user');
+            $scan->user->notify(new EmailScanCompletedNotification($scan));
         } catch (\Throwable $e) {
             Log::error('ScanEmailsJob failed', [
                 'scan_id' => $this->scanId,

@@ -7,7 +7,9 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Milestone;
 use App\Models\PaymentLink;
+use App\Notifications\MilestonePaymentRequestNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -111,6 +113,11 @@ class PaymentLinkController extends Controller
             'mock_provider' => 'mock-sandbox',
             'source' => 'manual',
         ]);
+
+        if ($paymentLink->milestone_id && $paymentLink->client_email) {
+            Notification::route('mail', $paymentLink->client_email)
+                ->notify(new MilestonePaymentRequestNotification($paymentLink, $paymentLink->milestone));
+        }
 
         return redirect()->route('payment-links.show', $paymentLink->id)
             ->with('flash', ['type' => 'success', 'message' => 'تم إنشاء رابط الدفع بنجاح']);

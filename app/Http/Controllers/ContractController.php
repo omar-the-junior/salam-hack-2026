@@ -6,6 +6,7 @@ use App\Http\Requests\Contracts\AcceptContractRequest;
 use App\Http\Requests\Contracts\StoreContractRequest;
 use App\Http\Requests\Contracts\UpdateContractRequest;
 use App\Models\Contract;
+use App\Notifications\ContractSignedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -129,6 +130,8 @@ class ContractController extends Controller
             'signed_at' => now(),
             'client_ip' => $request->ip(),
         ]);
+
+        $contract->user->notify(new ContractSignedNotification($contract));
 
         return redirect()->route('contracts.review', ['token' => $token])
             ->with('flash', ['type' => 'success', 'message' => 'تم توقيع العقد بنجاح. احتفظ بهذه الصفحة في المفضلة.']);

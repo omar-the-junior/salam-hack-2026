@@ -10,6 +10,7 @@ import {
     Settings,
     Users,
 } from 'lucide-react';
+import { NotificationBell } from '@/components/notification-bell';
 import AppLogo from '@/components/app-logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -151,6 +152,8 @@ export function AppHeader() {
                             <Settings />
                         </Link>
                     </Button>
+
+                    <NotificationBell />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
