@@ -8,133 +8,221 @@ use App\Http\Requests\Contracts\UpdateContractRequest;
 use App\Models\Contract;
 use App\Notifications\ContractSignedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class ContractController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('contracts/create');
+        try {
+            return Inertia::render('contracts/create');
+        } catch (Throwable $e) {
+            Log::error(static::class.'@create', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function createMilestones(): Response
     {
-        $contractId = request()->query('contract_id');
-        $contract = null;
+        try {
+            $contractId = request()->query('contract_id');
+            $contract = null;
 
-        if ($contractId) {
-            $contract = Contract::where('id', $contractId)
-                ->where('user_id', auth()->id())
-                ->first();
+            if ($contractId) {
+                $contract = Contract::where('id', $contractId)
+                    ->where('user_id', auth()->id())
+                    ->first();
+            }
+
+            return Inertia::render('contracts/create-milestones', [
+                'contract' => $contract,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@createMilestones', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
         }
-
-        return Inertia::render('contracts/create-milestones', [
-            'contract' => $contract,
-        ]);
     }
 
     public function index(): Response
     {
-        $contracts = Contract::where('user_id', auth()->id())
-            ->withCount('milestones')
-            ->latest()
-            ->get();
+        try {
+            $contracts = Contract::where('user_id', auth()->id())
+                ->withCount('milestones')
+                ->latest()
+                ->get();
 
-        return Inertia::render('contracts/index', [
-            'contracts' => $contracts,
-        ]);
+            return Inertia::render('contracts/index', [
+                'contracts' => $contracts,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@index', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function show(Contract $contract): Response
     {
-        $this->authorizeContract($contract);
+        try {
+            $this->authorizeContract($contract);
 
-        $contract->load('milestones');
+            $contract->load('milestones');
 
-        return Inertia::render('contracts/show', [
-            'contract' => $contract,
-        ]);
+            return Inertia::render('contracts/show', [
+                'contract' => $contract,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@show', [
+                'user_id' => auth()->id(),
+                'contract_id' => $contract->id,
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function store(StoreContractRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        $taxRate = $validated['tax_rate'] ?? 0;
-        $totalValue = $validated['total_value'];
-        $taxAmount = $totalValue * $taxRate / 100;
+            $taxRate = $validated['tax_rate'] ?? 0;
+            $totalValue = $validated['total_value'];
+            $taxAmount = $totalValue * $taxRate / 100;
 
-        $contract = Contract::create([
-            'user_id' => auth()->id(),
-            'contract_token' => Str::uuid()->toString(),
-            'project_name' => $validated['project_name'],
-            'description' => $validated['description'] ?? null,
-            'client_name' => $validated['client_name'],
-            'client_email' => $validated['client_email'],
-            'total_value' => $totalValue,
-            'tax_rate' => $taxRate,
-            'tax_amount' => $taxAmount,
-            'grand_total' => $totalValue + $taxAmount,
-            'currency' => $validated['currency'],
-            'start_date' => $validated['start_date'] ?? null,
-            'end_date' => $validated['end_date'] ?? null,
-            'terms' => $validated['terms'] ?? null,
-            'status' => 'draft',
-        ]);
+            $contract = Contract::create([
+                'user_id' => auth()->id(),
+                'contract_token' => Str::uuid()->toString(),
+                'project_name' => $validated['project_name'],
+                'description' => $validated['description'] ?? null,
+                'client_name' => $validated['client_name'],
+                'client_email' => $validated['client_email'],
+                'total_value' => $totalValue,
+                'tax_rate' => $taxRate,
+                'tax_amount' => $taxAmount,
+                'grand_total' => $totalValue + $taxAmount,
+                'currency' => $validated['currency'],
+                'start_date' => $validated['start_date'] ?? null,
+                'end_date' => $validated['end_date'] ?? null,
+                'terms' => $validated['terms'] ?? null,
+                'status' => 'draft',
+            ]);
 
-        return redirect()->route('contracts.create.milestones', ['contract_id' => $contract->id]);
+            return redirect()->route('contracts.create.milestones', ['contract_id' => $contract->id]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@store', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function update(UpdateContractRequest $request, Contract $contract): RedirectResponse
     {
-        $this->authorizeContract($contract);
+        try {
+            $this->authorizeContract($contract);
 
-        $validated = $request->validated();
+            $validated = $request->validated();
 
-        if (isset($validated['total_value']) || isset($validated['tax_rate'])) {
-            $totalValue = $validated['total_value'] ?? $contract->total_value;
-            $taxRate = $validated['tax_rate'] ?? $contract->tax_rate;
-            $validated['tax_amount'] = $totalValue * $taxRate / 100;
-            $validated['grand_total'] = $totalValue + $validated['tax_amount'];
+            if (isset($validated['total_value']) || isset($validated['tax_rate'])) {
+                $totalValue = $validated['total_value'] ?? $contract->total_value;
+                $taxRate = $validated['tax_rate'] ?? $contract->tax_rate;
+                $validated['tax_amount'] = $totalValue * $taxRate / 100;
+                $validated['grand_total'] = $totalValue + $validated['tax_amount'];
+            }
+
+            $contract->update($validated);
+
+            return redirect()->back()
+                ->with('flash', ['type' => 'success', 'message' => 'تم تحديث العقد بنجاح']);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@update', [
+                'user_id' => auth()->id(),
+                'contract_id' => $contract->id,
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
         }
-
-        $contract->update($validated);
-
-        return redirect()->back()
-            ->with('flash', ['type' => 'success', 'message' => 'تم تحديث العقد بنجاح']);
     }
 
     public function review(string $token): Response
     {
-        $contract = Contract::where('contract_token', $token)
-            ->with(['milestones', 'user'])
-            ->firstOrFail();
+        try {
+            $contract = Contract::where('contract_token', $token)
+                ->with(['milestones', 'user'])
+                ->firstOrFail();
 
-        return Inertia::render('contracts/review', [
-            'contract' => $contract,
-        ]);
+            return Inertia::render('contracts/review', [
+                'contract' => $contract,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@review', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function accept(AcceptContractRequest $request, string $token): RedirectResponse
     {
-        $contract = Contract::where('contract_token', $token)->firstOrFail();
+        try {
+            $contract = Contract::where('contract_token', $token)->firstOrFail();
 
-        if ($contract->status !== 'draft') {
-            return redirect()->route('contracts.review', ['token' => $token]);
+            if ($contract->status !== 'draft') {
+                return redirect()->route('contracts.review', ['token' => $token]);
+            }
+
+            $contract->update([
+                'status' => 'active',
+                'signed_at' => now(),
+                'client_ip' => $request->ip(),
+            ]);
+
+            try {
+                Log::info('Sending ContractSignedNotification', [
+                    'contract_id' => $contract->id,
+                    'notification_target_user_id' => $contract->user_id,
+                ]);
+                $contract->user->notify(new ContractSignedNotification($contract));
+            } catch (Throwable $notifyException) {
+                Log::error(static::class.'@accept: notification failed', [
+                    'contract_id' => $contract->id,
+                    'notification_target_user_id' => $contract->user_id,
+                    'exception' => $notifyException::class,
+                    'message' => $notifyException->getMessage(),
+                ]);
+                throw $notifyException;
+            }
+
+            return redirect()->route('contracts.review', ['token' => $token])
+                ->with('flash', ['type' => 'success', 'message' => 'تم توقيع العقد بنجاح. احتفظ بهذه الصفحة في المفضلة.']);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@accept', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
         }
-
-        $contract->update([
-            'status' => 'active',
-            'signed_at' => now(),
-            'client_ip' => $request->ip(),
-        ]);
-
-        $contract->user->notify(new ContractSignedNotification($contract));
-
-        return redirect()->route('contracts.review', ['token' => $token])
-            ->with('flash', ['type' => 'success', 'message' => 'تم توقيع العقد بنجاح. احتفظ بهذه الصفحة في المفضلة.']);
     }
 
     private function authorizeContract(Contract $contract): void

@@ -6,56 +6,76 @@ use App\Models\UserWallet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class DashboardController extends Controller
 {
     public function index(Request $request): Response
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
 
-        $items = $this->buildChecklistItems($user->id);
-        $allCompleted = collect($items)->every(fn (array $item): bool => $item['checked']);
-        $showChecklist = (bool) $request->session()->get('show_checklist', false)
-            || (! $allCompleted && $user->onboarding_checklist_dismissed_at === null);
+            $items = $this->buildChecklistItems($user->id);
+            $allCompleted = collect($items)->every(fn (array $item): bool => $item['checked']);
+            $showChecklist = (bool) $request->session()->get('show_checklist', false)
+                || (! $allCompleted && $user->onboarding_checklist_dismissed_at === null);
 
-        $walletBalances = [];
-        if (Schema::hasTable('user_wallets')) {
-            $walletBalances = $user->wallets()
-                ->orderBy('currency')
-                ->get()
-                ->map(fn (UserWallet $wallet) => [
-                    'currency' => $wallet->currency,
-                    'balance_cents' => $wallet->balance_cents,
-                    'balance' => round($wallet->balance_cents / 100, 2),
-                    'formatted_balance' => number_format($wallet->balance_cents / 100, 2, '.', ''),
-                ])
-                ->values()
-                ->all();
+            $walletBalances = [];
+            if (Schema::hasTable('user_wallets')) {
+                $walletBalances = $user->wallets()
+                    ->orderBy('currency')
+                    ->get()
+                    ->map(fn (UserWallet $wallet) => [
+                        'currency' => $wallet->currency,
+                        'balance_cents' => $wallet->balance_cents,
+                        'balance' => round($wallet->balance_cents / 100, 2),
+                        'formatted_balance' => number_format($wallet->balance_cents / 100, 2, '.', ''),
+                    ])
+                    ->values()
+                    ->all();
+            }
+
+            return Inertia::render('dashboard', [
+                'checklist' => [
+                    'show' => $showChecklist,
+                    'all_completed' => $allCompleted,
+                    'items' => $items,
+                    'is_static_fallback' => ! Schema::hasTable('payment_links')
+                        || ! Schema::hasTable('expense_cards')
+                        || ! Schema::hasTable('connected_accounts'),
+                ],
+                'walletBalances' => $walletBalances,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@index', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
         }
-
-        return Inertia::render('dashboard', [
-            'checklist' => [
-                'show' => $showChecklist,
-                'all_completed' => $allCompleted,
-                'items' => $items,
-                'is_static_fallback' => ! Schema::hasTable('payment_links')
-                    || ! Schema::hasTable('expense_cards')
-                    || ! Schema::hasTable('connected_accounts'),
-            ],
-            'walletBalances' => $walletBalances,
-        ]);
     }
 
     public function dismissChecklist(Request $request): RedirectResponse
     {
-        $request->user()->forceFill([
-            'onboarding_checklist_dismissed_at' => now(),
-        ])->save();
+        try {
+            $request->user()->forceFill([
+                'onboarding_checklist_dismissed_at' => now(),
+            ])->save();
 
-        return redirect()->route('dashboard');
+            return redirect()->route('dashboard');
+        } catch (Throwable $e) {
+            Log::error(static::class.'@dismissChecklist', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     /**

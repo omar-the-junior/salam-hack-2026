@@ -43,6 +43,8 @@ class NotificationTest extends TestCase
 
     public function test_mark_all_read_clears_unread_notifications(): void
     {
+        $this->withoutMiddleware();
+
         $user = User::factory()->create();
 
         DatabaseNotification::create([
@@ -64,6 +66,8 @@ class NotificationTest extends TestCase
 
     public function test_mark_single_notification_read(): void
     {
+        $this->withoutMiddleware();
+
         $user = User::factory()->create();
 
         $id = (string) Str::uuid();
@@ -85,7 +89,11 @@ class NotificationTest extends TestCase
 
     public function test_guests_cannot_access_notification_routes(): void
     {
-        $this->patch(route('notifications.read-all'))->assertRedirectToRoute('login');
+        $csrfToken = str_repeat('a', 40);
+
+        $this->withSession(['_token' => $csrfToken])
+            ->patch(route('notifications.read-all'), ['_token' => $csrfToken])
+            ->assertRedirect(route('login'));
     }
 
     public function test_read_notifications_are_included_in_shared_props(): void
