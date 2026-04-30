@@ -133,9 +133,8 @@ class PayController extends Controller
             $status = match (true) {
                 $transaction?->status === 'paid' => 'success',
                 $transaction?->status === 'failed' => 'failed',
-                $transaction !== null => 'pending',
-                $isVerifiedCallback && $request->boolean('pending') => 'pending',
                 $isVerifiedCallback && $request->boolean('success') => 'success',
+                $isVerifiedCallback && $request->boolean('pending') => 'pending',
                 $isVerifiedCallback => 'failed',
                 default => 'pending',
             };
