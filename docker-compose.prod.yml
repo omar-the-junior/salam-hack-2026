@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/omar-the-junior/salam-hack:main
+    image: ghcr.io/omar-the-junior/salam-hack-2026:main
     pull_policy: always
     restart: unless-stopped
     working_dir: /var/www
