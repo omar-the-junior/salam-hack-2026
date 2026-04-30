@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureRateLimiting();
+
+        if (app()->isProduction()) {
+            URL::forceScheme('https');
+        }
 
         RedirectIfAuthenticated::redirectUsing(static function (Request $request): string {
             return route('dashboard', [], false);
