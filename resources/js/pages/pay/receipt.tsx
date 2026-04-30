@@ -63,78 +63,90 @@ export default function PayReceipt({ status, isVerifiedCallback, transaction, re
     return (
         <>
             <Head title="حالة الدفع" />
-            <div className="mx-auto flex min-h-svh w-full max-w-xl flex-col justify-center gap-4 p-4">
-                <div className="flex justify-center">
-                    <AppLogo className="h-8" />
+            <div className="flex min-h-svh w-full items-center justify-center bg-muted/20 p-3 sm:p-4">
+                <div className="flex w-full max-w-xl flex-col gap-3 sm:gap-4">
+                    <div className="flex justify-center">
+                        <AppLogo className="h-8" />
+                    </div>
+
+                    {!isVerifiedCallback && (
+                        <Alert variant="destructive">
+                            <AlertCircleIcon />
+                            <AlertTitle>تعذر التحقق من التوقيع</AlertTitle>
+                            <AlertDescription>
+                                تم عرض الحالة اعتماداً على سجلات النظام فقط، وتجاهلنا بيانات الرجوع غير الموقعة.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+
+                    <Card className="flex max-h-[calc(100svh-6.5rem)] flex-col overflow-hidden">
+                        <CardHeader className="items-center gap-2.5 border-b bg-background/80 py-4 text-center sm:gap-3 sm:py-5">
+                            <StatusIcon className="size-10 sm:size-12" />
+                            <Badge variant={isSuccess ? 'default' : isFailed ? 'destructive' : 'secondary'}>{statusConfig.badge}</Badge>
+                            <CardTitle className="text-lg sm:text-xl">{statusConfig.title}</CardTitle>
+                            <CardDescription className="max-w-md">{statusConfig.description}</CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="flex-1 overflow-y-auto p-4 sm:p-5">
+                            <div className="flex flex-col gap-3">
+                                <div className="rounded-lg border bg-muted/30 p-4">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground">المبلغ</span>
+                                        <span className="text-base font-semibold">{formatMoney(transaction.amount_cents, transaction.currency)}</span>
+                                    </div>
+
+                                    <Separator className="my-3" />
+
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-muted-foreground">رقم العملية</span>
+                                            <span className="truncate text-left font-medium" dir="ltr">
+                                                {transaction.id || '-'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-muted-foreground">رقم الطلب</span>
+                                            <span className="truncate text-left font-medium" dir="ltr">
+                                                {transaction.order_id || '-'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {(transaction.card_brand || transaction.card_last_four) && (
+                                    <div className="flex items-center gap-2 rounded-lg border p-3 text-sm">
+                                        <CreditCardIcon className="size-4 text-muted-foreground" />
+                                        <span className="truncate">
+                                            {transaction.card_brand || 'Card'}{' '}
+                                            {transaction.card_last_four ? `•••• ${transaction.card_last_four}` : ''}
+                                        </span>
+                                    </div>
+                                )}
+
+                                {transaction.message && (
+                                    <Alert>
+                                        <ShieldCheckIcon />
+                                        <AlertTitle>رسالة بوابة الدفع</AlertTitle>
+                                        <AlertDescription className="wrap-break-word">{transaction.message}</AlertDescription>
+                                    </Alert>
+                                )}
+                            </div>
+                        </CardContent>
+
+                        <CardFooter className="sticky bottom-0 border-t bg-background/95 p-4 backdrop-blur supports-backdrop-filter:bg-background/80 sm:p-5">
+                            {retryUrl ? (
+                                <Button asChild className="w-full" size="lg">
+                                    <a href={retryUrl}>
+                                        <RefreshCwIcon data-icon="inline-start" />
+                                        العودة إلى رابط الدفع
+                                    </a>
+                                </Button>
+                            ) : (
+                                <p className="w-full text-center text-sm text-muted-foreground">يمكنك إغلاق الصفحة الآن.</p>
+                            )}
+                        </CardFooter>
+                    </Card>
                 </div>
-
-                {!isVerifiedCallback && (
-                    <Alert variant="destructive">
-                        <AlertCircleIcon />
-                        <AlertTitle>تعذر التحقق من التوقيع</AlertTitle>
-                        <AlertDescription>
-                            تم عرض الحالة اعتماداً على سجلات النظام فقط، وتجاهلنا بيانات الرجوع غير الموقعة.
-                        </AlertDescription>
-                    </Alert>
-                )}
-
-                <Card className="overflow-hidden">
-                    <CardHeader className="items-center gap-3 text-center">
-                        <StatusIcon className="size-12" />
-                        <Badge variant={isSuccess ? 'default' : isFailed ? 'destructive' : 'secondary'}>{statusConfig.badge}</Badge>
-                        <CardTitle>{statusConfig.title}</CardTitle>
-                        <CardDescription>{statusConfig.description}</CardDescription>
-                    </CardHeader>
-
-                    <CardContent className="flex flex-col gap-3">
-                        <div className="rounded-lg border bg-muted/30 p-4">
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">المبلغ</span>
-                                <span>{formatMoney(transaction.amount_cents, transaction.currency)}</span>
-                            </div>
-                            <div className="mt-2 flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">رقم العملية</span>
-                                <span dir="ltr">{transaction.id || '-'}</span>
-                            </div>
-                            <div className="mt-2 flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">رقم الطلب</span>
-                                <span dir="ltr">{transaction.order_id || '-'}</span>
-                            </div>
-                        </div>
-
-                        {(transaction.card_brand || transaction.card_last_four) && (
-                            <div className="flex items-center gap-2 rounded-lg border p-3 text-sm">
-                                <CreditCardIcon className="size-4 text-muted-foreground" />
-                                <span>
-                                    {transaction.card_brand || 'Card'} {transaction.card_last_four ? `•••• ${transaction.card_last_four}` : ''}
-                                </span>
-                            </div>
-                        )}
-
-                        {transaction.message && (
-                            <Alert>
-                                <ShieldCheckIcon />
-                                <AlertTitle>رسالة بوابة الدفع</AlertTitle>
-                                <AlertDescription>{transaction.message}</AlertDescription>
-                            </Alert>
-                        )}
-                    </CardContent>
-
-                    <Separator />
-
-                    <CardFooter className="pt-4">
-                        {retryUrl ? (
-                            <Button asChild className="w-full">
-                                <a href={retryUrl}>
-                                    <RefreshCwIcon data-icon="inline-start" />
-                                    العودة إلى رابط الدفع
-                                </a>
-                            </Button>
-                        ) : (
-                            <p className="w-full text-center text-sm text-muted-foreground">يمكنك إغلاق الصفحة الآن.</p>
-                        )}
-                    </CardFooter>
-                </Card>
             </div>
         </>
     );
