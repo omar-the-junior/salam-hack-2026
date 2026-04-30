@@ -1,26 +1,30 @@
-# STAGE 1: Build Frontend Assets
 FROM node:lts-bookworm AS frontend-builder
 
 WORKDIR /app
 
+# Enable pnpm via corepack
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
+# Copy only dependency manifests first to leverage Docker cache
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 
+# Install all dependencies (including devDependencies needed for building)
 RUN pnpm install --frozen-lockfile
 
+# Copy source code required for the build process
+# routes/ is needed so Wayfinder can generate TypeScript bindings during pnpm build
 COPY resources/ ./resources/
 COPY routes/ ./routes/
 COPY vite.config.ts tsconfig.json components.json ./
 
 ENV DOCKER_BUILD=true
-RUN pnpm run build
+RUN pnpm build
 
 # ----------------------------------------------------------------
 
 # STAGE 2: Build the Final Production Image
-# Contains PHP-FPM, Node (Corepack/pnpm for prod deps and optional SSR), and built assets.
-FROM php:8.4-fpm-bookworm
+# Single Apache container — serves HTTP directly on :80 (no separate Nginx needed).
+FROM php:8.4-apache-bookworm
 
 WORKDIR /var/www
 
@@ -36,30 +40,46 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip \
-    && pecl install redis \
-    && docker-php-ext-enable redis
+RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd zip
+
+# Configure Apache: point document root at Laravel's public/ and allow .htaccess overrides
+RUN a2enmod rewrite && \
+    { \
+        echo '<VirtualHost *:80>'; \
+        echo '    DocumentRoot /var/www/public'; \
+        echo '    <Directory /var/www/public>'; \
+        echo '        Options -Indexes +FollowSymLinks'; \
+        echo '        AllowOverride All'; \
+        echo '        Require all granted'; \
+        echo '    </Directory>'; \
+        echo '    ErrorLog ${APACHE_LOG_DIR}/error.log'; \
+        echo '    CustomLog ${APACHE_LOG_DIR}/access.log combined'; \
+        echo '</VirtualHost>'; \
+    } > /etc/apache2/sites-available/000-default.conf
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY --from=frontend-builder /usr/local/ /usr/local/
-
 RUN corepack enable
 
 RUN chown www-data:www-data /var/www
 
+# --- SWITCH TO NON-ROOT USER ---
 USER www-data
 
+# --- APPLICATION TASKS (as www-data) ---
+# 1. Copy and install PHP dependencies
 COPY --chown=www-data:www-data composer.json composer.lock ./
 RUN sed 's_@php artisan package:discover_/bin/true_;' -i composer.json \
-    && composer install --no-dev --no-scripts --optimize-autoloader
+    && composer install --ignore-platform-req=php --no-dev --no-scripts --optimize-autoloader
 
-COPY --chown=www-data:www-data package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod
+COPY --chown=www-data:www-data package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+RUN pnpm install --prod --frozen-lockfile
 
 COPY --chown=www-data:www-data . .
 
 COPY --from=frontend-builder /app/public/build ./public/build
 
+# Finalize composer and set permissions
 RUN composer dump-autoload --optimize \
     && php artisan package:discover --ansi \
     && composer clear-cache \
@@ -67,10 +87,11 @@ RUN composer dump-autoload --optimize \
     && chmod -R 775 storage bootstrap/cache \
     && chmod +x artisan
 
+# --- FINAL ROOT-LEVEL TASKS ---
 USER root
 
 COPY ./scripts/php-entrypoint /usr/local/bin/php-entrypoint
 RUN chmod +x /usr/local/bin/php-entrypoint
 
-EXPOSE 9000
-CMD ["php-fpm"]
+EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/php-entrypoint"]
