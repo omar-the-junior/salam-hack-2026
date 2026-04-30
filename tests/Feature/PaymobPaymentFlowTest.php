@@ -168,6 +168,39 @@ class PaymobPaymentFlowTest extends TestCase
         ]);
     }
 
+    public function test_initiate_always_sends_egp_to_paymob(): void
+    {
+        $this->withoutMiddleware(ValidateCsrfToken::class);
+
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
+        $link->update(['currency' => 'USD']);
+
+        $this->mock(PaymobService::class, function ($mock) {
+            $mock->shouldReceive('authenticate')->once()->andReturn('auth-token');
+            $mock->shouldReceive('createOrder')
+                ->once()
+                ->with('auth-token', 57000, 'EGP')
+                ->andReturn('PAYMOB-ORDER-EGP');
+            $mock->shouldReceive('getPaymentKey')
+                ->once()
+                ->with('auth-token', 'PAYMOB-ORDER-EGP', 57000, 'EGP', \Mockery::type('array'))
+                ->andReturn('payment-key-egp');
+            $mock->shouldReceive('buildIframeUrl')->once()->andReturn('https://accept.paymob.com/api/acceptance/iframes/123?payment_token=payment-key-egp');
+        });
+
+        $response = $this->post(route('pay.initiate', $link->public_token));
+
+        $response->assertRedirect('https://accept.paymob.com/api/acceptance/iframes/123?payment_token=payment-key-egp');
+
+        $this->assertDatabaseHas('payment_transactions', [
+            'payment_link_id' => $link->id,
+            'paymob_order_id' => 'PAYMOB-ORDER-EGP',
+            'currency' => 'EGP',
+            'status' => 'pending',
+        ]);
+    }
+
     public function test_initiate_returns_inertia_external_redirect_for_inertia_requests(): void
     {
         $this->withoutMiddleware(ValidateCsrfToken::class);

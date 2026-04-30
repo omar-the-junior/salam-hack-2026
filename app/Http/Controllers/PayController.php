@@ -19,6 +19,8 @@ use Throwable;
 
 class PayController extends Controller
 {
+    private const PAYMOB_CURRENCY = 'EGP';
+
     public function show(string $token): Response
     {
         try {
@@ -83,8 +85,8 @@ class PayController extends Controller
 
             try {
                 $authToken = $paymob->authenticate();
-                $orderId = $paymob->createOrder($authToken, $amountCents, $link->currency);
-                $paymentKey = $paymob->getPaymentKey($authToken, $orderId, $amountCents, $link->currency, $billingData);
+                $orderId = $paymob->createOrder($authToken, $amountCents, self::PAYMOB_CURRENCY);
+                $paymentKey = $paymob->getPaymentKey($authToken, $orderId, $amountCents, self::PAYMOB_CURRENCY, $billingData);
             } catch (Throwable $e) {
                 Log::error('Paymob initiate failed', ['token' => $token, 'error' => $e->getMessage()]);
 
@@ -97,7 +99,7 @@ class PayController extends Controller
                 'user_id' => $link->user_id,
                 'paymob_order_id' => $orderId,
                 'amount_cents' => $amountCents,
-                'currency' => $link->currency,
+                'currency' => self::PAYMOB_CURRENCY,
                 'status' => 'pending',
             ]);
 
