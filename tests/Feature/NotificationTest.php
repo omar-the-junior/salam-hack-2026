@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -104,5 +105,19 @@ class NotificationTest extends TestCase
         $response->assertOk();
 
         $response->assertInertia(fn (Assert $page) => $page->has('notifications', 1));
+    }
+
+    public function test_dashboard_does_not_fail_when_notifications_table_is_missing(): void
+    {
+        $user = User::factory()->create();
+
+        Schema::dropIfExists('notifications');
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->has('notifications', 0)
+        );
     }
 }

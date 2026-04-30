@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -35,6 +36,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $canReadNotifications = $request->user() && Schema::hasTable('notifications');
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -43,7 +46,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => fn (): ?array => $request->session()->get('flash'),
-            'notifications' => fn () => $request->user()
+            'notifications' => fn () => $canReadNotifications
                 ? $request->user()->notifications()
                     ->latest()
                     ->limit(20)

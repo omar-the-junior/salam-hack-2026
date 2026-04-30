@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class NotificationController extends Controller
 {
@@ -12,6 +13,10 @@ class NotificationController extends Controller
      */
     public function markRead(Request $request, string $id): RedirectResponse
     {
+        if (! Schema::hasTable('notifications')) {
+            return back();
+        }
+
         $notification = $request->user()
             ->notifications()
             ->findOrFail($id);
@@ -26,6 +31,10 @@ class NotificationController extends Controller
      */
     public function markAllRead(Request $request): RedirectResponse
     {
+        if (! Schema::hasTable('notifications')) {
+            return back();
+        }
+
         $request->user()->unreadNotifications->markAsRead();
 
         return back();
