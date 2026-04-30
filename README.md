@@ -16,24 +16,24 @@
   <br />
   <br />
 
-  [**<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/globe.svg" width="16" height="16" align="center" /> View Live Demo**](https://mustahaq.example.com) • [**<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/book.svg" width="16" height="16" align="center" /> Documentation**](docs/prd.md) • [**<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/bug.svg" width="16" height="16" align="center" /> Report Bug**](https://github.com/omar-the-junior/salam-hack-2026/issues)
+  [**<img src="https://api.iconify.design/lucide:globe.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> View Live Demo**](https://mustahaq.example.com) • [**<img src="https://api.iconify.design/lucide:book.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> Documentation**](docs/prd.md) • [**<img src="https://api.iconify.design/lucide:bug.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> Report Bug**](https://github.com/omar-the-junior/salam-hack-2026/issues)
 </div>
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/list.svg" width="24" height="24" align="center" /> Index (Table of Contents)
+## <img src="https://api.iconify.design/lucide:list.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Index (Table of Contents)
 
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/sparkles.svg" width="16" height="16" align="center" /> What It Does](#what-it-does)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/rocket.svg" width="16" height="16" align="center" /> Quick Start & Installation](#quick-start--installation)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/wrench.svg" width="16" height="16" align="center" /> Tech Stack](#tech-stack)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/folder-open.svg" width="16" height="16" align="center" /> Documentation Directory](#documentation-directory)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/scroll-text.svg" width="16" height="16" align="center" /> Scripts](#scripts)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/users.svg" width="16" height="16" align="center" /> Contributors](#contributors)
-- [<img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/file-text.svg" width="16" height="16" align="center" /> License](#license)
+- [<img src="https://api.iconify.design/lucide:sparkles.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> What It Does](#what-it-does)
+- [<img src="https://api.iconify.design/lucide:rocket.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Quick Start & Installation](#quick-start--installation)
+- [<img src="https://api.iconify.design/lucide:wrench.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Tech Stack](#tech-stack)
+- [<img src="https://api.iconify.design/lucide:folder-open.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Documentation Directory](#documentation-directory)
+- [<img src="https://api.iconify.design/lucide:scroll-text.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Scripts](#scripts)
+- [<img src="https://api.iconify.design/lucide:users.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Contributors](#contributors)
+- [<img src="https://api.iconify.design/lucide:file-text.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> License](#license)
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/sparkles.svg" width="24" height="24" align="center" /> What It Does
+## <img src="https://api.iconify.design/lucide:sparkles.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> What It Does
 
 | Feature | What It Does |
 |---------|--------------|
@@ -45,7 +45,7 @@
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/rocket.svg" width="24" height="24" align="center" /> Quick Start & Installation
+## <img src="https://api.iconify.design/lucide:rocket.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Quick Start & Installation
 
 To get a local copy up and running, follow these simple steps.
 
@@ -73,7 +73,7 @@ Once running, visit `http://localhost:8000` in your browser.
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/wrench.svg" width="24" height="24" align="center" /> Tech Stack
+## <img src="https://api.iconify.design/lucide:wrench.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Tech Stack
 
 - **Backend:** Laravel 13 + PHP 8.3 + SQLite
 - **Frontend:** React 19 + TypeScript + Inertia.js v3 + shadcn/ui + TailwindCSS 4
@@ -84,7 +84,7 @@ Once running, visit `http://localhost:8000` in your browser.
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/folder-open.svg" width="24" height="24" align="center" /> Documentation Directory
+## <img src="https://api.iconify.design/lucide:folder-open.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Documentation Directory
 
 | Type | Link | Description |
 |------|------|-------------|
@@ -96,7 +96,7 @@ Once running, visit `http://localhost:8000` in your browser.
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/scroll-text.svg" width="24" height="24" align="center" /> Scripts
+## <img src="https://api.iconify.design/lucide:scroll-text.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Scripts
 
 | Command | Action |
 |---------|--------|
@@ -109,7 +109,7 @@ Once running, visit `http://localhost:8000` in your browser.
 
 ---
 
-## <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/users.svg" width="24" height="24" align="center" /> Contributors
+## <img src="https://api.iconify.design/lucide:users.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Contributors
 
 Thanks to these amazing people who have contributed to building Mustahaq:
 
