@@ -9,6 +9,7 @@ use App\Models\PaymentTransaction;
 use App\Models\User;
 use App\Notifications\PaymentReceivedNotification;
 use App\Services\Payment\PaymobService;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -143,6 +144,8 @@ class PaymobPaymentFlowTest extends TestCase
 
     public function test_initiate_creates_pending_transaction_and_redirects_to_paymob(): void
     {
+        $this->withoutMiddleware(ValidateCsrfToken::class);
+
         $freelancer = $this->makeFreelancer();
         $link = $this->makeLink($freelancer);
 
@@ -165,8 +168,39 @@ class PaymobPaymentFlowTest extends TestCase
         ]);
     }
 
+    public function test_initiate_returns_inertia_external_redirect_for_inertia_requests(): void
+    {
+        $this->withoutMiddleware(ValidateCsrfToken::class);
+
+        $freelancer = $this->makeFreelancer();
+        $link = $this->makeLink($freelancer);
+        $paymobIframeUrl = 'https://accept.paymob.com/api/acceptance/iframes/123?payment_token=payment-key-abc';
+
+        $this->mock(PaymobService::class, function ($mock) use ($paymobIframeUrl) {
+            $mock->shouldReceive('authenticate')->once()->andReturn('auth-token');
+            $mock->shouldReceive('createOrder')->once()->andReturn('PAYMOB-ORDER-999');
+            $mock->shouldReceive('getPaymentKey')->once()->andReturn('payment-key-abc');
+            $mock->shouldReceive('buildIframeUrl')->once()->andReturn($paymobIframeUrl);
+        });
+
+        $response = $this->withHeaders(['X-Inertia' => 'true'])
+            ->post(route('pay.initiate', $link->public_token));
+
+        $response->assertStatus(409);
+        $response->assertHeader('X-Inertia-Location', $paymobIframeUrl);
+
+        $this->assertDatabaseHas('payment_transactions', [
+            'payment_link_id' => $link->id,
+            'user_id' => $freelancer->id,
+            'paymob_order_id' => 'PAYMOB-ORDER-999',
+            'status' => 'pending',
+        ]);
+    }
+
     public function test_initiate_does_not_create_transaction_on_paymob_api_failure(): void
     {
+        $this->withoutMiddleware(ValidateCsrfToken::class);
+
         $freelancer = $this->makeFreelancer();
         $link = $this->makeLink($freelancer);
 

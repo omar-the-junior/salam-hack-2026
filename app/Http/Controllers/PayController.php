@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Throwable;
 
 class PayController extends Controller
@@ -56,7 +57,7 @@ class PayController extends Controller
         }
     }
 
-    public function initiate(string $token, PaymobService $paymob): RedirectResponse
+    public function initiate(string $token, PaymobService $paymob): HttpResponse
     {
         try {
             $link = PaymentLink::where('public_token', $token)
@@ -101,7 +102,7 @@ class PayController extends Controller
                 'status' => 'pending',
             ]);
 
-            return redirect()->away($paymob->buildIframeUrl($paymentKey));
+            return Inertia::location($paymob->buildIframeUrl($paymentKey));
         } catch (Throwable $e) {
             Log::error(static::class.'@initiate', [
                 'token' => $token,
