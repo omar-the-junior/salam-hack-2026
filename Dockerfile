@@ -1,3 +1,33 @@
+# STAGE 1: Generate Wayfinder TypeScript bindings
+# Runs php artisan wayfinder:generate so the Node build stage never needs PHP.
+FROM php:8.4-cli-bookworm AS wayfinder-generator
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    libsqlite3-dev \
+    && docker-php-ext-install mbstring zip pdo pdo_sqlite \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --optimize-autoloader --ignore-platform-reqs
+
+COPY . .
+
+# Bootstrap needs a valid APP_KEY; generate a throwaway one just for this step
+RUN cp .env.example .env \
+    && php artisan key:generate \
+    && php artisan wayfinder:generate --with-form
+
+# ----------------------------------------------------------------
+
+# STAGE 2: Build Frontend Assets
 FROM node:lts-bookworm AS frontend-builder
 
 WORKDIR /app
@@ -12,17 +42,20 @@ COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 RUN pnpm install --frozen-lockfile
 
 # Copy source code required for the build process
-# routes/ is needed so Wayfinder can generate TypeScript bindings during pnpm build
 COPY resources/ ./resources/
-COPY routes/ ./routes/
 COPY vite.config.ts tsconfig.json components.json ./
+
+# Overlay the Wayfinder-generated TypeScript files from the PHP stage
+COPY --from=wayfinder-generator /app/resources/js/routes ./resources/js/routes
+COPY --from=wayfinder-generator /app/resources/js/actions ./resources/js/actions
+COPY --from=wayfinder-generator /app/resources/js/wayfinder ./resources/js/wayfinder
 
 ENV DOCKER_BUILD=true
 RUN pnpm build
 
 # ----------------------------------------------------------------
 
-# STAGE 2: Build the Final Production Image
+# STAGE 3: Build the Final Production Image
 # Single Apache container — serves HTTP directly on :80 (no separate Nginx needed).
 FROM php:8.4-apache-bookworm
 

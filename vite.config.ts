@@ -18,10 +18,8 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
-        // Skip during Docker builds — PHP isn't available in the Node builder stage.
-        // The already-committed generated files in resources/js/routes/ and
-        // resources/js/actions/ are used as-is. Run `php artisan wayfinder:generate
-        // --with-form` locally after changing routes or controller signatures.
+        // In Docker builds the wayfinder-generator stage has already produced the
+        // TypeScript files; skip the plugin so it doesn't attempt to call PHP again.
         ...(process.env.DOCKER_BUILD
             ? []
             : [
