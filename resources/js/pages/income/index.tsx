@@ -41,6 +41,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { create as createIncomePage, index as incomeIndex } from '@/routes/income';
+import { csv as incomeExportCsv, excel as incomeExportExcel } from '@/routes/income/export';
 import { create as createPaymentLink } from '@/routes/payment-links';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -199,6 +200,11 @@ export default function IncomeIndex({
             return;
         }
 
+        if (flash.type === 'error') {
+            toast.error(flash.message);
+            return;
+        }
+
         toast.message(flash.message);
     }, [flash?.message, flash?.type]);
 
@@ -219,6 +225,19 @@ export default function IncomeIndex({
 
     const paginationPrev = incomeEntries.links[0];
     const paginationNext = incomeEntries.links[incomeEntries.links.length - 1];
+
+    const exportQuery = useMemo(
+        () => ({
+            month: filters.month,
+            source: filters.source,
+            category: filters.category,
+            search: filters.search ?? '',
+        }),
+        [filters.month, filters.source, filters.category, filters.search],
+    );
+
+    const excelExportHref = incomeExportExcel.url({ query: exportQuery });
+    const csvExportHref = incomeExportCsv.url({ query: exportQuery });
 
     if (!hasAnyIncomeEver) {
         return (
@@ -405,8 +424,12 @@ export default function IncomeIndex({
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuGroup>
-                                            <DropdownMenuItem disabled>تحميل CSV (قريباً)</DropdownMenuItem>
-                                            <DropdownMenuItem disabled>تحميل PDF (قريباً)</DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <a href={excelExportHref}>تحميل Excel (.xlsx)</a>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <a href={csvExportHref}>تحميل CSV</a>
+                                            </DropdownMenuItem>
                                         </DropdownMenuGroup>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -467,12 +490,12 @@ export default function IncomeIndex({
                     <CardContent>
                         <Table>
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead>المبلغ</TableHead>
-                                    <TableHead>المصدر</TableHead>
-                                    <TableHead>العميل</TableHead>
-                                    <TableHead>التصنيف</TableHead>
-                                    <TableHead>التاريخ</TableHead>
+                                <TableRow className="border-primary/20 bg-primary/10 hover:bg-primary/10">
+                                    <TableHead className="text-primary">المبلغ</TableHead>
+                                    <TableHead className="text-primary">المصدر</TableHead>
+                                    <TableHead className="text-primary">العميل</TableHead>
+                                    <TableHead className="text-primary">التصنيف</TableHead>
+                                    <TableHead className="text-primary">التاريخ</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

@@ -43,7 +43,8 @@ class IncomeDashboardService
         $rows = IncomeEntry::query()
             ->where('user_id', $user->id)
             ->where('currency', $preferredCurrency)
-            ->whereBetween('date', [$start->toDateString(), $end->copy()->endOfMonth()->toDateString()])
+            ->where('date', '>=', $start->toDateString())
+            ->where('date', '<', $end->copy()->addMonth()->toDateString())
             ->get(['date', 'amount']);
 
         $totals = [];
@@ -103,6 +104,32 @@ class IncomeDashboardService
     }
 
     /**
+     * Base query for dashboard list, totals, and exports (same filters, no ordering).
+     *
+     * @param  ?string  $categorySlug  Slug from UI or `'all'`.
+     * @param  ?string  $search  Trimmed search string or null.
+     */
+    public function filteredIncomeEntriesQuery(
+        User $user,
+        Carbon $monthStart,
+        Carbon $monthEnd,
+        ?string $sourceFilter,
+        ?string $categorySlug,
+        ?string $search,
+    ): Builder {
+        $query = IncomeEntry::query()
+            ->where('user_id', $user->id)
+            ->where('date', '>=', $monthStart->toDateString())
+            ->where('date', '<', $monthEnd->copy()->addDay()->toDateString());
+
+        $this->applySourceFilter($query, $sourceFilter);
+        $this->applyCategorySlugFilter($query, $categorySlug);
+        $this->applySearchFilter($query, $search);
+
+        return $query;
+    }
+
+    /**
      * @return LengthAwarePaginator<int, IncomeEntry>
      */
     public function paginatedEntries(
@@ -114,27 +141,16 @@ class IncomeDashboardService
         ?string $search,
         int $perPage,
     ): LengthAwarePaginator {
-        $query = IncomeEntry::query()
-            ->where('user_id', $user->id)
-            ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+        $query = $this->filteredIncomeEntriesQuery(
+            $user,
+            $monthStart,
+            $monthEnd,
+            $sourceFilter,
+            $categorySlug,
+            $search,
+        )
             ->orderByDesc('date')
             ->orderByDesc('id');
-
-        $this->applySourceFilter($query, $sourceFilter);
-
-        if ($categorySlug !== null && $categorySlug !== '' && $categorySlug !== 'all') {
-            if (isset(self::CATEGORY_SLUG_TO_LABEL[$categorySlug])) {
-                $query->where('category', self::CATEGORY_SLUG_TO_LABEL[$categorySlug]);
-            }
-        }
-
-        if ($search !== null && $search !== '') {
-            $like = '%'.$search.'%';
-            $query->where(function (Builder $q) use ($like): void {
-                $q->where('client_name', 'like', $like)
-                    ->orWhere('description', 'like', $like);
-            });
-        }
 
         return $query->paginate($perPage)->withQueryString();
     }
@@ -150,25 +166,14 @@ class IncomeDashboardService
         ?string $categorySlug,
         ?string $search,
     ): array {
-        $query = IncomeEntry::query()
-            ->where('user_id', $user->id)
-            ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()]);
-
-        $this->applySourceFilter($query, $sourceFilter);
-
-        if ($categorySlug !== null && $categorySlug !== '' && $categorySlug !== 'all') {
-            if (isset(self::CATEGORY_SLUG_TO_LABEL[$categorySlug])) {
-                $query->where('category', self::CATEGORY_SLUG_TO_LABEL[$categorySlug]);
-            }
-        }
-
-        if ($search !== null && $search !== '') {
-            $like = '%'.$search.'%';
-            $query->where(function (Builder $q) use ($like): void {
-                $q->where('client_name', 'like', $like)
-                    ->orWhere('description', 'like', $like);
-            });
-        }
+        $query = $this->filteredIncomeEntriesQuery(
+            $user,
+            $monthStart,
+            $monthEnd,
+            $sourceFilter,
+            $categorySlug,
+            $search,
+        );
 
         /** @var Collection<string, string|int|float|null> $raw */
         $raw = $query
@@ -221,6 +226,32 @@ class IncomeDashboardService
         $query->where('source', $sourceFilter);
     }
 
+    private function applyCategorySlugFilter(Builder $query, ?string $categorySlug): void
+    {
+        if ($categorySlug === null || $categorySlug === '' || $categorySlug === 'all') {
+            return;
+        }
+
+        if (! isset(self::CATEGORY_SLUG_TO_LABEL[$categorySlug])) {
+            return;
+        }
+
+        $query->where('category', self::CATEGORY_SLUG_TO_LABEL[$categorySlug]);
+    }
+
+    private function applySearchFilter(Builder $query, ?string $search): void
+    {
+        if ($search === null || $search === '') {
+            return;
+        }
+
+        $like = '%'.$search.'%';
+        $query->where(function (Builder $q) use ($like): void {
+            $q->where('client_name', 'like', $like)
+                ->orWhere('description', 'like', $like);
+        });
+    }
+
     private function labelToSlug(string $label): string
     {
         foreach (self::CATEGORY_SLUG_TO_LABEL as $slug => $l) {
@@ -240,7 +271,8 @@ class IncomeDashboardService
         $rows = IncomeEntry::query()
             ->where('user_id', $user->id)
             ->where('currency', $preferredCurrency)
-            ->whereBetween('date', [$from->toDateString(), $to->toDateString()])
+            ->where('date', '>=', $from->toDateString())
+            ->where('date', '<', $to->copy()->addDay()->toDateString())
             ->get(['date', 'amount']);
 
         /** @var array<string, float> $bucket */

@@ -30,7 +30,8 @@ export default function ResetPassword({ token, email }: Props) {
             </div>
 
             <Form
-                {...update.form()}
+                action={update.url()}
+                method="post"
                 transform={(data) => ({ ...data, token, email })}
                 resetOnSuccess={['password', 'password_confirmation']}
             >

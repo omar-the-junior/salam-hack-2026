@@ -16,7 +16,8 @@ export default function Register() {
         <>
             <Head title="إنشاء حساب" />
             <Form
-                {...store.form()}
+                action={store.url()}
+                method="post"
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
                 className="flex flex-col gap-6"

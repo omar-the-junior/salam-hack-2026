@@ -1,19 +1,68 @@
-import { Head, Link } from '@inertiajs/react';
-import { CheckCircle2Icon, LoaderCircleIcon, MailIcon, RefreshCwIcon, ScanSearchIcon, SparklesIcon } from 'lucide-react';
-import { useState } from 'react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { CheckCircle2Icon, LinkIcon, LoaderCircleIcon, MailIcon, RefreshCwIcon, ScanSearchIcon, SparklesIcon, UnlinkIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { useEmailScanStatus } from '@/hooks/use-email-scan-status';
 import { index } from '@/routes/email-scanner';
 import { review } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
+import { toast } from 'sonner';
+
+type ConnectedAccount = {
+    email: string;
+} | null;
+
+type LatestScan = {
+    id: string;
+    status: 'queued' | 'in_progress' | 'completed' | 'failed';
+    found_count: number | null;
+    error_message: string | null;
+    created_at: string | null;
+} | null;
+
+type PageProps = {
+    connected_account: ConnectedAccount;
+    latest_scan: LatestScan;
+};
 
 export default function EmailScannerIndex() {
-    const [status, setStatus] = useState<'not-connected' | 'queued' | 'in-progress' | 'completed' | 'failed'>(
-        'not-connected',
+    const { connected_account, latest_scan } = usePage<{ props: PageProps }>().props as unknown as PageProps;
+
+    const { scan, isRunning } = useEmailScanStatus(
+        latest_scan ? { status: latest_scan.status, found_count: latest_scan.found_count, error: latest_scan.error_message } : null,
+        (data) => {
+            toast.success(`اكتمل الفحص — تم العثور على ${data.found_count ?? 0} اشتراكات.`, {
+                duration: 8000,
+                action: {
+                    label: 'مراجعة النتائج',
+                    onClick: () => router.visit(review()),
+                },
+            });
+            router.reload();
+        },
+        (data) => {
+            toast.error(data.error ?? 'فشل الفحص. أعد المحاولة.', { duration: 6000 });
+            router.reload();
+        },
     );
+
+    const currentStatus = scan?.status ?? 'none';
+    const isConnected = !!connected_account;
+
+    const triggerScan = () => {
+        router.post('/email-scanner/scan');
+    };
+
+    const disconnectGmail = () => {
+        router.delete('/email-scanner/disconnect');
+    };
+
+    const lastScanDate = latest_scan?.created_at
+        ? new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium' }).format(new Date(latest_scan.created_at))
+        : null;
 
     return (
         <>
@@ -24,7 +73,7 @@ export default function EmailScannerIndex() {
                         <div>
                             <CardTitle>فحص الاشتراكات</CardTitle>
                             <CardDescription>
-                                اربط Gmail لاكتشاف الاشتراكات تلقائيًا من آخر 6 أشهر.
+                                اربط Gmail لاكتشاف الاشتراكات تلقائيًا من آخر شهرين.
                             </CardDescription>
                         </div>
                         <Button asChild variant="outline">
@@ -37,19 +86,27 @@ export default function EmailScannerIndex() {
                     <Card>
                         <CardHeader className="gap-1">
                             <CardDescription>الحساب المرتبط</CardDescription>
-                            <CardTitle className="text-base">mustahaq.demo@gmail.com</CardTitle>
+                            <CardTitle className="text-base">
+                                {isConnected ? connected_account.email : 'غير مرتبط'}
+                            </CardTitle>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="gap-1">
                             <CardDescription>آخر فحص</CardDescription>
-                            <CardTitle className="text-base">قبل 3 أيام</CardTitle>
+                            <CardTitle className="text-base">
+                                {lastScanDate ?? 'لا يوجد فحص سابق'}
+                            </CardTitle>
                         </CardHeader>
                     </Card>
                     <Card>
                         <CardHeader className="gap-1">
                             <CardDescription>نتائج آخر فحص</CardDescription>
-                            <CardTitle className="text-base">8 اشتراكات مكتشفة</CardTitle>
+                            <CardTitle className="text-base">
+                                {latest_scan?.status === 'completed'
+                                    ? `${latest_scan.found_count ?? 0} اشتراكات مكتشفة`
+                                    : 'لا توجد نتائج'}
+                            </CardTitle>
                         </CardHeader>
                     </Card>
                 </div>
@@ -65,17 +122,32 @@ export default function EmailScannerIndex() {
                         </Alert>
 
                         <div className="flex flex-wrap gap-2">
-                            <Button onClick={() => setStatus('queued')}>
-                                <ScanSearchIcon data-icon="inline-start" />
-                                فحص آخر 6 أشهر
-                            </Button>
-                            <Button variant="outline" onClick={() => setStatus('not-connected')}>
-                                <RefreshCwIcon data-icon="inline-start" />
-                                إعادة ضبط الحالة
-                            </Button>
+                            {!isConnected ? (
+                                <Button asChild>
+                                    <a href="/email-scanner/connect">
+                                        <LinkIcon data-icon="inline-start" />
+                                        ربط حساب Gmail
+                                    </a>
+                                </Button>
+                            ) : (
+                                <>
+                                    <Button onClick={triggerScan} disabled={isRunning}>
+                                        {isRunning ? (
+                                            <LoaderCircleIcon data-icon="inline-start" className="animate-spin" />
+                                        ) : (
+                                            <ScanSearchIcon data-icon="inline-start" />
+                                        )}
+                                        {isRunning ? 'جاري الفحص...' : 'فحص آخر شهرين'}
+                                    </Button>
+                                    <Button variant="outline" onClick={disconnectGmail}>
+                                        <UnlinkIcon data-icon="inline-start" />
+                                        فصل Gmail
+                                    </Button>
+                                </>
+                            )}
                         </div>
 
-                        {status === 'not-connected' ? (
+                        {!isConnected && currentStatus === 'none' ? (
                             <Alert>
                                 <SparklesIcon />
                                 <AlertTitle>اربط Gmail أولًا</AlertTitle>
@@ -85,7 +157,7 @@ export default function EmailScannerIndex() {
                             </Alert>
                         ) : null}
 
-                        {status === 'queued' ? (
+                        {currentStatus === 'queued' ? (
                             <Card className="border-dashed">
                                 <CardHeader>
                                     <CardTitle className="text-base">تمت إضافة الفحص للطابور</CardTitle>
@@ -94,45 +166,36 @@ export default function EmailScannerIndex() {
                                 <CardContent>
                                     <Progress value={20} />
                                     <div className="mt-4">
-                                        <Button variant="secondary" onClick={() => setStatus('in-progress')}>
-                                            <LoaderCircleIcon data-icon="inline-start" className="animate-spin" />
-                                            متابعة التقدم
-                                        </Button>
+                                        <Badge variant="secondary">
+                                            <LoaderCircleIcon className="mr-1 size-3 animate-spin" />
+                                            في الطابور
+                                        </Badge>
                                     </div>
                                 </CardContent>
                             </Card>
                         ) : null}
 
-                        {status === 'in-progress' ? (
+                        {currentStatus === 'in_progress' ? (
                             <Card className="border-dashed">
                                 <CardHeader>
                                     <CardTitle className="text-base">الفحص قيد التنفيذ</CardTitle>
-                                    <CardDescription>تمت معالجة 327 رسالة حتى الآن.</CardDescription>
+                                    <CardDescription>جاري تحليل رسائل البريد الإلكتروني...</CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex flex-col gap-4">
-                                    <Progress value={72} />
+                                    <Progress value={60} />
                                     <div className="flex flex-wrap gap-2">
                                         <Badge>in_progress</Badge>
-                                        <Badge variant="secondary">327 / 500 رسالة</Badge>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button onClick={() => setStatus('completed')}>
-                                            إنهاء الفحص (حالة تجريبية)
-                                        </Button>
-                                        <Button variant="outline" onClick={() => setStatus('failed')}>
-                                            تجربة حالة الفشل
-                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
                         ) : null}
 
-                        {status === 'completed' ? (
+                        {currentStatus === 'completed' ? (
                             <Alert>
                                 <CheckCircle2Icon />
                                 <AlertTitle>اكتمل الفحص</AlertTitle>
                                 <AlertDescription className="flex flex-wrap items-center gap-3">
-                                    <span>تم العثور على 8 اشتراكات جديدة. يمكنك مراجعتها الآن.</span>
+                                    <span>تم العثور على {scan?.found_count ?? latest_scan?.found_count ?? 0} اشتراكات جديدة. يمكنك مراجعتها الآن.</span>
                                     <Button asChild size="sm" variant="outline">
                                         <Link href={review()}>عرض المراجعة</Link>
                                     </Button>
@@ -140,11 +203,17 @@ export default function EmailScannerIndex() {
                             </Alert>
                         ) : null}
 
-                        {status === 'failed' ? (
+                        {currentStatus === 'failed' ? (
                             <Alert variant="destructive">
                                 <AlertTitle>فشل الفحص</AlertTitle>
-                                <AlertDescription>
-                                    حدث خطأ أثناء الوصول إلى Gmail. أعد المحاولة بعد قليل.
+                                <AlertDescription className="flex flex-col gap-2">
+                                    <span>حدث خطأ أثناء الوصول إلى Gmail. أعد المحاولة بعد قليل.</span>
+                                    {isConnected ? (
+                                        <Button size="sm" variant="outline" onClick={triggerScan}>
+                                            <RefreshCwIcon data-icon="inline-start" />
+                                            إعادة المحاولة
+                                        </Button>
+                                    ) : null}
                                 </AlertDescription>
                             </Alert>
                         ) : null}

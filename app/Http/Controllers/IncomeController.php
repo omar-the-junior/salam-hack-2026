@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\IncomeExport;
+use App\Http\Requests\IncomeEntries\ExportIncomeRequest;
 use App\Http\Requests\IncomeEntries\StoreIncomeEntryRequest;
 use App\Http\Requests\IncomeEntries\UpdateIncomeEntryRequest;
 use App\Models\IncomeEntry;
+use App\Models\User;
 use App\Services\Income\IncomeDashboardService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Excel as ExcelWriter;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class IncomeController extends Controller
 {
@@ -23,7 +29,7 @@ class IncomeController extends Controller
         $user = $request->user();
         assert($user !== null);
 
-        $preferred = $user->preferred_currency ?: 'EGP';
+        $preferred = in_array($user->preferred_currency, ['EGP', 'USD']) ? $user->preferred_currency : 'EGP';
 
         $monthString = $request->query('month', now()->format('Y-m'));
 
@@ -150,7 +156,9 @@ class IncomeController extends Controller
             'reference_id' => null,
         ]);
 
-        return redirect()->route('income.index')
+        $entryMonth = Carbon::parse($validated['date'])->format('Y-m');
+
+        return redirect()->route('income.index', ['month' => $entryMonth])
             ->with('flash', ['type' => 'success', 'message' => 'تمت إضافة الإيراد بنجاح.']);
     }
 
@@ -198,6 +206,110 @@ class IncomeController extends Controller
 
         return redirect()->back()
             ->with('flash', ['type' => 'success', 'message' => 'تم تحديث الإيراد.']);
+    }
+
+    public function exportExcel(ExportIncomeRequest $request): BinaryFileResponse|RedirectResponse
+    {
+        return $this->download($request, ExcelWriter::XLSX, 'xlsx');
+    }
+
+    public function exportCsv(ExportIncomeRequest $request): BinaryFileResponse|RedirectResponse
+    {
+        return $this->download($request, ExcelWriter::CSV, 'csv');
+    }
+
+    private function download(
+        ExportIncomeRequest $request,
+        string $writerType,
+        string $extension,
+    ): BinaryFileResponse|RedirectResponse {
+        $context = $this->resolveExportContext($request);
+
+        if (! $context['hasData']) {
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'لا توجد إيرادات مطابقة للتصدير.',
+            ]);
+        }
+
+        $filename = 'income-'.$context['monthYm'].'.'.$extension;
+
+        return Excel::download(
+            new IncomeExport(
+                $context['user'],
+                $this->incomeDashboard,
+                $context['month'],
+                $context['monthEnd'],
+                $context['monthYm'],
+                $context['source'],
+                $context['category'],
+                $context['search'],
+            ),
+            $filename,
+            $writerType,
+        );
+    }
+
+    /**
+     * @return array{
+     *     user: User,
+     *     month: Carbon,
+     *     monthEnd: Carbon,
+     *     monthYm: string,
+     *     source: string,
+     *     category: string,
+     *     search: ?string,
+     *     hasData: bool,
+     * }
+     */
+    private function resolveExportContext(ExportIncomeRequest $request): array
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $monthString = $request->query('month', now()->format('Y-m'));
+
+        try {
+            $month = Carbon::createFromFormat('Y-m', (string) $monthString)->startOfMonth();
+        } catch (\Throwable) {
+            $month = now()->startOfMonth();
+        }
+
+        $monthEnd = $month->copy()->endOfMonth();
+
+        $sourceRaw = $request->query('source');
+        $sourceFilter = is_string($sourceRaw) && $sourceRaw !== '' ? $sourceRaw : 'all';
+
+        $categoryRaw = $request->query('category');
+        $categorySlug = is_string($categoryRaw) && $categoryRaw !== '' ? $categoryRaw : 'all';
+
+        $searchRaw = $request->query('search');
+        $search = is_string($searchRaw) ? trim($searchRaw) : null;
+        if ($search === '') {
+            $search = null;
+        }
+
+        $sourceForQuery = $sourceFilter !== 'all' ? $sourceFilter : null;
+
+        $hasData = $this->incomeDashboard->filteredIncomeEntriesQuery(
+            $user,
+            $month->copy(),
+            $monthEnd->copy(),
+            $sourceForQuery,
+            $categorySlug,
+            $search,
+        )->exists();
+
+        return [
+            'user' => $user,
+            'month' => $month,
+            'monthEnd' => $monthEnd,
+            'monthYm' => $month->format('Y-m'),
+            'source' => $sourceFilter,
+            'category' => $categorySlug,
+            'search' => $search,
+            'hasData' => $hasData,
+        ];
     }
 
     private function categoryArabicLabel(string $english): string

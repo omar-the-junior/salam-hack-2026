@@ -36,16 +36,17 @@ return [
     ],
 
     'paymob' => [
-        'api_key'        => env('PAYMOB_API_KEY'),
+        'api_key' => env('PAYMOB_API_KEY'),
         'integration_id' => env('PAYMOB_INTEGRATION_ID'),
-        'iframe_id'      => env('PAYMOB_IFRAME_ID'),
-        'hmac_secret'    => env('PAYMOB_HMAC_SECRET'),
+        'iframe_id' => env('PAYMOB_IFRAME_ID'),
+        'hmac_secret' => env('PAYMOB_HMAC_SECRET'),
     ],
 
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost:8000').'/auth/google/callback'),
+        'gmail_redirect' => env('GOOGLE_GMAIL_REDIRECT_URI', env('APP_URL', 'http://localhost:8000').'/auth/gmail/callback'),
     ],
 
 ];

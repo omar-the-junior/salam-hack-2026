@@ -9,4 +9,9 @@ Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () 
     Route::get('income/create', [IncomeController::class, 'create'])->name('income.create');
     Route::post('income', [IncomeController::class, 'store'])->name('income.store');
     Route::match(['put', 'patch'], 'income/{incomeEntry}', [IncomeController::class, 'update'])->name('income.update');
+
+    Route::prefix('income/export')->name('income.export.')->controller(IncomeController::class)->group(function (): void {
+        Route::get('excel', 'exportExcel')->name('excel');
+        Route::get('csv', 'exportCsv')->name('csv');
+    });
 });

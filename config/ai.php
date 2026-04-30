@@ -52,6 +52,18 @@ return [
     ],
 
     /*
+    | Email subscription parser.
+    | Uses OpenRouter to detect subscription/payment emails and extract structured fields.
+    | Default model: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free (free tier).
+    | Max body chars sent to the model to stay within context limits.
+    */
+    'email_parser' => [
+        'openrouter_model' => env('OPENROUTER_EMAIL_PARSER_MODEL', 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free'),
+        'timeout' => env('OPENROUTER_EMAIL_PARSER_TIMEOUT', 30),
+        'max_body_chars' => (int) env('OPENROUTER_EMAIL_PARSER_MAX_BODY_CHARS', 2000),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------
