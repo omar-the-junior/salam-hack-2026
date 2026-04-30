@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { AlertCircleIcon, CheckCircle2Icon, ClockIcon, CreditCardIcon, LockIcon, XCircleIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import AppLogo from '@/components/app-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,6 +50,9 @@ export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayS
             <>
                 <Head title="تم الدفع" />
                 <div className="mx-auto flex w-full max-w-lg flex-col gap-4 p-4">
+                    <div className="flex justify-center">
+                        <AppLogo className="h-8" />
+                    </div>
                     <Card className="overflow-hidden">
                         <div className="h-1.5 bg-emerald-500" />
                         <CardHeader className="items-center text-center">
@@ -67,6 +71,9 @@ export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayS
             <>
                 <Head title="رابط الدفع منتهي" />
                 <div className="mx-auto flex w-full max-w-lg flex-col gap-4 p-4">
+                    <div className="flex justify-center">
+                        <AppLogo className="h-8" />
+                    </div>
                     <Card className="overflow-hidden">
                         <div className="h-1.5 bg-destructive" />
                         <CardHeader className="items-center text-center">
@@ -84,6 +91,9 @@ export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayS
         <>
             <Head title="صفحة الدفع" />
             <div className="mx-auto flex w-full max-w-lg flex-col gap-4 p-4">
+                <div className="flex justify-center">
+                    <AppLogo className="h-8" />
+                </div>
                 {paymentState === 'pending' && (
                     <Alert>
                         <ClockIcon />

@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { CheckCircle2Icon, CopyIcon, DownloadIcon } from 'lucide-react';
+import AppLogo from '@/components/app-logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -9,6 +10,9 @@ export default function PayReceipt() {
         <>
             <Head title="الإيصال" />
             <div className="mx-auto flex min-h-svh w-full max-w-3xl flex-col justify-center gap-6 bg-muted/20 p-4">
+                <div className="flex justify-center">
+                    <AppLogo className="h-8" />
+                </div>
                 <Card className="overflow-hidden border-border/80 shadow-lg">
                     <div className="h-2 bg-emerald-500" />
                     <CardHeader className="items-center border-b text-center">
@@ -65,7 +69,9 @@ export default function PayReceipt() {
                         </div>
                     </CardContent>
                 </Card>
-                <div className="text-center text-sm text-muted-foreground">مُسْتَحَقّ - نظام التشغيل المالي للمستقلين</div>
+                <div className="text-center text-sm text-muted-foreground">
+                    مُسْتَحَقّ - نظام التشغيل المالي للمستقلين
+                </div>
             </div>
         </>
     );
