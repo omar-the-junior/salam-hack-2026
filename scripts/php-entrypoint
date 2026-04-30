@@ -36,15 +36,20 @@ prepare_storage() {
     mkdir -p /var/www/storage/logs
     mkdir -p /var/www/bootstrap/cache
 
-    # Ensure the SQLite database file exists (idempotent — safe on every boot)
-    touch /var/www/database/database.sqlite
-    chmod 666 /var/www/database/database.sqlite
+    if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+        echo "Ensuring SQLite database file exists..."
+        touch /var/www/database/database.sqlite
+        chmod 666 /var/www/database/database.sqlite
+    fi
 
     # Hand ownership of mutable paths to the web server user
     chown -R www-data:www-data \
         /var/www/storage \
-        /var/www/bootstrap/cache \
-        /var/www/database
+        /var/www/bootstrap/cache
+
+    if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+        chown -R www-data:www-data /var/www/database
+    fi
 
     # Create public/storage symlink if it doesn't already exist
     if [ ! -L "/var/www/public/storage" ]; then
@@ -65,7 +70,22 @@ prepare_file_permissions() {
 }
 
 run_migrations() {
-    php /var/www/artisan migrate --force --no-interaction
+    local attempts=10
+    local wait_seconds=3
+
+    for attempt in $(seq 1 "$attempts"); do
+        if php /var/www/artisan migrate --force --no-interaction; then
+            return 0
+        fi
+
+        if [ "$attempt" -eq "$attempts" ]; then
+            echo "Migrations failed after $attempts attempts."
+            return 1
+        fi
+
+        echo "Migrations failed. Retrying in ${wait_seconds}s... (${attempt}/${attempts})"
+        sleep "$wait_seconds"
+    done
 }
 
 optimize_app() {

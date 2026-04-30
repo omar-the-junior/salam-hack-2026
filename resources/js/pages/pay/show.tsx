@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
-import { AlertCircleIcon, CheckCircle2Icon, ClockIcon, CreditCardIcon, LockIcon, XCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, CheckCircle2Icon, ClockIcon, CopyIcon, CreditCardIcon, LockIcon, ShieldCheckIcon, XCircleIcon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AppLogo from '@/components/app-logo';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';
+import { useClipboard } from '@/hooks/use-clipboard';
 
 type PaymentLinkData = {
     amount: string;
@@ -39,10 +41,29 @@ function formatMoney(value: string | number, currency: string): string {
 
 export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayShowProps) {
     const [loading, setLoading] = useState(false);
+    const [, copy] = useClipboard();
+    const testCard = {
+        number: '5123 4567 8901 2346',
+        expiry: '01/39',
+        cvv: '123',
+        name: 'Test Account',
+    };
 
     const handlePayNow = () => {
         setLoading(true);
         router.post(initiateUrl, {}, { onError: () => setLoading(false) });
+    };
+
+    const copyField = async (value: string, fieldName: string) => {
+        const copied = await copy(value);
+
+        if (copied) {
+            toast.success(`تم نسخ ${fieldName}`);
+
+            return;
+        }
+
+        toast.error(`تعذر نسخ ${fieldName}`);
     };
 
     if (paymentLink.state === 'paid') {
@@ -165,6 +186,81 @@ export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayS
                                 <div className="mr-auto flex size-4 items-center justify-center rounded-full border-2 border-primary">
                                     <div className="size-2 rounded-full bg-primary" />
                                 </div>
+                            </div>
+                        </div>
+
+                        <Separator />
+
+                        <div className="rounded-xl border bg-muted/30 p-4">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                    <CreditCardIcon className="text-muted-foreground" />
+                                    <p className="text-sm font-medium">بيانات بطاقة اختبار Paymob</p>
+                                </div>
+                                <Badge variant="secondary">Sandbox</Badge>
+                            </div>
+
+                            <div className="mt-3 rounded-lg border bg-background p-4">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs text-muted-foreground">Mastercard</span>
+                                    <Button type="button" variant="outline" size="sm" onClick={() => copyField(testCard.number, 'رقم البطاقة')}>
+                                        <CopyIcon data-icon="inline-start" />
+                                        نسخ الرقم
+                                    </Button>
+                                </div>
+                                <p className="mt-3 font-mono text-base tracking-wider sm:text-lg">{testCard.number}</p>
+
+                                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                                    <div className="rounded-md border p-3">
+                                        <p className="text-xs text-muted-foreground">Expiry</p>
+                                        <div className="mt-1 flex items-center justify-between gap-2">
+                                            <p className="font-mono text-sm">{testCard.expiry}</p>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => copyField(testCard.expiry, 'تاريخ الانتهاء')}
+                                            >
+                                                <CopyIcon />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className="rounded-md border p-3">
+                                        <p className="text-xs text-muted-foreground">CVV</p>
+                                        <div className="mt-1 flex items-center justify-between gap-2">
+                                            <p className="font-mono text-sm">{testCard.cvv}</p>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => copyField(testCard.cvv, 'CVV')}
+                                            >
+                                                <CopyIcon />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className="rounded-md border p-3">
+                                        <p className="text-xs text-muted-foreground">Name</p>
+                                        <div className="mt-1 flex items-center justify-between gap-2">
+                                            <p className="truncate text-sm">{testCard.name}</p>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => copyField(testCard.name, 'اسم البطاقة')}
+                                            >
+                                                <CopyIcon />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
+                                <ShieldCheckIcon className="mt-0.5" />
+                                <p>هذه بيانات اختبار فقط لتمكين العميل أو لجنة التحكيم من تجربة تكامل الدفع بأمان.</p>
                             </div>
                         </div>
                     </CardContent>

@@ -70,10 +70,11 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     libsqlite3-dev \
+    libpq-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo pdo_sqlite pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip
 
 # Configure Apache: point document root at Laravel's public/ and allow .htaccess overrides
 RUN a2enmod rewrite && \
