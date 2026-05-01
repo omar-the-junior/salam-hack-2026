@@ -36,20 +36,10 @@ prepare_storage() {
     mkdir -p /var/www/storage/logs
     mkdir -p /var/www/bootstrap/cache
 
-    if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
-        echo "Ensuring SQLite database file exists..."
-        touch /var/www/database/database.sqlite
-        chmod 666 /var/www/database/database.sqlite
-    fi
-
     # Hand ownership of mutable paths to the web server user
     chown -R www-data:www-data \
         /var/www/storage \
         /var/www/bootstrap/cache
-
-    if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
-        chown -R www-data:www-data /var/www/database
-    fi
 
     # Create public/storage symlink if it doesn't already exist
     if [ ! -L "/var/www/public/storage" ]; then

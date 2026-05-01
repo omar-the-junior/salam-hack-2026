@@ -8,7 +8,6 @@ services:
       - 80
     volumes:
       - storage:/var/www/storage:rw
-      - database:/var/www/database:rw
       - bootstrap-cache:/var/www/bootstrap/cache:rw
     networks:
       - dokploy-network
@@ -17,7 +16,6 @@ services:
 
 volumes:
   storage:
-  database:
   bootstrap-cache:
 
 networks:
