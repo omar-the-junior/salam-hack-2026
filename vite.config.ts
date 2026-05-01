@@ -46,8 +46,8 @@ export default defineConfig({
              */
             injectRegister: 'script-defer',
             manifest: {
-                name: 'مُسْتَحَقّ',
-                short_name: 'مُسْتَحَقّ',
+                name: 'مستحق',
+                short_name: 'مستحق',
                 description: 'النظام المالي للمستقلين وأصحاب الأعمال الصغيرة',
                 start_url: '/',
                 display: 'standalone',
