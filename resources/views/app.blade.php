@@ -34,7 +34,7 @@
         <link rel="manifest" href="/build/manifest.webmanifest">
 
         {{-- PWA: Theme colour shown in the browser chrome and OS task switcher --}}
-        <meta name="theme-color" content="#0F766E">
+        <meta name="theme-color" content="#0E2945">
 
         {{-- PWA: iOS / Safari home screen support --}}
         <meta name="mobile-web-app-capable" content="yes">

@@ -21,6 +21,12 @@ export default defineConfig({
         tailwindcss(),
         VitePWA({
             /**
+             * Laravel sets Vite `base` to `/build/` for hashed assets. vite-plugin-pwa
+             * otherwise reuses that as manifest + SW scope, which makes `start_url: '/'`
+             * invalid (must be under scope). The app and SW live at site root, not /build/.
+             */
+            scope: '/',
+            /**
              * 'prompt' — we manage the update lifecycle ourselves via useRegisterSW,
              * showing a branded sonner toast instead of silently reloading mid-session.
              */
@@ -46,7 +52,7 @@ export default defineConfig({
                 start_url: '/',
                 display: 'standalone',
                 orientation: 'portrait',
-                theme_color: '#0F766E',
+                theme_color: '#0E2945',
                 background_color: '#F7F2E8',
                 lang: 'ar',
                 dir: 'rtl',
@@ -70,8 +76,15 @@ export default defineConfig({
                         type: 'image/png',
                         purpose: 'maskable',
                     },
+                    {
+                        src: '/pwa-maskable-max.png',
+                        sizes: '1024x1024',
+                        type: 'image/png',
+                        purpose: 'maskable',
+                    }
                 ],
-                screenshots: [],
+                // TODO: add screenshots for a good preview of the app
+                // screenshots: [],
             },
             workbox: {
                 /**
