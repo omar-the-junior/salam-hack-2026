@@ -31,7 +31,7 @@
         </style>
 
         {{-- PWA: Web App Manifest --}}
-        <link rel="manifest" href="/manifest.webmanifest">
+        <link rel="manifest" href="/build/manifest.webmanifest">
 
         {{-- PWA: Theme colour shown in the browser chrome and OS task switcher --}}
         <meta name="theme-color" content="#0F766E">

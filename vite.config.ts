@@ -27,6 +27,13 @@ export default defineConfig({
             registerType: 'prompt',
             strategies: 'generateSW',
             /**
+             * Crucial for Laravel: Explicitly tell VitePWA to output to the public root
+             * rather than Laravel's default 'public/build' directory. This ensures the
+             * service worker is served from /sw.js with a root scope (/).
+             */
+            outDir: 'public',
+            buildBase: '/build/',
+            /**
              * Do NOT inject the manifest/SW registration script into an index.html —
              * this app uses a Blade template. We handle the <link rel="manifest"> and
              * registration script manually.
