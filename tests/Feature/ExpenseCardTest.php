@@ -73,6 +73,49 @@ class ExpenseCardTest extends TestCase
         $this->assertDatabaseCount('expense_cards', 0);
     }
 
+    public function test_next_renewal_date_must_not_be_before_started_at(): void
+    {
+        $user = User::factory()->create(['email' => 'expense-dates@example.com']);
+
+        $response = $this->actingAs($user)->post(route('expenses.store'), [
+            'name' => 'Date Order',
+            'category' => 'saas',
+            'type' => 'recurring',
+            'amount' => '10.00',
+            'currency' => 'EGP',
+            'billing_cycle' => 'monthly',
+            'started_at' => '2026-06-01',
+            'next_renewal_date' => '2026-05-01',
+        ]);
+
+        $response->assertSessionHasErrors('next_renewal_date');
+        $this->assertDatabaseCount('expense_cards', 0);
+    }
+
+    public function test_update_rejects_next_renewal_before_started_at(): void
+    {
+        $user = User::factory()->create(['email' => 'expense-upd-dates@example.com']);
+        $card = ExpenseCard::factory()->create([
+            'user_id' => $user->id,
+            'type' => 'recurring',
+            'billing_cycle' => 'monthly',
+            'next_renewal_date' => '2026-12-01',
+            'started_at' => '2026-01-01',
+        ]);
+
+        $response = $this->actingAs($user)->patch(route('expenses.update', ['expense' => $card]), [
+            'started_at' => '2026-06-01',
+            'next_renewal_date' => '2026-05-01',
+        ]);
+
+        $response->assertSessionHasErrors('next_renewal_date');
+
+        $card->refresh();
+
+        $this->assertSame('2026-12-01', $card->next_renewal_date->format('Y-m-d'));
+        $this->assertSame('2026-01-01', $card->started_at->format('Y-m-d'));
+    }
+
     public function test_expenses_dashboard_includes_summary_totals_and_filters(): void
     {
         $user = User::factory()->create([

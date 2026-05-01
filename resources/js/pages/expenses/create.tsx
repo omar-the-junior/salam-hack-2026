@@ -1,11 +1,15 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowRightIcon, CalendarDaysIcon, PlusIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { ArrowRightIcon, CalendarDaysIcon, ChevronDownIcon, PlusIcon } from 'lucide-react';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
     Select,
     SelectContent,
@@ -14,8 +18,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import {
+    compareExpenseYmd,
+    EXPENSE_DATE_ORDER_MESSAGE_AR,
+    formatDateToYmd,
+    formatOptionalExpenseDateLabel,
+    parseYmdToDate,
+} from '@/lib/expense-form-dates';
 import { create, index, store } from '@/routes/expenses';
 
 type Props = {
@@ -36,7 +46,15 @@ type FormValues = {
     notes: string;
 };
 
+function FieldRow({ children }: { children: ReactNode }): ReactElement {
+    return <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-start">{children}</div>;
+}
+
 export default function ExpensesCreate({ preferred_currency }: Props) {
+    const [startedPopoverOpen, setStartedPopoverOpen] = useState(false);
+    const [renewalPopoverOpen, setRenewalPopoverOpen] = useState(false);
+    const [optionalSectionOpen, setOptionalSectionOpen] = useState(false);
+
     const { data, setData, post, processing, errors } = useForm<FormValues>({
         name: '',
         category: 'saas',
@@ -51,144 +69,188 @@ export default function ExpensesCreate({ preferred_currency }: Props) {
         notes: '',
     });
 
+    const dateOrderClientError = useMemo(() => {
+        const started = data.started_at.trim();
+        const renewal = data.next_renewal_date.trim();
+
+        if (!started || !renewal) {
+            return undefined;
+        }
+
+        if (compareExpenseYmd(renewal, started) < 0) {
+            return EXPENSE_DATE_ORDER_MESSAGE_AR;
+        }
+
+        return undefined;
+    }, [data.started_at, data.next_renewal_date]);
+
     useEffect(() => {
         setData('currency', preferred_currency);
     }, [preferred_currency, setData]);
 
     function onSubmit(e: React.FormEvent): void {
         e.preventDefault();
+
+        if (dateOrderClientError) {
+            return;
+        }
+
         post(store.url());
     }
+
+    const nextRenewalDisplayError = errors.next_renewal_date ?? dateOrderClientError;
+
+    const optionalFieldsHaveErrors = errors.cancel_url !== undefined || errors.notes !== undefined;
+    const optionalCollapsibleOpen = optionalSectionOpen || optionalFieldsHaveErrors;
 
     return (
         <>
             <Head title="إضافة مصروف" />
-            <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4">
-                <div className="flex flex-col gap-2">
-                    <Button asChild variant="ghost" className="w-fit px-2">
-                        <Link href={index()}>
-                            <ArrowRightIcon data-icon="inline-start" />
-                            عودة إلى المصروفات
-                        </Link>
-                    </Button>
-                    <h1 className="text-2xl font-semibold tracking-tight">إضافة مصروف يدوي</h1>
-                    <p className="text-muted-foreground text-sm">
-                        أدخل تفاصيل المصروف لمتابعة التجديدات والمقارنة مع الدخل الشهري.
-                    </p>
-                </div>
+            <div className="bg-surface min-h-svh">
+                <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+                    <div className="flex flex-col gap-2">
+                        <Button asChild variant="ghost" className="w-fit px-2">
+                            <Link href={index()}>
+                                <ArrowRightIcon data-icon="inline-start" />
+                                عودة إلى المصروفات
+                            </Link>
+                        </Button>
+                        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">إضافة مصروف يدوي</h1>
+                        <p className="text-muted-foreground max-w-2xl text-sm">
+                            أدخل تفاصيل المصروف لمتابعة التجديدات والمقارنة مع الدخل الشهري.
+                        </p>
+                    </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>بيانات المصروف</CardTitle>
-                        <CardDescription>سيتم حفظ البطاقة بحالة «نشط».</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">اسم الخدمة أو المصروف</Label>
-                                <Input
-                                    id="name"
-                                    placeholder="مثال: اشتراك برنامج تصميم"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    aria-invalid={errors.name !== undefined}
-                                />
-                                {errors.name ? <p className="text-destructive text-sm">{errors.name}</p> : null}
-                            </div>
-
-                            <div className="grid gap-4 md:grid-cols-2">
+                    <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+                        <Card className="shadow-sm">
+                            <CardHeader className="text-right">
+                                <CardTitle>البيانات الأساسية</CardTitle>
+                                <CardDescription>التعريف والتصنيف ونوع المصروف.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col gap-5">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="category">التصنيف</Label>
-                                    <Select
-                                        value={data.category}
-                                        onValueChange={(value) => setData('category', value)}
-                                    >
-                                        <SelectTrigger id="category" aria-invalid={errors.category !== undefined}>
-                                            <SelectValue placeholder="اختر التصنيف" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="saas">SaaS</SelectItem>
-                                                <SelectItem value="tool">أداة</SelectItem>
-                                                <SelectItem value="equipment">معدات</SelectItem>
-                                                <SelectItem value="marketing">تسويق</SelectItem>
-                                                <SelectItem value="other">أخرى</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.category ? (
-                                        <p className="text-destructive text-sm">{errors.category}</p>
-                                    ) : null}
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="type">نوع المصروف</Label>
-                                    <Select
-                                        value={data.type}
-                                        onValueChange={(value) => {
-                                            const t = value as FormValues['type'];
-                                            setData('type', t);
-                                            if (t === 'one-time') {
-                                                setData('billing_cycle', 'one-time');
-                                                setData('next_renewal_date', '');
-                                            } else {
-                                                setData('billing_cycle', 'monthly');
-                                            }
-                                        }}
-                                    >
-                                        <SelectTrigger id="type" aria-invalid={errors.type !== undefined}>
-                                            <SelectValue placeholder="اختر النوع" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="recurring">متكرر</SelectItem>
-                                                <SelectItem value="one-time">مرة واحدة</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.type ? <p className="text-destructive text-sm">{errors.type}</p> : null}
-                                </div>
-                            </div>
-
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="amount">المبلغ</Label>
+                                    <Label htmlFor="name">اسم الخدمة أو المصروف</Label>
                                     <Input
-                                        id="amount"
-                                        placeholder="0.00"
-                                        type="number"
-                                        min={0}
-                                        step={0.01}
-                                        value={data.amount}
-                                        onChange={(e) => setData('amount', e.target.value)}
-                                        aria-invalid={errors.amount !== undefined}
+                                        id="name"
+                                        placeholder="مثال: اشتراك برنامج تصميم"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        aria-invalid={errors.name !== undefined}
+                                        className="min-h-11"
                                     />
-                                    {errors.amount ? (
-                                        <p className="text-destructive text-sm">{errors.amount}</p>
-                                    ) : null}
+                                    {errors.name ? <p className="text-destructive text-sm">{errors.name}</p> : null}
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="currency">العملة</Label>
-                                    <Select
-                                        value={data.currency}
-                                        onValueChange={(value) => setData('currency', value as 'EGP' | 'USD')}
-                                    >
-                                        <SelectTrigger id="currency" aria-invalid={errors.currency !== undefined}>
-                                            <SelectValue placeholder="اختر العملة" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="EGP">EGP</SelectItem>
-                                                <SelectItem value="USD">USD</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.currency ? (
-                                        <p className="text-destructive text-sm">{errors.currency}</p>
-                                    ) : null}
-                                </div>
-                            </div>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                                <FieldRow>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="category">التصنيف</Label>
+                                        <Select
+                                            value={data.category}
+                                            onValueChange={(value) => setData('category', value)}
+                                        >
+                                            <SelectTrigger id="category" aria-invalid={errors.category !== undefined}>
+                                                <SelectValue placeholder="اختر التصنيف" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="saas">SaaS</SelectItem>
+                                                    <SelectItem value="tool">أداة</SelectItem>
+                                                    <SelectItem value="equipment">معدات</SelectItem>
+                                                    <SelectItem value="marketing">تسويق</SelectItem>
+                                                    <SelectItem value="other">أخرى</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.category ? (
+                                            <p className="text-destructive text-sm">{errors.category}</p>
+                                        ) : null}
+                                    </div>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="type">نوع المصروف</Label>
+                                        <Select
+                                            value={data.type}
+                                            onValueChange={(value) => {
+                                                const t = value as FormValues['type'];
+                                                setData('type', t);
+
+                                                if (t === 'one-time') {
+                                                    setData('billing_cycle', 'one-time');
+                                                    setData('next_renewal_date', '');
+                                                    setRenewalPopoverOpen(false);
+                                                } else {
+                                                    setData('billing_cycle', 'monthly');
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger id="type" aria-invalid={errors.type !== undefined}>
+                                                <SelectValue placeholder="اختر النوع" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="recurring">متكرر</SelectItem>
+                                                    <SelectItem value="one-time">مرة واحدة</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.type ? (
+                                            <p className="text-destructive text-sm">{errors.type}</p>
+                                        ) : null}
+                                    </div>
+                                </FieldRow>
+
+                                <div className="flex flex-wrap items-center justify-end gap-2">
+                                    <Badge variant="secondary">متكرر = يتطلب تاريخ تجديد</Badge>
+                                    <Badge variant="outline">مرة واحدة = بدون دورة تجديد</Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="shadow-sm">
+                            <CardHeader className="text-right">
+                                <CardTitle>التكلفة ودورة الفوترة</CardTitle>
+                                <CardDescription>المبلغ والعملة ومعدل التكرار.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col gap-5">
+                                <FieldRow>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="amount">المبلغ</Label>
+                                        <Input
+                                            id="amount"
+                                            placeholder="0.00"
+                                            type="number"
+                                            min={0}
+                                            step={0.01}
+                                            value={data.amount}
+                                            onChange={(e) => setData('amount', e.target.value)}
+                                            aria-invalid={errors.amount !== undefined}
+                                            className="min-h-11"
+                                        />
+                                        {errors.amount ? (
+                                            <p className="text-destructive text-sm">{errors.amount}</p>
+                                        ) : null}
+                                    </div>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="currency">العملة</Label>
+                                        <Select
+                                            value={data.currency}
+                                            onValueChange={(value) => setData('currency', value as 'EGP' | 'USD')}
+                                        >
+                                            <SelectTrigger id="currency" aria-invalid={errors.currency !== undefined}>
+                                                <SelectValue placeholder="اختر العملة" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="EGP">EGP</SelectItem>
+                                                    <SelectItem value="USD">USD</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.currency ? (
+                                            <p className="text-destructive text-sm">{errors.currency}</p>
+                                        ) : null}
+                                    </div>
+                                </FieldRow>
+
                                 <div className="grid gap-2">
                                     <Label htmlFor="billing">دورة الفوترة</Label>
                                     <Select
@@ -196,10 +258,7 @@ export default function ExpensesCreate({ preferred_currency }: Props) {
                                         onValueChange={(value) => setData('billing_cycle', value)}
                                         disabled={data.type === 'one-time'}
                                     >
-                                        <SelectTrigger
-                                            id="billing"
-                                            aria-invalid={errors.billing_cycle !== undefined}
-                                        >
+                                        <SelectTrigger id="billing" aria-invalid={errors.billing_cycle !== undefined}>
                                             <SelectValue placeholder="اختر دورة الفوترة" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -214,104 +273,189 @@ export default function ExpensesCreate({ preferred_currency }: Props) {
                                         <p className="text-destructive text-sm">{errors.billing_cycle}</p>
                                     ) : null}
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="renewal">تاريخ التجديد القادم</Label>
-                                    <div className="relative">
-                                        <CalendarDaysIcon className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2" />
-                                        <Input
-                                            id="renewal"
-                                            type="date"
-                                            className="pr-10"
-                                            disabled={data.type === 'one-time'}
-                                            value={data.next_renewal_date}
-                                            onChange={(e) => setData('next_renewal_date', e.target.value)}
-                                            aria-invalid={errors.next_renewal_date !== undefined}
-                                        />
+                            </CardContent>
+                        </Card>
+
+                        <Card className="shadow-sm">
+                            <CardHeader className="text-right">
+                                <CardTitle>التواريخ والتنبيه</CardTitle>
+                                <CardDescription>
+                                    إن وُجد تاريخ بداية وتجديد معاً، يجب ألا يكون التجديد قبل البداية.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col gap-5">
+                                <FieldRow>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="started_at_trigger">تاريخ البداية</Label>
+                                        <Popover open={startedPopoverOpen} onOpenChange={setStartedPopoverOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    id="started_at_trigger"
+                                                    type="button"
+                                                    variant="outline"
+                                                    className="min-h-11 w-full justify-between font-normal"
+                                                    aria-invalid={errors.started_at !== undefined}
+                                                >
+                                                    <span>
+                                                        {formatOptionalExpenseDateLabel(
+                                                            data.started_at,
+                                                            'اختر تاريخ البداية (اختياري)',
+                                                        )}
+                                                    </span>
+                                                    <CalendarDaysIcon data-icon="inline-end" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="end">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={parseYmdToDate(data.started_at)}
+                                                    onSelect={(date) => {
+                                                        setData('started_at', date ? formatDateToYmd(date) : '');
+                                                        setStartedPopoverOpen(false);
+                                                    }}
+                                                    captionLayout="dropdown"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {errors.started_at ? (
+                                            <p className="text-destructive text-sm">{errors.started_at}</p>
+                                        ) : null}
                                     </div>
-                                    {errors.next_renewal_date ? (
-                                        <p className="text-destructive text-sm">{errors.next_renewal_date}</p>
-                                    ) : null}
-                                </div>
-                            </div>
 
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="started_at">تاريخ البداية</Label>
-                                    <Input
-                                        id="started_at"
-                                        type="date"
-                                        value={data.started_at}
-                                        onChange={(e) => setData('started_at', e.target.value)}
-                                        aria-invalid={errors.started_at !== undefined}
-                                    />
-                                    {errors.started_at ? (
-                                        <p className="text-destructive text-sm">{errors.started_at}</p>
-                                    ) : null}
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="alert_days_before">التنبيه قبل التجديد (بالأيام)</Label>
-                                    <Input
-                                        id="alert_days_before"
-                                        type="number"
-                                        min={0}
-                                        value={data.alert_days_before}
-                                        onChange={(e) => setData('alert_days_before', e.target.value)}
-                                        disabled={data.type === 'one-time'}
-                                        aria-invalid={errors.alert_days_before !== undefined}
-                                    />
-                                    {errors.alert_days_before ? (
-                                        <p className="text-destructive text-sm">{errors.alert_days_before}</p>
-                                    ) : null}
-                                </div>
-                            </div>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="renewal_trigger">تاريخ التجديد القادم</Label>
+                                        <Popover
+                                            open={renewalPopoverOpen}
+                                            onOpenChange={(open) => {
+                                                if (data.type !== 'one-time') {
+                                                    setRenewalPopoverOpen(open);
+                                                }
+                                            }}
+                                        >
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    id="renewal_trigger"
+                                                    type="button"
+                                                    variant="outline"
+                                                    disabled={data.type === 'one-time'}
+                                                    className="min-h-11 w-full justify-between font-normal"
+                                                    aria-invalid={nextRenewalDisplayError !== undefined}
+                                                >
+                                                    <span>
+                                                        {formatOptionalExpenseDateLabel(
+                                                            data.next_renewal_date,
+                                                            data.type === 'one-time'
+                                                                ? 'لا ينطبق على مصروف لمرة واحدة'
+                                                                : 'اختر تاريخ التجديد',
+                                                        )}
+                                                    </span>
+                                                    <CalendarDaysIcon data-icon="inline-end" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="end">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={parseYmdToDate(data.next_renewal_date)}
+                                                    onSelect={(date) => {
+                                                        setData('next_renewal_date', date ? formatDateToYmd(date) : '');
+                                                        setRenewalPopoverOpen(false);
+                                                    }}
+                                                    captionLayout="dropdown"
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {nextRenewalDisplayError ? (
+                                            <p className="text-destructive text-sm">{nextRenewalDisplayError}</p>
+                                        ) : null}
+                                    </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="cancel_url">رابط الإلغاء (اختياري)</Label>
-                                <Input
-                                    id="cancel_url"
-                                    type="url"
-                                    placeholder="https://..."
-                                    value={data.cancel_url}
-                                    onChange={(e) => setData('cancel_url', e.target.value)}
-                                    aria-invalid={errors.cancel_url !== undefined}
-                                />
-                                {errors.cancel_url ? (
-                                    <p className="text-destructive text-sm">{errors.cancel_url}</p>
-                                ) : null}
-                            </div>
+                                    <div className="grid min-w-0 flex-1 gap-2 md:min-w-[200px]">
+                                        <Label htmlFor="alert_days_before">التنبيه قبل التجديد (بالأيام)</Label>
+                                        <Input
+                                            id="alert_days_before"
+                                            type="number"
+                                            min={0}
+                                            value={data.alert_days_before}
+                                            onChange={(e) => setData('alert_days_before', e.target.value)}
+                                            disabled={data.type === 'one-time'}
+                                            aria-invalid={errors.alert_days_before !== undefined}
+                                            className="min-h-11"
+                                        />
+                                        {errors.alert_days_before ? (
+                                            <p className="text-destructive text-sm">{errors.alert_days_before}</p>
+                                        ) : null}
+                                    </div>
+                                </FieldRow>
+                            </CardContent>
+                        </Card>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="notes">ملاحظات</Label>
-                                <Textarea
-                                    id="notes"
-                                    placeholder="أي تفاصيل إضافية..."
-                                    className="min-h-24"
-                                    value={data.notes}
-                                    onChange={(e) => setData('notes', e.target.value)}
-                                    aria-invalid={errors.notes !== undefined}
-                                />
-                                {errors.notes ? <p className="text-destructive text-sm">{errors.notes}</p> : null}
-                            </div>
+                        <Card className="shadow-sm">
+                            <Collapsible open={optionalCollapsibleOpen} onOpenChange={setOptionalSectionOpen}>
+                                <CardHeader className="pb-2 text-right">
+                                    <CollapsibleTrigger
+                                        type="button"
+                                        className="flex w-full items-start justify-between gap-3 rounded-lg py-1 text-right outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&[data-state=open]>svg]:rotate-180"
+                                    >
+                                        <div className="min-w-0 flex-1 space-y-1">
+                                            <CardTitle className="text-base">روابط وملاحظات (اختياري)</CardTitle>
+                                            <CardDescription className="text-pretty">
+                                                رابط إلغاء الاشتراك أو أي تفاصيل إضافية — انقر للعرض أو الإخفاء.
+                                            </CardDescription>
+                                        </div>
+                                        <ChevronDownIcon
+                                            className="text-muted-foreground mt-0.5 size-5 shrink-0 transition-transform duration-200"
+                                            aria-hidden
+                                        />
+                                    </CollapsibleTrigger>
+                                </CardHeader>
+                                <CollapsibleContent>
+                                    <CardContent className="flex flex-col gap-5 pt-0">
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="cancel_url">رابط الإلغاء</Label>
+                                            <Input
+                                                id="cancel_url"
+                                                type="url"
+                                                placeholder="https://..."
+                                                value={data.cancel_url}
+                                                onChange={(e) => setData('cancel_url', e.target.value)}
+                                                aria-invalid={errors.cancel_url !== undefined}
+                                                className="min-h-11"
+                                            />
+                                            {errors.cancel_url ? (
+                                                <p className="text-destructive text-sm">{errors.cancel_url}</p>
+                                            ) : null}
+                                        </div>
 
-                            <Separator />
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="notes">ملاحظات</Label>
+                                            <Textarea
+                                                id="notes"
+                                                placeholder="أي تفاصيل إضافية..."
+                                                className="min-h-24"
+                                                value={data.notes}
+                                                onChange={(e) => setData('notes', e.target.value)}
+                                                aria-invalid={errors.notes !== undefined}
+                                            />
+                                            {errors.notes ? (
+                                                <p className="text-destructive text-sm">{errors.notes}</p>
+                                            ) : null}
+                                        </div>
+                                    </CardContent>
+                                </CollapsibleContent>
+                            </Collapsible>
+                        </Card>
 
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Badge variant="secondary">متكرر = يتطلب تاريخ تجديد</Badge>
-                                <Badge variant="outline">مرة واحدة = بدون دورة</Badge>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                <Button type="submit" disabled={processing}>
-                                    <PlusIcon data-icon="inline-start" />
-                                    حفظ المصروف
-                                </Button>
-                                <Button asChild variant="outline">
-                                    <Link href={index()}>إلغاء</Link>
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                            <Button type="submit" disabled={processing || Boolean(dateOrderClientError)} size="lg">
+                                <PlusIcon data-icon="inline-start" />
+                                حفظ المصروف
+                            </Button>
+                            <Button asChild variant="outline" size="lg">
+                                <Link href={index()}>إلغاء</Link>
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </>
     );

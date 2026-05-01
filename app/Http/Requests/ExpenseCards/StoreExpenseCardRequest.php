@@ -73,6 +73,17 @@ class StoreExpenseCardRequest extends FormRequest
                     $validator->errors()->add('billing_cycle', 'دورة الفوترة يجب أن تكون شهرية أو سنوية للمصاريف المتكررة.');
                 }
             }
+
+            $startedAt = $data['started_at'] ?? null;
+            $nextRenewal = $data['next_renewal_date'] ?? null;
+            if ($startedAt !== null && $startedAt !== '' && $nextRenewal !== null && $nextRenewal !== '') {
+                if (strtotime((string) $nextRenewal) < strtotime((string) $startedAt)) {
+                    $validator->errors()->add(
+                        'next_renewal_date',
+                        'تاريخ التجديد القادم يجب ألا يكون قبل تاريخ البداية.'
+                    );
+                }
+            }
         });
     }
 }
