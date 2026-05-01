@@ -1,129 +1,223 @@
 <div align="center">
-  <h1>مُسْتَحَقّ (Mustahaq)</h1>
-  <p><strong>Arabic-first financial OS for MENA freelancers</strong></p>
 
-  [![PHP](https://img.shields.io/badge/PHP-8.3-blue)](https://php.net)
-  [![Laravel](https://img.shields.io/badge/Laravel-13-red)](https://laravel.com)
-  [![React](https://img.shields.io/badge/React-19-cyan)](https://react.dev)
-  [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-  
-  <br />
-  <br />
-  
-  <!-- Add your project screenshot/banner here -->
-  <img src="https://placehold.co/800x400/252525/FFF?text=Mustahaq+Dashboard+Preview" alt="Mustahaq Dashboard Preview" width="800" style="border-radius: 8px;" />
-  
-  <br />
-  <br />
+<img src="public/logo/logo-full-primary.svg" alt="Mustahaq Logo" width="280" />
 
-  [**<img src="https://api.iconify.design/lucide:globe.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> View Live Demo**](https://mustahaq.example.com) • [**<img src="https://api.iconify.design/lucide:book.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> Documentation**](docs/prd.md) • [**<img src="https://api.iconify.design/lucide:bug.svg?color=%230891b2" width="20" height="20" align="absmiddle" /> Report Bug**](https://github.com/omar-the-junior/salam-hack-2026/issues)
+<br />
+<br />
+
+**The Arabic-first financial operating system for MENA freelancers**
+
+*Contract · Collect · Track · Protect your earned money*
+
+<br />
+
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-0F766E?style=flat-square)](LICENSE)
+
+<br />
+
+<img src="public/images/dashboard-current-preview.png" alt="Mustahaq Dashboard" width="860" style="border-radius: 12px; border: 1px solid #e2e8f0;" />
+
+<br />
+<br />
+
+[🌐 **Live Demo**](https://mustahaq.example.com) · [📖 **Documentation**](docs/prd.md) · [🐛 **Report Bug**](https://github.com/omar-the-junior/salam-hack-2026/issues) · [🚀 **Deploy Guide**](docs/deploy-handbook.md)
+
 </div>
 
 ---
 
-## <img src="https://api.iconify.design/lucide:list.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Index (Table of Contents)
+## ✨ What It Does
 
-- [<img src="https://api.iconify.design/lucide:sparkles.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> What It Does](#what-it-does)
-- [<img src="https://api.iconify.design/lucide:rocket.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Quick Start & Installation](#quick-start--installation)
-- [<img src="https://api.iconify.design/lucide:wrench.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Tech Stack](#tech-stack)
-- [<img src="https://api.iconify.design/lucide:folder-open.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Documentation Directory](#documentation-directory)
-- [<img src="https://api.iconify.design/lucide:scroll-text.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Scripts](#scripts)
-- [<img src="https://api.iconify.design/lucide:users.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> Contributors](#contributors)
-- [<img src="https://api.iconify.design/lucide:file-text.svg?color=%230891b2" width="18" height="18" align="absmiddle" /> License](#license)
+مُسْتَحَقّ brings scattered freelance finances into one orderly workspace — no more WhatsApp links, Excel chaos, or forgotten subscriptions.
+
+<table>
+<tr>
+<td width="50%">
+
+### 💳 Payment Links
+Shareable payment requests via **Paymob** — Cards, Fawry, Vodafone Cash, Orange Money. Get paid in seconds.
+
+</td>
+<td width="50%">
+
+### 📜 Milestone Contracts
+Professional contracts with client acceptance and staged payment releases. Document-like, not generic SaaS.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📊 Income Tracker
+Unified dashboard — auto-logs from payments + manual entries. See your cash flow at a glance.
+
+</td>
+<td width="50%">
+
+### 💸 Expense Manager
+Track SaaS subscriptions with renewal alerts and AI-powered cancellation help. Stop leaking money.
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+
+### 🤖 AI Email Scanner
+Connect Gmail → auto-detect subscriptions from emails. Gemini + OpenRouter parse your inbox so you don't have to.
+
+</td>
+</tr>
+</table>
 
 ---
 
-## <img src="https://api.iconify.design/lucide:sparkles.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> What It Does
-
-| Feature | What It Does |
-|---------|--------------|
-| **Payment Links** | Shareable payment requests via Paymob (Cards, Fawry, Vodafone Cash, Orange Money) |
-| **Milestone Contracts** | Professional contracts with client acceptance and staged payment releases |
-| **Income Tracker** | Unified dashboard — auto-logs from payments + manual entries |
-| **Expense Manager** | Track SaaS subscriptions with renewal alerts and AI cancellation help |
-| **AI Email Scanner** | Connect Gmail → auto-detect subscriptions from emails |
-
----
-
-## <img src="https://api.iconify.design/lucide:rocket.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Quick Start & Installation
-
-To get a local copy up and running, follow these simple steps.
+## 🚀 Quick Start
 
 ### Prerequisites
-Ensure you have the following installed on your machine:
-- **PHP** 8.3+
+
+- **PHP** 8.4+
 - **Composer** 2.x
 - **Node.js** 20+
+- **pnpm** (enabled via corepack)
 
-### Installation Steps
+### Local Development
 
 ```bash
-# 1. Clone the repository
+# 1. Clone
 git clone https://github.com/omar-the-junior/salam-hack-2026.git
 cd salam-hack-2026
 
-# 2. Setup the application (Installs dependencies, runs migrations, and builds frontend)
+# 2. Setup (installs dependencies, runs migrations, builds frontend)
 composer setup
 
-# 3. Start the development environment (Starts server, queue worker, and Vite)
+# 3. Start dev environment (server + queue worker + Vite)
 composer dev
 ```
 
-Once running, visit `http://localhost:8000` in your browser.
+Visit **http://localhost:8000** — local dev uses SQLite, no PostgreSQL needed.
+
+### Docker (Production)
+
+```bash
+# Build the production image
+docker build -t mustahaq:local .
+
+# Run with PostgreSQL env vars
+docker run --rm -p 8080:80 \
+  -e APP_KEY="base64:YOUR_KEY" \
+  -e APP_ENV=production \
+  -e DB_CONNECTION=pgsql \
+  -e DB_HOST=your-postgres-host \
+  -e DB_PORT=5432 \
+  -e DB_DATABASE=mustahaq \
+  -e DB_USERNAME=mustahaq_user \
+  -e DB_PASSWORD=your-password \
+  mustahaq:local
+```
+
+See the [**Deployment Handbook**](docs/deploy-handbook.md) for full VPS + Dockploy setup.
 
 ---
 
-## <img src="https://api.iconify.design/lucide:wrench.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Tech Stack
+## 🛠 Tech Stack
 
-- **Backend:** Laravel 13 + PHP 8.3 + SQLite
-- **Frontend:** React 19 + TypeScript + Inertia.js v3 + shadcn/ui + TailwindCSS 4
-- **AI Integration:** Gemini API (email parsing, cancellation instructions)
-- **Payment Gateway:** Paymob API
-- **Email Services:** Gmail OAuth + Resend
-- **Storage:** MinIO / Cloudflare R2
-
----
-
-## <img src="https://api.iconify.design/lucide:folder-open.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Documentation Directory
-
-| Type | Link | Description |
-|------|------|-------------|
-| **PRD** | [docs/prd.md](docs/prd.md) | Product Requirements Document |
-| **Architecture** | [docs/architecture.md](docs/architecture.md) | System Design & Architecture |
-| **DB Schema** | [docs/DB-design.md](docs/DB-design.md) | Database Structure |
-| **Use Cases** | [docs/use-cases/](docs/use-cases/) | UC-001 → UC-014 details |
-| **Deploy** | [docs/deploy-handbook.md](docs/deploy-handbook.md) | Deployment guidelines |
+| Layer | Technology |
+|---|---|
+| **Backend** | Laravel 13 · PHP 8.4 · PostgreSQL |
+| **Frontend** | React 19 · TypeScript · Inertia.js v3 · shadcn/ui · TailwindCSS 4 |
+| **AI** | Google Gemini · OpenRouter (fallback) |
+| **Payments** | Paymob API (Cards, Fawry, Mobile Wallets) |
+| **Email** | Gmail OAuth (scanner) · Resend (notifications) |
+| **Storage** | Local (Docker volume) · MinIO / Cloudflare R2 (future) |
+| **Infrastructure** | Docker · Apache · GitHub Actions CI/CD · Dockploy |
 
 ---
 
-## <img src="https://api.iconify.design/lucide:scroll-text.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Scripts
+## 🏗 Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      VPS (Dockploy)                      │
+│                                                          │
+│  ┌──────────────┐     ┌──────────────┐                   │
+│  │   Apache     │     │  PostgreSQL  │                   │
+│  │  (Laravel)   │────▶│  (External)  │                   │
+│  │  Port 80     │     │  Port 5432   │                   │
+│  └──────┬───────┘     └──────────────┘                   │
+│         │                                                │
+│  ┌──────▼───────┐                                       │
+│  │  Docker      │    GitHub Actions                     │
+│  │  Volume      │◀─── GHCR Image ──── Build & Push     │
+│  │  (storage)   │    (auto on push)                     │
+│  └──────────────┘                                       │
+│                                                          │
+│  Dockploy Reverse Proxy → SSL Termination                │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📂 Documentation
+
+| Document | Description |
+|---|---|
+| [PRD](docs/prd.md) | Product Requirements Document |
+| [Architecture](docs/architecture.md) | System Design & Architecture |
+| [Design System](docs/DESIGN.md) | Brand Identity, Colors, Typography |
+| [DB Schema](docs/DB-design.md) | Database Structure |
+| [Deployment](docs/DEPLOYMENT.md) | Docker & CI/CD Reference |
+| [Deploy Handbook](docs/deploy-handbook.md) | VPS + Dockploy + PostgreSQL Setup |
+| [Use Cases](docs/use-cases/) | UC-001 → UC-016 detailed flows |
+| [Technical Specs](docs/technical-specs.md) | Technical Specifications |
+
+---
+
+## ⌨️ Scripts
 
 | Command | Action |
-|---------|--------|
-| `composer setup` | Full install + database migrate + frontend build |
-| `composer dev` | Run server + queue worker + Vite development server |
+|---|---|
+| `composer setup` | Full install + migrate + frontend build |
+| `composer dev` | Server + queue worker + Vite dev server |
 | `composer test` | Run tests + linting |
-| `npm run build` | Production frontend build |
-| `npm run lint` | ESLint fix |
-| `npm run format` | Prettier code formatting |
+| `pnpm run build` | Production frontend build |
+| `pnpm run lint` | ESLint fix |
+| `pnpm run format` | Prettier code formatting |
+| `vendor/bin/pint` | PHP code formatting (Laravel Pint) |
 
 ---
 
-## <img src="https://api.iconify.design/lucide:users.svg?color=%230891b2" width="28" height="28" align="absmiddle" /> Contributors
+## 👥 Contributors
 
-Thanks to these amazing people who have contributed to building Mustahaq:
-
-| Avatar | Name | Role | GitHub |
-|:---:|:---|:---|:---|
-| <img src="https://avatars.githubusercontent.com/u/74640539?v=4" width="50" style="border-radius:50%;"/> | **Omar (The Junior)** | Full Stack Developer & Architect | [@omar-the-junior](https://github.com/omar-the-junior) |
-| <img src="https://ui-avatars.com/api/?name=Contributor+Name&background=random" width="50" style="border-radius:50%;"/> | **[Name Here]** | [Role Here] | [@username](https://github.com/username) |
-| <img src="https://ui-avatars.com/api/?name=Contributor+Name&background=random" width="50" style="border-radius:50%;"/> | **[Name Here]** | [Role Here] | [@username](https://github.com/username) |
-
-*(Note: Feel free to update the table above with actual team members, their roles, and GitHub profiles)*
+<table>
+<tr>
+<td align="center">
+  <img src="https://avatars.githubusercontent.com/u/74640539?v=4" width="64" style="border-radius:50%;" /><br />
+  <b>Omar (The Junior)</b><br />
+  <sub>Full Stack Developer & Architect</sub><br />
+  <a href="https://github.com/omar-the-junior">@omar-the-junior</a>
+</td>
+<td align="center">
+  <img src="https://ui-avatars.com/api/?name=You&background=0F766E&color=fff&size=64" width="64" style="border-radius:50%;" /><br />
+  <b>Your Name</b><br />
+  <sub>Your Role</sub><br />
+  <a href="https://github.com/username">@username</a>
+</td>
+</tr>
+</table>
 
 ---
 
 <div align="center">
-  <b>SalamHack 2026 · Track 2 · Fintech</b> <br>
-  Distributed under the MIT License. See <code>LICENSE</code> for more information.
+
+**SalamHack 2026 · Track 2 · Fintech**
+
+<img src="public/logo/logo-icon-primary.svg" width="24" /> مُسْتَحَقّ — *What is owed, deserved, or due*
+
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+
 </div>

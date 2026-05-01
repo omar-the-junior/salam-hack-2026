@@ -85,7 +85,7 @@ flowchart TB
         direction TB
         web_app["Laravel Web App<br/>PHP / Laravel 11<br/>MVC + Inertia.js v3<br/>Routing · Auth · Validation · Business Logic"]
         spa["React SPA<br/>React 18 + TypeScript<br/>shadcn/ui · TailwindCSS<br/>Client-rendered pages via Inertia"]
-        db[("SQLite Database<br/>File-based · All entities<br/>Users · PaymentLinks · Contracts · Income · Expenses")]
+        db[("PostgreSQL Database<br/>Production-grade · All entities<br/>Users · PaymentLinks · Contracts · Income · Expenses")
         queue["Queue Worker<br/>Laravel Queue<br/>Email scan · Renewal alerts · PDF generation"]
         files[("File Storage<br/>MinIO / Cloudflare R2<br/>Contract PDFs · Exports · Receipts")]
     end
@@ -131,7 +131,7 @@ flowchart TB
 |-----------|-----------|----------------|
 | **Laravel Web App** | PHP 8.x / Laravel 11, Inertia.js v3 adapter | All server-side logic: routing, authentication (session-based), authorization, validation, business logic, Inertia page rendering. Controllers return `Inertia::render()` instead of Blade views. JSON endpoints only for webhooks and AJAX helpers. |
 | **React SPA** | React 18 + TypeScript, shadcn/ui components, TailwindCSS | Client-rendered UI. Receives page props from Inertia. No React Router — navigation is driven by Laravel routes via Inertia visits. |
-| **SQLite Database** | SQLite (file-based, hackathon-friendly) | Single-file relational DB. All entities from DB-design.md. UUIDs for primary keys on financial records. |
+| **PostgreSQL Database** | PostgreSQL 15+ (production), SQLite (local dev) | Relational DB. All entities from DB-design.md. UUIDs for primary keys on financial records. |
 | **Queue Worker** | Laravel Queue (sync or database driver for MVP) | Runs background jobs: email scan pipeline (UC-009/010), renewal alert dispatch (UC-011), PDF generation (UC-012), data export (UC-013). |
 | **File Storage** | MinIO (dev) / Cloudflare R2 (prod) | Contract PDFs, income/expense export files, receipt uploads. Accessed via Laravel `Storage` facade. |
 
@@ -139,9 +139,9 @@ flowchart TB
 
 | Flow | Path |
 |------|------|
-| **Create payment link** | Freelancer → Laravel (Inertia POST) → SQLite → Inertia redirect to show page |
-| **Client pays** | Client → Laravel (GET /pay/{token}) → Paymob (3-step API) → Client redirects to Paymob iframe → Paymob webhook → Laravel updates SQLite |
-| **Email scan** | Freelancer → Laravel (OAuth redirect) → Gmail consent → Laravel dispatches queue job → Queue fetches Gmail → Queue sends to Gemini → Queue writes results to SQLite → Freelancer reviews & confirms |
+| **Create payment link** | Freelancer → Laravel (Inertia POST) → PostgreSQL → Inertia redirect to show page |
+| **Client pays** | Client → Laravel (GET /pay/{token}) → Paymob (3-step API) → Client redirects to Paymob iframe → Paymob webhook → Laravel updates PostgreSQL |
+| **Email scan** | Freelancer → Laravel (OAuth redirect) → Gmail consent → Laravel dispatches queue job → Queue fetches Gmail → Queue sends to Gemini → Queue writes results to PostgreSQL → Freelancer reviews & confirms |
 | **Cancel subscription** | Freelancer → Laravel (POST) → Gemini API (web search) → Laravel saves result to expense card |
 | **Contract PDF** | Freelancer → Laravel → DomPDF generates PDF → stored in File Storage → download link returned |
 
@@ -171,7 +171,7 @@ flowchart TB
         middleware_stack["Middleware Stack<br/>auth · verified<br/>EnsureOnboardingComplete<br/>VerifyPaymobWebhook · CSRF"]
     end
 
-    db[("SQLite")]
+    db[("PostgreSQL")]
     paymob_svc["PaymobService<br/>authenticate · createOrder<br/>getPaymentKey · verifyHmac"]
     gemini_svc["GeminiService<br/>parseEmail · cancelInstructions<br/>suggestCategory · forecast"]
     gmail_svc["GmailService<br/>OAuth · fetchMessages<br/>getMessageDetail"]

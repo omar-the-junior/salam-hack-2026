@@ -21,3 +21,15 @@ volumes:
 networks:
   dokploy-network:
     external: true
+
+# ──────────────────────────────────────────────────────────
+# PostgreSQL is managed externally (Dockploy built-in DB or
+# a separate service). Set these env vars in Dockploy:
+#
+#   DB_CONNECTION=pgsql
+#   DB_HOST=<postgres-host>
+#   DB_PORT=5432
+#   DB_DATABASE=mustahaq
+#   DB_USERNAME=mustahaq_user
+#   DB_PASSWORD=<strong-password>
+# ──────────────────────────────────────────────────────────
