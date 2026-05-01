@@ -162,7 +162,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return list<array{service: string, amount: float, currency: string, category: string, billing_cycle: string, next_renewal_date: string, days_left: int, initials: string}>
+     * @return list<array{id: string, service: string, amount: float, currency: string, category: string, billing_cycle: string, next_renewal_date: string, days_left: int, initials: string, alert_days_before: int}>
      */
     private function buildUpcomingRenewals(User $user): array
     {
@@ -182,6 +182,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get()
             ->map(fn (ExpenseCard $card) => [
+                'id' => $card->id,
                 'service' => $card->name,
                 'amount' => (float) $card->amount,
                 'currency' => $card->currency,
@@ -190,6 +191,7 @@ class DashboardController extends Controller
                 'next_renewal_date' => $card->next_renewal_date->toDateString(),
                 'days_left' => (int) $today->diffInDays($card->next_renewal_date),
                 'initials' => mb_substr($card->name, 0, 1),
+                'alert_days_before' => (int) $card->alert_days_before,
             ])
             ->values()
             ->all();

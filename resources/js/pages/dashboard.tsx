@@ -57,7 +57,7 @@ import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { index as contractIndex } from '@/routes/contracts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
-import { create as expenseCreate, index as expenseIndex } from '@/routes/expenses';
+import { create as expenseCreate, index as expenseIndex, update as updateExpense } from '@/routes/expenses';
 import { create as incomeCreate, index as incomeIndex } from '@/routes/income';
 import {
     create as paymentLinkCreate,
@@ -102,6 +102,7 @@ type PaymentLinkItem = {
     initials: string;
 };
 type RenewalItem = {
+    id: string;
     service: string;
     amount: number;
     currency: string;
@@ -110,6 +111,7 @@ type RenewalItem = {
     next_renewal_date: string;
     days_left: number;
     initials: string;
+    alert_days_before: number;
 };
 type IncomeBreakdownSource = {
     source: string;
@@ -281,7 +283,6 @@ export default function Dashboard({
     const [showChecklist, setShowChecklist] = useState(Boolean(checklist?.show));
     const [expandedRenewal, setExpandedRenewal] = useState(0);
     const [openRenewalMenu, setOpenRenewalMenu] = useState<number | null>(null);
-    const [activeRenewalReminders, setActiveRenewalReminders] = useState<string[]>([]);
 
     const renewalCategoryClass = (category: string) =>
         ({
@@ -291,15 +292,20 @@ export default function Dashboard({
             'ذكاء اصطناعي': 'bg-secondary text-secondary-foreground',
         })[category] ?? 'bg-secondary text-secondary-foreground';
 
-    const renewalReminderActive = (service: string) =>
-        activeRenewalReminders.includes(service);
+    const renewalReminderActive = (item: RenewalItem) => item.alert_days_before > 0;
 
-    const toggleRenewalReminder = (service: string) =>
-        setActiveRenewalReminders((previous) =>
-            previous.includes(service)
-                ? previous.filter((item) => item !== service)
-                : [...previous, service],
+    const toggleRenewalReminder = (item: RenewalItem): void => {
+        const nextAlertDaysBefore = renewalReminderActive(item) ? 0 : 7;
+
+        router.patch(
+            updateExpense.url({ expense: item.id }),
+            { alert_days_before: nextAlertDaysBefore },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            },
         );
+    };
 
     const primaryWallet = walletBalances[0] ?? null;
 
@@ -807,19 +813,15 @@ export default function Dashboard({
                                                             size="sm"
                                                             className={cn(
                                                                 'h-8 rounded-lg px-2.5 text-xs',
-                                                                renewalReminderActive(
-                                                                    item.service,
-                                                                ) &&
+                                                                renewalReminderActive(item) &&
                                                                     'border-primary/40 bg-primary/10 text-primary',
                                                             )}
                                                             onClick={(event) => {
                                                                 event.stopPropagation();
-                                                                toggleRenewalReminder(
-                                                                    item.service,
-                                                                );
+                                                                toggleRenewalReminder(item);
                                                             }}
                                                         >
-                                                            {renewalReminderActive(item.service) ? (
+                                                            {renewalReminderActive(item) ? (
                                                                 <>
                                                                     <Bell data-icon="inline-start" />
                                                                     التذكير مفعل

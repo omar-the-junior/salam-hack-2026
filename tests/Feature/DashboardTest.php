@@ -181,7 +181,7 @@ class DashboardTest extends TestCase
 
         $user = User::factory()->create();
 
-        ExpenseCard::factory()->create([
+        $figma = ExpenseCard::factory()->create([
             'user_id' => $user->id,
             'name' => 'Figma Pro',
             'status' => 'active',
@@ -211,8 +211,10 @@ class DashboardTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('upcomingRenewals', 1)
+                ->where('upcomingRenewals.0.id', $figma->id)
                 ->where('upcomingRenewals.0.service', 'Figma Pro')
-                ->where('upcomingRenewals.0.days_left', 9));
+                ->where('upcomingRenewals.0.days_left', 9)
+                ->where('upcomingRenewals.0.alert_days_before', 7));
 
         Carbon::setTestNow();
     }
