@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
     plugins: [
@@ -18,6 +19,90 @@ export default defineConfig({
             },
         }),
         tailwindcss(),
+        VitePWA({
+            /**
+             * 'prompt' — we manage the update lifecycle ourselves via useRegisterSW,
+             * showing a branded sonner toast instead of silently reloading mid-session.
+             */
+            registerType: 'prompt',
+            strategies: 'generateSW',
+            /**
+             * Do NOT inject the manifest/SW registration script into an index.html —
+             * this app uses a Blade template. We handle the <link rel="manifest"> and
+             * registration script manually.
+             */
+            injectRegister: 'script-defer',
+            manifest: {
+                name: 'مُسْتَحَقّ',
+                short_name: 'مُسْتَحَقّ',
+                description: 'النظام المالي للمستقلين وأصحاب الأعمال الصغيرة',
+                start_url: '/',
+                display: 'standalone',
+                orientation: 'portrait',
+                theme_color: '#0F766E',
+                background_color: '#F7F2E8',
+                lang: 'ar',
+                dir: 'rtl',
+                categories: ['finance', 'business', 'productivity'],
+                icons: [
+                    {
+                        src: '/logo/logo-icon-192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
+                    {
+                        src: '/logo/logo-icon-512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
+                    {
+                        src: '/pwa-maskable-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable',
+                    },
+                ],
+                screenshots: [],
+            },
+            workbox: {
+                /**
+                 * CRITICAL for Laravel: null means the SW will NOT intercept navigation
+                 * requests, so Laravel's server-side routing continues to work correctly.
+                 * Without this the SW would return stale HTML for all page navigations.
+                 */
+                navigateFallback: null,
+                /**
+                 * Precache compiled JS, CSS, fonts, and static images only.
+                 * Exclude Laravel's PHP-served routes and API endpoints.
+                 */
+                globPatterns: ['**/*.{js,css,woff,woff2,ttf,eot,ico,png,svg,webp}'],
+                globIgnores: ['**/node_modules/**', '**/build/manifest.json'],
+                /**
+                 * Exclude server-side routes from precache navigation handling.
+                 */
+                navigateFallbackDenylist: [/^\/api\//, /^\/sanctum\//, /^\/__debugbar\//],
+                /**
+                 * Clean up outdated caches on SW activation so users never serve
+                 * stale assets after a deployment.
+                 */
+                cleanupOutdatedCaches: true,
+                /**
+                 * Skip waiting so the new SW activates as soon as all tabs are closed,
+                 * paired with our update prompt that asks users to reload.
+                 */
+                skipWaiting: false,
+                clientsClaim: true,
+            },
+            devOptions: {
+                /**
+                 * Keep development clean — no SW in dev mode to avoid caching issues
+                 * and Vite HMR conflicts. Test PWA features against the built app.
+                 */
+                enabled: false,
+            },
+        }),
         // In Docker builds the wayfinder-generator stage has already produced the
         // TypeScript files; skip the plugin so it doesn't attempt to call PHP again.
         ...(process.env.DOCKER_BUILD

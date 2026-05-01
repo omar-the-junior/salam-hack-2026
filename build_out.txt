@@ -1,0 +1,145 @@
+
+> @ build D:\Work\salam-hack
+> vite build
+
+[36mvite v8.0.10 [32mbuilding client environment for production...[36m[39m
+[plugin @laravel/vite-plugin-wayfinder] Types generated for actions, routes, form variants
+[2Ktransforming...✓ 3989 modules transformed.
+rendering chunks...
+computing gzip size...
+public/build/registerSW.js                             0.14 kB
+public/build/manifest.webmanifest                      0.67 kB
+public/build/manifest.json                            29.32 kB │ gzip:   3.21 kB
+public/build/assets/app-DoSV6Pcu.css                 169.12 kB │ gzip:  25.14 kB
+public/build/assets/check-CkNHloSj.js                  0.11 kB │ gzip:   0.12 kB
+public/build/assets/chevron-down-Dxx1c5j1.js           0.11 kB │ gzip:   0.12 kB
+public/build/assets/circle-ftSpTM_4.js                 0.11 kB │ gzip:   0.12 kB
+public/build/assets/loader-circle-D_W3Sx9M.js          0.13 kB │ gzip:   0.14 kB
+public/build/assets/plus-D1T3E3-p.js                   0.14 kB │ gzip:   0.14 kB
+public/build/assets/arrow-left-odY2v6bY.js             0.15 kB │ gzip:   0.15 kB
+public/build/assets/arrow-right-CM9oCEl2.js            0.15 kB │ gzip:   0.15 kB
+public/build/assets/search-D4v9Jedb.js                 0.16 kB │ gzip:   0.15 kB
+public/build/assets/circle-check-BMGh1DgL.js           0.16 kB │ gzip:   0.16 kB
+public/build/assets/clock-3-CHIAZCm4.js                0.17 kB │ gzip:   0.16 kB
+public/build/assets/user-BSNcnggc.js                   0.18 kB │ gzip:   0.17 kB
+public/build/assets/lock-C6GveBiM.js                   0.19 kB │ gzip:   0.18 kB
+public/build/assets/copy-L8NVOmoY.js                   0.22 kB │ gzip:   0.19 kB
+public/build/assets/circle-alert-OqFZuaHy.js           0.23 kB │ gzip:   0.17 kB
+public/build/assets/eye-CTzRMAgL.js                    0.24 kB │ gzip:   0.19 kB
+public/build/assets/link-DNxqZqRl.js                   0.24 kB │ gzip:   0.18 kB
+public/build/assets/triangle-alert-BmZNxybU.js         0.25 kB │ gzip:   0.20 kB
+public/build/assets/dist-DIBB4iy6.js                   0.26 kB │ gzip:   0.19 kB
+public/build/assets/pen-line-Dm7rXXjn.js               0.26 kB │ gzip:   0.21 kB
+public/build/assets/wallet-coXUfmPc.js                 0.27 kB │ gzip:   0.19 kB
+public/build/assets/shield-check-qPqQzBW_.js           0.30 kB │ gzip:   0.24 kB
+public/build/assets/refresh-cw-DlgMN9i2.js             0.30 kB │ gzip:   0.21 kB
+public/build/assets/save-CAi01tS5.js                   0.31 kB │ gzip:   0.21 kB
+public/build/assets/trash-2-DfLOM2-T.js                0.34 kB │ gzip:   0.24 kB
+public/build/assets/confirm-B8xb66Um.js                0.36 kB │ gzip:   0.22 kB
+public/build/assets/scan-search-BvsF2TzP.js            0.37 kB │ gzip:   0.24 kB
+public/build/assets/calendar-days-4BwwmuZa.js          0.48 kB │ gzip:   0.25 kB
+public/build/assets/sparkles-D1rT4Hg_.js               0.49 kB │ gzip:   0.29 kB
+public/build/assets/input-error-DS4iohUq.js            0.79 kB │ gzip:   0.53 kB
+public/build/assets/spinner-CT8gCDpD.js                0.81 kB │ gzip:   0.55 kB
+public/build/assets/text-link-BF7ekGCe.js              0.96 kB │ gzip:   0.61 kB
+public/build/assets/use-clipboard-DFmQD2tk.js          1.06 kB │ gzip:   0.63 kB
+public/build/assets/wayfinder-Df5aLKmF.js              1.12 kB │ gzip:   0.64 kB
+public/build/assets/textarea-Cqz9tltk.js               1.19 kB │ gzip:   0.73 kB
+public/build/assets/label-bTgoer98.js                  1.20 kB │ gzip:   0.76 kB
+public/build/assets/progress-JoFRYkRg.js               1.23 kB │ gzip:   0.73 kB
+public/build/assets/placeholder-pattern-AlEb81PS.js    1.33 kB │ gzip:   0.70 kB
+public/build/assets/verification-BUQ_bspq.js           1.48 kB │ gzip:   0.52 kB
+public/build/assets/step-3-9GivpTxN.js                 1.48 kB │ gzip:   0.77 kB
+public/build/assets/step-2-BFh9IscN.js                 1.48 kB │ gzip:   0.77 kB
+public/build/assets/onboarding-CAUq4klv.js             1.57 kB │ gzip:   0.45 kB
+public/build/assets/badge-CU5CVSm5.js                  1.81 kB │ gzip:   0.95 kB
+public/build/assets/verify-email-UzvT8uM6.js           2.16 kB │ gzip:   1.04 kB
+public/build/assets/password-C1RgyurX.js               2.26 kB │ gzip:   0.66 kB
+public/build/assets/password-input-69gloSSM.js         2.28 kB │ gzip:   1.21 kB
+public/build/assets/confirm-password-CRvoXL-B.js       2.47 kB │ gzip:   1.01 kB
+public/build/assets/alert-DxkOX13f.js                  2.58 kB │ gzip:   0.98 kB
+public/build/assets/google-oauth-button-BdubsxwN.js    2.95 kB │ gzip:   1.40 kB
+public/build/assets/milestones-C1o3Zm6l.js             2.97 kB │ gzip:   0.69 kB
+public/build/assets/appearance-Ge80V8ZN.js             3.74 kB │ gzip:   1.61 kB
+public/build/assets/forgot-password-DMlkCafI.js        3.78 kB │ gzip:   1.49 kB
+public/build/assets/card-QU8v51wM.js                   3.78 kB │ gzip:   0.73 kB
+public/build/assets/table-BQuvPAkh.js                  4.15 kB │ gzip:   0.88 kB
+public/build/assets/checkbox-Ci08V6Yg.js               4.88 kB │ gzip:   2.16 kB
+public/build/assets/security-QAcxJtO_.js               5.31 kB │ gzip:   1.63 kB
+public/build/assets/toggle-group-DRllEElP.js           5.75 kB │ gzip:   2.25 kB
+public/build/assets/dialog-7wHLsVlT.js                 7.25 kB │ gzip:   1.55 kB
+public/build/assets/reset-password-BfpzwRUK.js         7.60 kB │ gzip:   2.28 kB
+public/build/assets/login-pI27QWOx.js                  8.00 kB │ gzip:   2.53 kB
+public/build/assets/review-BuVwl6O5.js                 8.45 kB │ gzip:   2.66 kB
+public/build/assets/register-WWbQ3OxC.js               8.71 kB │ gzip:   2.32 kB
+public/build/assets/step-1-C5o2zGZl.js                 8.86 kB │ gzip:   2.80 kB
+public/build/assets/receipt-CiK1jBad.js                9.32 kB │ gzip:   3.17 kB
+public/build/assets/show-DzhI-Frt.js                   9.66 kB │ gzip:   2.98 kB
+public/build/assets/email-scanner-DEbuX_WM.js         10.67 kB │ gzip:   3.27 kB
+public/build/assets/create-milestones-BLc5BZYd.js     10.74 kB │ gzip:   2.83 kB
+public/build/assets/contracts-DQeUQImf.js             12.42 kB │ gzip:   3.69 kB
+public/build/assets/step-2-JcZ1Sp-u.js                12.71 kB │ gzip:   4.06 kB
+public/build/assets/payment-links-C60thztf.js         12.96 kB │ gzip:   3.24 kB
+public/build/assets/create-wbbBCP-Z.js                13.26 kB │ gzip:   3.31 kB
+public/build/assets/create-jRaI_BIl.js                14.01 kB │ gzip:   4.45 kB
+public/build/assets/show-CPp7D5cp.js                  14.07 kB │ gzip:   4.02 kB
+public/build/assets/terms-RDS71BFU.js                 14.16 kB │ gzip:   4.03 kB
+public/build/assets/profile-Bn-VaFSi.js               14.34 kB │ gzip:   3.88 kB
+public/build/assets/review-DgPNP1N5.js                15.80 kB │ gzip:   4.41 kB
+public/build/assets/show-DA_8VKEx.js                  18.46 kB │ gzip:   5.07 kB
+public/build/assets/privacy-CsZFwZmB.js               18.89 kB │ gzip:   4.77 kB
+public/build/assets/show-CWsQygC4.js                  21.13 kB │ gzip:   5.44 kB
+public/build/assets/create-_aM1crY5.js                21.75 kB │ gzip:   6.10 kB
+public/build/assets/edit-DbrHMtja.js                  22.14 kB │ gzip:   6.26 kB
+public/build/assets/blog-plyYrMPL.js                  23.56 kB │ gzip:   5.98 kB
+public/build/assets/select-1uDJ97kO.js                27.58 kB │ gzip:   8.54 kB
+public/build/assets/income-BmoQyRx4.js                28.77 kB │ gzip:   8.28 kB
+public/build/assets/customers-DU1HWt8M.js             30.40 kB │ gzip:   7.70 kB
+public/build/assets/form-CUUl-Xzk.js                  37.68 kB │ gzip:  13.06 kB
+public/build/assets/dashboard-Ct8Wr0M3.js             42.16 kB │ gzip:  10.61 kB
+public/build/assets/welcome-CiwGT5kX.js               56.21 kB │ gzip:  12.71 kB
+public/build/assets/create-3JJKJBHG.js               100.96 kB │ gzip:  27.83 kB
+public/build/assets/expenses-CJPtfCOy.js             173.29 kB │ gzip:  50.66 kB
+public/build/assets/app-fO3nF-PO.js                  264.21 kB │ gzip:  77.21 kB
+public/build/assets/chart-C8_x3U5L.js                375.95 kB │ gzip: 112.30 kB
+public/build/assets/jsx-dev-runtime-DVlBzoXO.js      508.17 kB │ gzip: 155.41 kB
+
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[31m✗[39m Build failed in 9.51s
+
+PWA v1.2.0
+mode      generateSW
+precache  95 entries (2175.02 KiB)
+files generated
+  public/build/sw.js
+  public/build/workbox-90ff9335.js
+[31merror during build:
+[31mBuild failed with 1 error:
+
+Error: [vite]: Rolldown failed to resolve import "workbox-window" from "/@vite-plugin-pwa/virtual:pwa-register/react".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at viteLog (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33111:57)
+    at file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33147:71
+    at onwarn (file:///D:/Work/salam-hack/node_modules/.pnpm/@vitejs+plugin-react@5.2.0__1a9df7ba3a461a5a688a1d5fe82dc274/node_modules/@vitejs/plugin-react/dist/index.js:76:7)
+    at file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33147:28
+    at onRollupLog (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33142:63)
+    at onLog (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:32911:4)
+    at file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/rolldown-build-DSxL8qiP.mjs:50:26
+    at logger (file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/rolldown-build-DSxL8qiP.mjs:41:3)
+    at onLog (file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/bindingify-input-options-DbbBhzky.mjs:1991:32)[31m
+    at aggregateBindingErrorsIntoJsError (file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/error-DL-e8-oE.mjs:48:18)
+    at unwrapBindingResult (file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/error-DL-e8-oE.mjs:18:128)
+    at #build (file:///D:/Work/salam-hack/node_modules/.pnpm/rolldown@1.0.0-rc.17/node_modules/rolldown/dist/shared/rolldown-build-DSxL8qiP.mjs:3317:34)
+    at async buildEnvironment (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33018:64)
+    at async Object.build (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33440:19)
+    at async Object.buildApp (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/chunks/node.js:33437:153)
+    at async CAC.<anonymous> (file:///D:/Work/salam-hack/node_modules/.pnpm/vite@8.0.10_@types+node@22.19.17_jiti@2.6.1_terser@5.46.2/node_modules/vite/dist/node/cli.js:778:3) {
+  errors: [Getter/Setter]
+}[39m
+ ELIFECYCLE  Command failed with exit code 1.

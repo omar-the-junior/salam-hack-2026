@@ -1,6 +1,7 @@
 import { getInitialPageFromDOM } from '@inertiajs/core';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { DirectionProvider } from '@/components/ui/direction';
+import { PwaUpdatePrompt } from '@/components/pwa-update-prompt';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
@@ -80,6 +81,7 @@ createInertiaApp({
                 <TooltipProvider delayDuration={0}>
                     {app}
                     <Toaster />
+                    <PwaUpdatePrompt />
                 </TooltipProvider>
             </DirectionProvider>
         );
