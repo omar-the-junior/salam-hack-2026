@@ -155,6 +155,7 @@ flowchart TB
         spa["React SPA<br/>React 19 + TypeScript<br/>shadcn/ui · TailwindCSS 4<br/>Inertia Pages"]
         db[("PostgreSQL Database<br/>Production Entities<br/>PaymentLinks · Income")]
         queue["Queue Worker<br/>Laravel Queue<br/>Email scan · Alerts"]
+        scheduler["Scheduler Worker<br/>Laravel Scheduler<br/>Triggers scheduled tasks"]
         files[("File Storage<br/>Docker Volume (Local)<br/>Contract PDFs · Receipts")]
     end
 
@@ -172,6 +173,7 @@ flowchart TB
     class spa container
     class db db
     class queue queue
+    class scheduler queue
     class files storage
     class paymob external
     class gmail external
@@ -183,6 +185,7 @@ flowchart TB
     web_app -->|"Inertia::render() props"| spa
     spa -->|"Inertia form submissions"| web_app
     web_app -->|"Eloquent ORM"| db
+    scheduler -->|"Triggers commands"| web_app
     web_app -->|"dispatch() jobs"| queue
     queue -->|"Read/write job state"| db
     queue -->|"Parse emails"| gemini
