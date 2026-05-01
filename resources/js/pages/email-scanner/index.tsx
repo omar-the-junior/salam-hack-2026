@@ -1,15 +1,12 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import { CheckCircle2Icon, LinkIcon, LoaderCircleIcon, MailIcon, RefreshCwIcon, ScanSearchIcon, SparklesIcon, UnlinkIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { useEmailScanStatus } from '@/hooks/use-email-scan-status';
 import { index } from '@/routes/email-scanner';
 import { review } from '@/routes/email-scanner';
 import { index as expensesIndex } from '@/routes/expenses';
-import { toast } from 'sonner';
 
 type ConnectedAccount = {
     email: string;
@@ -31,28 +28,12 @@ type PageProps = {
 export default function EmailScannerIndex() {
     const { connected_account, latest_scan } = usePage<{ props: PageProps }>().props as unknown as PageProps;
 
-    const { scan, isRunning } = useEmailScanStatus(
-        latest_scan ? { status: latest_scan.status, found_count: latest_scan.found_count, error: latest_scan.error_message } : null,
-        (data) => {
-            toast.success(`اكتمل الفحص — تم العثور على ${data.found_count ?? 0} اشتراكات.`, {
-                duration: 8000,
-                action: {
-                    label: 'مراجعة النتائج',
-                    onClick: () => router.visit(review()),
-                },
-            });
-            router.reload();
-        },
-        (data) => {
-            toast.error(data.error ?? 'فشل الفحص. أعد المحاولة.', { duration: 6000 });
-            router.reload();
-        },
-    );
+    const [isScanning, setIsScanning] = useState(false);
 
-    const currentStatus = scan?.status ?? 'none';
     const isConnected = !!connected_account;
 
     const triggerScan = () => {
+        setIsScanning(true);
         router.post('/email-scanner/scan');
     };
 
@@ -131,15 +112,15 @@ export default function EmailScannerIndex() {
                                 </Button>
                             ) : (
                                 <>
-                                    <Button onClick={triggerScan} disabled={isRunning}>
-                                        {isRunning ? (
+                                    <Button onClick={triggerScan} disabled={isScanning}>
+                                        {isScanning ? (
                                             <LoaderCircleIcon data-icon="inline-start" className="animate-spin" />
                                         ) : (
                                             <ScanSearchIcon data-icon="inline-start" />
                                         )}
-                                        {isRunning ? 'جاري الفحص...' : 'فحص آخر شهرين'}
+                                        {isScanning ? 'جاري الفحص...' : 'فحص آخر شهرين'}
                                     </Button>
-                                    <Button variant="outline" onClick={disconnectGmail}>
+                                    <Button variant="outline" onClick={disconnectGmail} disabled={isScanning}>
                                         <UnlinkIcon data-icon="inline-start" />
                                         فصل Gmail
                                     </Button>
@@ -147,7 +128,7 @@ export default function EmailScannerIndex() {
                             )}
                         </div>
 
-                        {!isConnected && currentStatus === 'none' ? (
+                        {!isConnected && !isScanning && !latest_scan ? (
                             <Alert>
                                 <SparklesIcon />
                                 <AlertTitle>اربط Gmail أولًا</AlertTitle>
@@ -157,45 +138,24 @@ export default function EmailScannerIndex() {
                             </Alert>
                         ) : null}
 
-                        {currentStatus === 'queued' ? (
+                        {isScanning ? (
                             <Card className="border-dashed">
                                 <CardHeader>
-                                    <CardTitle className="text-base">جاري الفحص</CardTitle>
-                                    <CardDescription>يرجى الانتظار — قد يستغرق الفحص عدة دقائق.</CardDescription>
+                                    <CardTitle className="flex items-center gap-2 text-base">
+                                        <LoaderCircleIcon className="size-5 animate-spin" />
+                                        جاري فحص البريد الإلكتروني
+                                    </CardTitle>
+                                    <CardDescription>يرجى الانتظار — يتم الآن تحليل رسائل الفواتير والاشتراكات.</CardDescription>
                                 </CardHeader>
-                                <CardContent>
-                                    <Progress value={20} />
-                                    <div className="mt-4">
-                                        <Badge variant="secondary">
-                                            <LoaderCircleIcon className="mr-1 size-3 animate-spin" />
-                                            جاري المعالجة
-                                        </Badge>
-                                    </div>
-                                </CardContent>
                             </Card>
                         ) : null}
 
-                        {currentStatus === 'in_progress' ? (
-                            <Card className="border-dashed">
-                                <CardHeader>
-                                    <CardTitle className="text-base">الفحص قيد التنفيذ</CardTitle>
-                                    <CardDescription>جاري تحليل رسائل البريد الإلكتروني...</CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex flex-col gap-4">
-                                    <Progress value={60} />
-                                    <div className="flex flex-wrap gap-2">
-                                        <Badge>in_progress</Badge>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ) : null}
-
-                        {currentStatus === 'completed' ? (
+                        {latest_scan?.status === 'completed' ? (
                             <Alert>
                                 <CheckCircle2Icon />
                                 <AlertTitle>اكتمل الفحص</AlertTitle>
                                 <AlertDescription className="flex flex-wrap items-center gap-3">
-                                    <span>تم العثور على {scan?.found_count ?? latest_scan?.found_count ?? 0} اشتراكات جديدة. يمكنك مراجعتها الآن.</span>
+                                    <span>تم العثور على {latest_scan?.found_count ?? 0} اشتراكات جديدة. يمكنك مراجعتها الآن.</span>
                                     <Button asChild size="sm" variant="outline">
                                         <Link href={review()}>عرض المراجعة</Link>
                                     </Button>
@@ -203,7 +163,7 @@ export default function EmailScannerIndex() {
                             </Alert>
                         ) : null}
 
-                        {currentStatus === 'failed' ? (
+                        {latest_scan?.status === 'failed' ? (
                             <Alert variant="destructive">
                                 <AlertTitle>فشل الفحص</AlertTitle>
                                 <AlertDescription className="flex flex-col gap-2">
