@@ -155,4 +155,5 @@ export default function PayReceipt({ status, isVerifiedCallback, transaction, re
 PayReceipt.layout = {
     title: 'حالة الدفع',
     description: 'عرض نتيجة معاملة الدفع',
+    variant: 'wide' as const,
 };

@@ -1,6 +1,5 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Loader2, Lock, Mail } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
 import { GoogleOAuthButton } from '@/components/auth/google-oauth-button';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -51,10 +50,6 @@ export default function Login({
                     {status}
                 </div>
             ) : null}
-
-            <div className="mb-6 flex justify-center lg:hidden">
-                <AppLogo className="h-9" />
-            </div>
 
             <Form
                 action={store.url()}

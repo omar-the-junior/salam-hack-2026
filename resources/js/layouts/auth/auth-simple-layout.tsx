@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Landmark, Quote } from 'lucide-react';
+import { Quote } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { cn } from '@/lib/utils';
 import { home } from '@/routes';
@@ -92,7 +92,15 @@ export default function AuthSimpleLayout({
                     </section>
                 </main>
             ) : (
-                <div className="relative z-10 w-full max-w-md" dir="rtl">
+                <div
+                    className={cn(
+                        'relative z-10 w-full',
+                        variant === 'wide'
+                            ? 'max-w-lg md:max-w-3xl lg:max-w-5xl'
+                            : 'max-w-md',
+                    )}
+                    dir="rtl"
+                >
                     <main className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm">
                         <div
                             className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-l from-primary via-primary/40 to-transparent opacity-60"
