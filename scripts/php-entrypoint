@@ -22,7 +22,10 @@ main() {
     echo "Step 4: Optimizing app..."
     optimize_app
 
-    echo "Step 5: Starting Apache..."
+    echo "Step 5: Setting up scheduler..."
+    setup_scheduler
+
+    echo "Step 6: Starting Apache..."
     run_server "$@"
 }
 
@@ -82,6 +85,29 @@ optimize_app() {
     echo "Optimizing Laravel application..."
     php /var/www/artisan optimize:clear
     php /var/www/artisan optimize
+}
+
+setup_scheduler() {
+    local scheduler_file="/etc/cron.d/laravel-scheduler"
+    local scheduler_log="/var/www/storage/logs/scheduler.log"
+
+    echo "Configuring Laravel scheduler cron job..."
+
+    touch "$scheduler_log"
+    chown www-data:www-data "$scheduler_log"
+
+    cat > "$scheduler_file" <<'CRON'
+* * * * * www-data cd /var/www && php artisan schedule:run >> /var/www/storage/logs/scheduler.log 2>&1
+CRON
+
+    chmod 0644 "$scheduler_file"
+
+    echo "Starting cron daemon..."
+    if command -v service >/dev/null 2>&1; then
+        service cron start
+    else
+        cron
+    fi
 }
 
 run_server() {

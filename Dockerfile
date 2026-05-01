@@ -63,6 +63,7 @@ WORKDIR /var/www
 
 # --- ROOT-LEVEL TASKS ---
 RUN apt-get update && apt-get install -y \
+    cron \
     git \
     curl \
     libpng-dev \
