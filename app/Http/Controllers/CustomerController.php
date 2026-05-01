@@ -56,6 +56,12 @@ class CustomerController extends Controller
                     ->with('flash', ['type' => 'success', 'message' => 'تمت إضافة العميل بنجاح']);
             }
 
+            if ($context === 'contract') {
+                return redirect()->route('contracts.create')
+                    ->with('new_customer_id', $customer->id)
+                    ->with('flash', ['type' => 'success', 'message' => 'تمت إضافة العميل بنجاح']);
+            }
+
             return redirect()->route('customers.index')
                 ->with('flash', ['type' => 'success', 'message' => 'تمت إضافة العميل بنجاح']);
         } catch (Throwable $e) {

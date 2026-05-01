@@ -137,6 +137,21 @@ export default function ContractsShow({
 
     const canAddMilestone = contract.milestones.length < 5;
 
+    const clientReviewPath = review.url(contract.contract_token);
+
+    const copyClientReviewUrl = async (): Promise<void> => {
+        const origin =
+            typeof window !== 'undefined' ? window.location.origin : '';
+        const url = `${origin}${clientReviewPath}`;
+        const ok = await copy(url);
+
+        if (ok) {
+            toast.success('تم نسخ رابط مراجعة العميل');
+        } else {
+            toast.error('تعذر نسخ الرابط. انسخ النص يدوياً إن لزم.');
+        }
+    };
+
     return (
         <>
             <Head title={contract.project_name} />
@@ -175,79 +190,80 @@ export default function ContractsShow({
                                     إضافة مرحلة
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>مرحلة جديدة</DialogTitle>
-                                    <DialogDescription>
-                                        أضف مرحلة للعقد (حتى 5 مراحل).
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <Form
-                                    {...MilestoneController.store.form(
-                                        contract,
-                                    )}
-                                    options={{ preserveScroll: true }}
-                                    onSuccess={() =>
-                                        setMilestoneDialogOpen(false)
-                                    }
-                                    className="flex flex-col gap-4"
-                                >
-                                    {({ processing, errors }) => (
-                                        <>
-                                            <div className="flex flex-col gap-2">
-                                                <Label htmlFor="title">
-                                                    اسم المرحلة
-                                                </Label>
-                                                <Input
-                                                    id="title"
-                                                    name="title"
-                                                    required
-                                                />
-                                                <InputError message={errors.title} />
-                                            </div>
-                                            <div className="flex flex-col gap-2">
-                                                <Label htmlFor="percentage">
-                                                    النسبة %
-                                                </Label>
-                                                <Input
-                                                    id="percentage"
-                                                    name="percentage"
-                                                    type="number"
-                                                    min={0}
-                                                    max={100}
-                                                    step={0.01}
-                                                    required
-                                                />
-                                                <InputError
-                                                    message={errors.percentage}
-                                                />
-                                            </div>
-                                            <div className="flex flex-col gap-2">
-                                                <Label htmlFor="due_date">
-                                                    تاريخ الاستحقاق (اختياري)
-                                                </Label>
-                                                <Input
-                                                    id="due_date"
-                                                    name="due_date"
-                                                    type="date"
-                                                />
-                                                <InputError
-                                                    message={errors.due_date}
-                                                />
-                                            </div>
-                                            <DialogFooter>
-                                                <Button
-                                                    type="submit"
-                                                    disabled={processing}
-                                                >
-                                                    حفظ
-                                                </Button>
-                                            </DialogFooter>
-                                        </>
-                                    )}
-                                </Form>
-                            </DialogContent>
-                        </Dialog>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>مرحلة جديدة</DialogTitle>
+                                        <DialogDescription>
+                                            أضف مرحلة للعقد (حتى 5 مراحل).
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <Form
+                                        action={MilestoneController.store.url({
+                                            contract: contract.id,
+                                        })}
+                                        method="post"
+                                        options={{ preserveScroll: true }}
+                                        onSuccess={() =>
+                                            setMilestoneDialogOpen(false)
+                                        }
+                                        className="flex flex-col gap-4"
+                                    >
+                                        {({ processing, errors }) => (
+                                            <>
+                                                <div className="flex flex-col gap-2">
+                                                    <Label htmlFor="title">
+                                                        اسم المرحلة
+                                                    </Label>
+                                                    <Input
+                                                        id="title"
+                                                        name="title"
+                                                        required
+                                                    />
+                                                    <InputError message={errors.title} />
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <Label htmlFor="percentage">
+                                                        النسبة %
+                                                    </Label>
+                                                    <Input
+                                                        id="percentage"
+                                                        name="percentage"
+                                                        type="number"
+                                                        min={0}
+                                                        max={100}
+                                                        step={0.01}
+                                                        required
+                                                    />
+                                                    <InputError
+                                                        message={errors.percentage}
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <Label htmlFor="due_date">
+                                                        تاريخ الاستحقاق (اختياري)
+                                                    </Label>
+                                                    <Input
+                                                        id="due_date"
+                                                        name="due_date"
+                                                        type="date"
+                                                    />
+                                                    <InputError
+                                                        message={errors.due_date}
+                                                    />
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button
+                                                        type="submit"
+                                                        disabled={processing}
+                                                    >
+                                                        حفظ
+                                                    </Button>
+                                                </DialogFooter>
+                                            </>
+                                        )}
+                                    </Form>
+                                </DialogContent>
+                            </Dialog>
                     </div>
                 </div>
 
@@ -257,31 +273,22 @@ export default function ContractsShow({
                             مشاركة مع العميل
                         </h2>
                         <p className="text-muted-foreground break-all text-xs">
-                            {clientReviewAbsoluteUrl || review.url(contract.contract_token)}
+                            {clientReviewAbsoluteUrl || clientReviewPath}
                         </p>
                         <div className="flex flex-wrap gap-2">
                             <Button
                                 type="button"
                                 variant="secondary"
                                 size="sm"
-                                onClick={async () => {
-                                    const url = `${window.location.origin}${review.url(contract.contract_token)}`;
-                                    const ok = await copy(url);
-
-                                    if (ok) {
-                                        toast.success('تم نسخ الرابط');
-                                    } else {
-                                        toast.error(
-                                            'تعذر نسخ الرابط. انسخ النص يدوياً إن لزم.',
-                                        );
-                                    }
+                                onClick={() => {
+                                    void copyClientReviewUrl();
                                 }}
                             >
                                 نسخ الرابط
                             </Button>
                             <Button variant="outline" size="sm" asChild>
                                 <a
-                                    href={review.url(contract.contract_token)}
+                                    href={clientReviewPath}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >

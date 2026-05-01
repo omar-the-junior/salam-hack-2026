@@ -29,6 +29,7 @@ class UpdateContractRequest extends FormRequest
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'terms' => ['nullable', 'string'],
             'status' => ['sometimes', 'string', 'in:draft,active,completed'],
+            'continue_wizard' => ['sometimes', 'boolean'],
         ];
     }
 }

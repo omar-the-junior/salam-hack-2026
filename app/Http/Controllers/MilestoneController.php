@@ -88,7 +88,7 @@ class MilestoneController extends Controller
                 ]);
             }
 
-            return redirect()->route('contracts.show', $contract->id)
+            return redirect()->route('contracts.create.summary', ['contract_id' => $contract->id])
                 ->with('flash', ['type' => 'success', 'message' => 'تم إنشاء العقد ومراحله بنجاح']);
         } catch (Throwable $e) {
             Log::error(static::class.'@storeBulk', [

@@ -15,7 +15,9 @@ Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () 
     Route::get('contracts', [ContractController::class, 'index'])->name('contracts.index');
     Route::get('contracts/create', [ContractController::class, 'create'])->name('contracts.create');
     Route::get('contracts/create/milestones', [ContractController::class, 'createMilestones'])->name('contracts.create.milestones');
+    Route::get('contracts/create/summary', [ContractController::class, 'createSummary'])->name('contracts.create.summary');
     Route::post('contracts', [ContractController::class, 'store'])->name('contracts.store');
+    Route::get('contracts/{contract}/edit', [ContractController::class, 'edit'])->name('contracts.edit');
     Route::get('contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
     Route::put('contracts/{contract}', [ContractController::class, 'update'])->name('contracts.update');
 

@@ -16,7 +16,9 @@ class PaymentLinkMilestoneTest extends TestCase
 
     public function test_create_page_includes_contracts_with_milestones(): void
     {
-        $owner = User::factory()->create();
+        $owner = User::factory()->create([
+            'default_tax_rate' => 14.5,
+        ]);
         $other = User::factory()->create();
 
         $owned = Contract::create([
@@ -67,6 +69,7 @@ class PaymentLinkMilestoneTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('payment-links/create')
+                ->where('defaults.tax_rate', 14.5)
                 ->has('contractsWithMilestones', 1)
                 ->where('contractsWithMilestones.0.project_name', 'مشروعي')
                 ->has('contractsWithMilestones.0.milestones', 1)

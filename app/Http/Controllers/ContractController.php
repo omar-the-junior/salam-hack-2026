@@ -6,9 +6,11 @@ use App\Http\Requests\Contracts\AcceptContractRequest;
 use App\Http\Requests\Contracts\StoreContractRequest;
 use App\Http\Requests\Contracts\UpdateContractRequest;
 use App\Models\Contract;
+use App\Models\Customer;
 use App\Notifications\ContractSignatureCodeNotification;
 use App\Notifications\ContractSignedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -19,13 +21,78 @@ use Throwable;
 
 class ContractController extends Controller
 {
-    public function create(): Response
+    public function create(Request $request): Response
     {
         try {
-            return Inertia::render('contracts/create');
+            $user = $request->user();
+            $newCustomerId = session('new_customer_id');
+
+            $customers = Customer::query()
+                ->where('user_id', auth()->id())
+                ->latest()
+                ->get(['id', 'name', 'email', 'phone']);
+
+            return Inertia::render('contracts/create', [
+                'mode' => 'create',
+                'contract' => null,
+                'initialCustomerId' => '',
+                'defaults' => [
+                    'tax_rate' => (float) ($user?->default_tax_rate ?? 0),
+                ],
+                'customers' => $customers,
+                'newCustomerId' => $newCustomerId,
+            ]);
         } catch (Throwable $e) {
             Log::error(static::class.'@create', [
                 'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    public function edit(Request $request, Contract $contract): Response
+    {
+        try {
+            $this->authorizeContract($contract);
+
+            $user = $request->user();
+            $newCustomerId = session('new_customer_id');
+
+            $customers = Customer::query()
+                ->where('user_id', auth()->id())
+                ->latest()
+                ->get(['id', 'name', 'email', 'phone']);
+
+            $matchingCustomer = $customers->firstWhere('email', $contract->client_email);
+
+            return Inertia::render('contracts/create', [
+                'mode' => 'edit',
+                'contract' => [
+                    'id' => $contract->id,
+                    'project_name' => $contract->project_name,
+                    'description' => $contract->description ?? '',
+                    'client_name' => $contract->client_name,
+                    'client_email' => $contract->client_email,
+                    'total_value' => (string) $contract->total_value,
+                    'tax_rate' => (string) $contract->tax_rate,
+                    'currency' => $contract->currency,
+                    'start_date' => $contract->start_date?->format('Y-m-d') ?? '',
+                    'end_date' => $contract->end_date?->format('Y-m-d') ?? '',
+                    'milestones_count' => $contract->milestones()->count(),
+                ],
+                'initialCustomerId' => $matchingCustomer?->id ?? '',
+                'defaults' => [
+                    'tax_rate' => (float) ($user?->default_tax_rate ?? 0),
+                ],
+                'customers' => $customers,
+                'newCustomerId' => $newCustomerId,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@edit', [
+                'user_id' => auth()->id(),
+                'contract_id' => $contract->id,
                 'exception' => $e::class,
                 'message' => $e->getMessage(),
             ]);
@@ -50,6 +117,41 @@ class ContractController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error(static::class.'@createMilestones', [
+                'user_id' => auth()->id(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    public function createSummary(): RedirectResponse|Response
+    {
+        try {
+            $contractId = request()->query('contract_id');
+            $contract = null;
+
+            if ($contractId) {
+                $contract = Contract::where('id', $contractId)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                if ($contract) {
+                    $this->authorizeContract($contract);
+
+                    if ($contract->status !== 'draft') {
+                        return redirect()->route('contracts.show', $contract);
+                    }
+
+                    $contract->load('milestones');
+                }
+            }
+
+            return Inertia::render('contracts/create-summary', [
+                'contract' => $contract,
+            ]);
+        } catch (Throwable $e) {
+            Log::error(static::class.'@createSummary', [
                 'user_id' => auth()->id(),
                 'exception' => $e::class,
                 'message' => $e->getMessage(),
@@ -159,7 +261,16 @@ class ContractController extends Controller
                 $validated['grand_total'] = $totalValue + $validated['tax_amount'];
             }
 
+            $continueWizard = $request->boolean('continue_wizard');
+
+            unset($validated['continue_wizard']);
+
             $contract->update($validated);
+
+            if ($continueWizard) {
+                return redirect()->route('contracts.create.milestones', ['contract_id' => $contract->id])
+                    ->with('flash', ['type' => 'success', 'message' => 'تم تحديث بيانات العقد']);
+            }
 
             return redirect()->back()
                 ->with('flash', ['type' => 'success', 'message' => 'تم تحديث العقد بنجاح']);

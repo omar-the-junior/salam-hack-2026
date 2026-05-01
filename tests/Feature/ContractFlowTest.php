@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Contract;
+use App\Models\Customer;
 use App\Models\User;
 use App\Notifications\ContractSignatureCodeNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -222,6 +223,72 @@ class ContractFlowTest extends TestCase
         );
     }
 
+    public function test_store_contract_rejects_end_date_before_start_date(): void
+    {
+        $freelancerUser = User::factory()->create();
+        $this->actingAs($freelancerUser);
+
+        $response = $this->post(route('contracts.store'), [
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'date-range-invalid@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'currency' => 'EGP',
+            'start_date' => '2026-06-01',
+            'end_date' => '2026-05-01',
+        ]);
+
+        $response->assertSessionHasErrors(['end_date']);
+        $this->assertDatabaseMissing('contracts', [
+            'client_email' => 'date-range-invalid@example.com',
+        ]);
+    }
+
+    public function test_contract_update_rejects_end_date_before_start_date(): void
+    {
+        $ownerUser = User::factory()->create();
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($ownerUser)
+            ->from(route('contracts.edit', $contract))
+            ->put(route('contracts.update', $contract), [
+                'project_name' => 'مشروع',
+                'description' => null,
+                'client_name' => 'عميل',
+                'client_email' => 'client@example.com',
+                'total_value' => 1000,
+                'tax_rate' => 0,
+                'currency' => 'EGP',
+                'start_date' => '2026-08-01',
+                'end_date' => '2026-07-01',
+                'terms' => null,
+                'continue_wizard' => true,
+            ]);
+
+        $response->assertSessionHasErrors(['end_date']);
+        $contract->refresh();
+        $this->assertNull($contract->start_date);
+        $this->assertNull($contract->end_date);
+    }
+
     public function test_authenticated_owner_can_store_milestone(): void
     {
         $ownerUser = User::factory()->create();
@@ -256,5 +323,261 @@ class ContractFlowTest extends TestCase
             'contract_id' => $contract->id,
             'title' => 'مرحلة أولى',
         ]);
+    }
+
+    public function test_authenticated_owner_bulk_milestones_redirects_to_wizard_summary(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->post(route('milestones.store-bulk', ['contract' => $contract->id]), [
+            'milestones' => [
+                ['title' => 'مرحلة أولى', 'percentage' => 40, 'due_date' => null],
+                ['title' => 'مرحلة ثانية', 'percentage' => 60, 'due_date' => null],
+            ],
+        ]);
+
+        $response->assertRedirect(route('contracts.create.summary', ['contract_id' => $contract->id]));
+        $this->assertDatabaseHas('milestones', [
+            'contract_id' => $contract->id,
+            'title' => 'مرحلة أولى',
+        ]);
+    }
+
+    public function test_create_summary_redirects_when_contract_not_draft(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'active',
+        ]);
+
+        $response = $this->get(route('contracts.create.summary', ['contract_id' => $contract->id]));
+
+        $response->assertRedirect(route('contracts.show', $contract));
+    }
+
+    public function test_create_summary_renders_for_draft_contract(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->get(route('contracts.create.summary', ['contract_id' => $contract->id]));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('contracts/create-summary')
+            ->has('contract'));
+    }
+
+    public function test_contract_create_page_passes_default_tax_rate_from_profile(): void
+    {
+        $user = User::factory()->create([
+            'default_tax_rate' => 14.5,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('contracts.create'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('contracts/create')
+                ->has('customers', 0)
+                ->has('newCustomerId')
+                ->has('initialCustomerId')
+                ->where('mode', 'create')
+                ->where('contract', null)
+                ->where('defaults.tax_rate', 14.5));
+    }
+
+    public function test_contract_create_page_includes_saved_customers(): void
+    {
+        $user = User::factory()->create();
+        Customer::create([
+            'user_id' => $user->id,
+            'name' => 'عميل محفوظ',
+            'email' => 'saved@example.com',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('contracts.create'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('contracts/create')
+                ->has('customers', 1)
+                ->where('customers.0.email', 'saved@example.com')
+                ->where('mode', 'create'));
+    }
+
+    public function test_storing_customer_with_contract_context_redirects_to_contract_create(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('customers.store'), [
+                'name' => 'عميل جديد',
+                'email' => 'fresh@example.com',
+                'context' => 'contract',
+            ]);
+
+        $response->assertRedirect(route('contracts.create'));
+        $response->assertSessionHas('new_customer_id');
+
+        $this->assertDatabaseHas('customers', [
+            'user_id' => $user->id,
+            'email' => 'fresh@example.com',
+        ]);
+    }
+
+    public function test_owner_can_view_contract_edit_step(): void
+    {
+        $ownerUser = User::factory()->create();
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $this->actingAs($ownerUser)
+            ->get(route('contracts.edit', $contract))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('contracts/create')
+                ->where('mode', 'edit')
+                ->where('contract.id', $contract->id)
+                ->where('contract.project_name', 'مشروع'));
+    }
+
+    public function test_non_owner_cannot_view_contract_edit_step(): void
+    {
+        $ownerUser = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $this->actingAs($otherUser)
+            ->get(route('contracts.edit', $contract))
+            ->assertForbidden();
+    }
+
+    public function test_contract_update_with_continue_wizard_redirects_to_milestones(): void
+    {
+        $ownerUser = User::factory()->create();
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع قديم',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($ownerUser)
+            ->from(route('contracts.edit', $contract))
+            ->put(route('contracts.update', $contract), [
+                'project_name' => 'مشروع محدّث',
+                'description' => null,
+                'client_name' => 'عميل',
+                'client_email' => 'client@example.com',
+                'total_value' => 2000,
+                'tax_rate' => 10,
+                'currency' => 'EGP',
+                'start_date' => null,
+                'end_date' => null,
+                'terms' => null,
+                'continue_wizard' => true,
+            ]);
+
+        $response->assertRedirect(route('contracts.create.milestones', ['contract_id' => $contract->id]));
+
+        $contract->refresh();
+        $this->assertSame('مشروع محدّث', $contract->project_name);
+        $this->assertSame('2000.00', $contract->total_value);
     }
 }
