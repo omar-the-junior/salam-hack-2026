@@ -4,6 +4,7 @@ namespace Tests\Feature\Settings;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Support\SessionKey;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
@@ -40,6 +41,10 @@ class ProfileUpdateTest extends TestCase
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('profile.edit'));
+
+        $response->assertSessionHas(SessionKey::FLASH_DATA, function (array $flash): bool {
+            return ($flash['toast']['message'] ?? null) === 'تم تحديث الملف الشخصي بنجاح.';
+        });
 
         $user->refresh();
 

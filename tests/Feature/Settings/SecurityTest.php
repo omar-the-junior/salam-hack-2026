@@ -5,6 +5,7 @@ namespace Tests\Feature\Settings;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Support\SessionKey;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -39,6 +40,10 @@ class SecurityTest extends TestCase
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('security.edit'));
+
+        $response->assertSessionHas(SessionKey::FLASH_DATA, function (array $flash): bool {
+            return ($flash['toast']['message'] ?? null) === 'تم تحديث كلمة المرور بنجاح.';
+        });
 
         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
     }

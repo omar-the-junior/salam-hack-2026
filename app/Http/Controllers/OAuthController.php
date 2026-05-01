@@ -31,7 +31,7 @@ class OAuthController extends Controller
             try {
                 $googleUser = Socialite::driver('google')->user();
             } catch (\Exception $e) {
-                return redirect('/login')->withErrors(['oauth' => 'Failed to authenticate with Google.']);
+                return redirect('/login')->withErrors(['oauth' => __('auth.oauth_failed')]);
             }
 
             $user = User::where('email', $googleUser->getEmail())->first();

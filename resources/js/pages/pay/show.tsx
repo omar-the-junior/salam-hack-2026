@@ -234,7 +234,7 @@ export default function PayShow({ paymentLink, initiateUrl, paymentState }: PayS
                                                 type="button"
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => copyField(testCard.cvv, 'CVV')}
+                                                onClick={() => copyField(testCard.cvv, 'رمز الأمان')}
                                             >
                                                 <CopyIcon />
                                             </Button>

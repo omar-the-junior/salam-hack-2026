@@ -70,4 +70,20 @@ class AuthenticationTest extends TestCase
 
         $response->assertTooManyRequests();
     }
+
+    public function test_login_validation_messages_are_translated_to_arabic_locale(): void
+    {
+        config([
+            'app.locale' => 'ar',
+            'app.fallback_locale' => 'en',
+        ]);
+
+        $response = $this->from(route('login'))->post(route('login.store'), []);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors([
+            'email' => 'حقل البريد الإلكتروني مطلوب.',
+            'password' => 'حقل كلمة المرور مطلوب.',
+        ]);
+    }
 }
