@@ -6,6 +6,7 @@ use App\Http\Requests\ExpenseCards\StoreExpenseCardRequest;
 use App\Http\Requests\ExpenseCards\UpdateExpenseCardRequest;
 use App\Http\Requests\ExpenseCards\UpdateExpenseCardStatusRequest;
 use App\Models\ExpenseCard;
+use App\Models\RenewalAlert;
 use App\Services\Expense\CancelSubscriptionInstructionService;
 use App\Services\Expense\ExpenseCardService;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +59,25 @@ class ExpenseController extends Controller
                 'summary' => $this->expenseCards->dashboardSummary($user, $preferred),
                 'hasAnyExpenseEver' => ExpenseCard::query()->where('user_id', $user->id)->exists(),
                 'expenses' => $cards->map(fn (ExpenseCard $card) => $this->expenseCards->cardForFrontend($card))->values()->all(),
+                'renewalAlerts' => RenewalAlert::query()
+                    ->where('user_id', $user->id)
+                    ->whereNull('dismissed_at')
+                    ->with('expenseCard')
+                    ->latest('alerted_at')
+                    ->get()
+                    ->map(fn (RenewalAlert $alert) => [
+                        'id' => $alert->id,
+                        'alertedAt' => $alert->alerted_at->toISOString(),
+                        'expenseCard' => [
+                            'id' => $alert->expenseCard->id,
+                            'name' => $alert->expenseCard->name,
+                            'amount' => (float) $alert->expenseCard->amount,
+                            'currency' => $alert->expenseCard->currency,
+                            'nextRenewalDate' => $alert->expenseCard->next_renewal_date?->toDateString(),
+                        ],
+                    ])
+                    ->values()
+                    ->all(),
             ]);
         } catch (Throwable $e) {
             Log::error(static::class.'@index', [

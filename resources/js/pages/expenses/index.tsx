@@ -1,5 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
+    BellIcon,
     EllipsisVerticalIcon,
     ExternalLinkIcon,
     Loader2Icon,
@@ -8,6 +9,7 @@ import {
     ScanSearchIcon,
     SparklesIcon,
     TriangleAlertIcon,
+    XIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -41,6 +43,7 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { create, destroy, edit, fetchCancelInstructions, index, status } from '@/routes/expenses';
+import { dismiss as dismissRenewalAlert } from '@/routes/renewal-alerts';
 import { index as emailScannerIndex } from '@/routes/email-scanner';
 import { toast } from 'sonner';
 
@@ -84,12 +87,25 @@ type ExpenseSummary = {
     }[];
 };
 
+type RenewalAlertRow = {
+    id: string;
+    alertedAt: string;
+    expenseCard: {
+        id: string;
+        name: string;
+        amount: number;
+        currency: 'EGP' | 'USD';
+        nextRenewalDate: string | null;
+    };
+};
+
 type ExpensesIndexProps = {
     filters: ExpenseFilters;
     preferredCurrency: 'EGP' | 'USD';
     summary: ExpenseSummary;
     hasAnyExpenseEver: boolean;
     expenses: ExpenseCardRow[];
+    renewalAlerts: RenewalAlertRow[];
 };
 
 type FetchResult = {
@@ -173,6 +189,7 @@ export default function ExpensesIndex({
     summary,
     hasAnyExpenseEver,
     expenses: initialExpenses,
+    renewalAlerts: initialRenewalAlerts,
 }: ExpensesIndexProps) {
     const page = usePage();
     const flash = (page.props as { flash?: { message?: string; type?: string } }).flash;
@@ -184,10 +201,15 @@ export default function ExpensesIndex({
     const [fetchingInstructions, setFetchingInstructions] = useState(false);
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [fetchedConfidence, setFetchedConfidence] = useState<Confidence | null>(null);
+    const [renewalAlerts, setRenewalAlerts] = useState<RenewalAlertRow[]>(initialRenewalAlerts);
 
     useEffect(() => {
         setExpenses(initialExpenses);
     }, [initialExpenses]);
+
+    useEffect(() => {
+        setRenewalAlerts(initialRenewalAlerts);
+    }, [initialRenewalAlerts]);
 
     useEffect(() => {
         setSearchDraft(filters.search ?? '');
@@ -210,6 +232,20 @@ export default function ExpensesIndex({
         setFetchError(null);
         setFetchedConfidence(null);
     }, [selectedExpense?.id]);
+
+    // Auto-open cancel slide-over when ?action=cancel&id= is present in URL
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('action') === 'cancel') {
+            const cardId = params.get('id');
+            if (cardId) {
+                const card = initialExpenses.find((e) => e.id === cardId);
+                if (card && card.status !== 'cancelled') {
+                    setSelectedExpense(card);
+                }
+            }
+        }
+    }, []);
 
     const otherCurrencyRows = summary.by_currency.filter(
         (row) =>
@@ -320,6 +356,15 @@ export default function ExpensesIndex({
             return;
         }
         router.delete(destroy.url({ expense: id }), { preserveScroll: true });
+    }
+
+    function dismissAlert(alertId: string): void {
+        setRenewalAlerts((prev) => prev.filter((a) => a.id !== alertId));
+        router.put(
+            dismissRenewalAlert.url({ renewalAlert: alertId }),
+            {},
+            { preserveScroll: true, preserveState: true },
+        );
     }
 
     const noCardsAtAll = !hasAnyExpenseEver && expenses.length === 0;
@@ -478,6 +523,53 @@ export default function ExpensesIndex({
                         </div>
                     </CardContent>
                 </Card>
+
+                {renewalAlerts.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                        {renewalAlerts.map((alert) => (
+                            <div
+                                key={alert.id}
+                                className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm dark:border-amber-800 dark:bg-amber-950"
+                            >
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <BellIcon className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                                    <span className="text-amber-900 dark:text-amber-100">
+                                        ⏰ <strong>{alert.expenseCard.name}</strong> يتجدد في{' '}
+                                        {alert.expenseCard.nextRenewalDate
+                                            ? new Intl.DateTimeFormat('ar-EG', {
+                                                  month: 'long',
+                                                  day: 'numeric',
+                                              }).format(new Date(`${alert.expenseCard.nextRenewalDate}T12:00:00`))
+                                            : '—'}{' '}
+                                        — {formatMoney(alert.expenseCard.amount, alert.expenseCard.currency)}
+                                    </span>
+                                </div>
+                                <div className="flex shrink-0 items-center gap-2">
+                                    <button
+                                        type="button"
+                                        className="text-xs font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100"
+                                        onClick={() => {
+                                            const card = expenses.find((e) => e.id === alert.expenseCard.id);
+                                            if (card && card.status !== 'cancelled') {
+                                                setSelectedExpense(card);
+                                            }
+                                        }}
+                                    >
+                                        إلغاء
+                                    </button>
+                                    <button
+                                        type="button"
+                                        aria-label="تجاهل التنبيه"
+                                        onClick={() => dismissAlert(alert.id)}
+                                        className="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-100"
+                                    >
+                                        <XIcon className="size-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 {noCardsAtAll ? (
                     <Card>
