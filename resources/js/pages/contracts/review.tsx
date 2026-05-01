@@ -1,5 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { CheckCircle2Icon, PenLineIcon } from 'lucide-react';
+import { CheckCircle2Icon, PenLineIcon, ShieldCheckIcon } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -94,7 +95,7 @@ export default function ContractsReview({
     const freelancerName =
         contract.user.display_name ?? contract.user.name ?? '—';
 
-    const form = useForm({ agreed: false });
+    const form = useForm({ agreed: false, signature_code: '' });
 
     const taxRateNum = Number.parseFloat(contract.tax_rate);
     const isSigned = contract.status === 'active';
@@ -320,44 +321,88 @@ export default function ContractsReview({
                 {!isSigned ? (
                     <>
                         <footer className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 p-4 backdrop-blur md:p-5">
-                            <div className="mx-auto flex w-full max-w-3xl flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-                                <div className="flex items-start gap-3">
-                                    <Checkbox
-                                        id="agreed"
-                                        checked={form.data.agreed}
-                                        onCheckedChange={(c) =>
-                                            form.setData('agreed', c === true)
+                            <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+                                <div className="flex flex-col gap-1.5">
+                                    <Label
+                                        htmlFor="signature_code"
+                                        className="flex items-center gap-1.5 text-sm font-medium"
+                                    >
+                                        <ShieldCheckIcon className="size-4 text-muted-foreground" />
+                                        رمز التوقيع (أُرسل إلى بريدك الإلكتروني)
+                                    </Label>
+                                    <Input
+                                        id="signature_code"
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength={6}
+                                        placeholder="000000"
+                                        value={form.data.signature_code}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'signature_code',
+                                                e.target.value,
+                                            )
                                         }
                                         aria-invalid={
-                                            !!form.errors.agreed || undefined
+                                            !!form.errors.signature_code ||
+                                            undefined
                                         }
+                                        className="max-w-56 text-center tracking-[0.4em] font-mono"
                                     />
-                                    <Label
-                                        htmlFor="agreed"
-                                        className="text-sm leading-snug font-normal"
-                                    >
-                                        أوافق على جميع شروط العقد
-                                    </Label>
+                                    {form.errors.signature_code ? (
+                                        <p className="text-sm text-destructive">
+                                            {form.errors.signature_code}
+                                        </p>
+                                    ) : null}
                                 </div>
-                                {form.errors.agreed ? (
-                                    <p className="text-sm text-destructive">
-                                        {form.errors.agreed}
-                                    </p>
-                                ) : null}
-                                <Button
-                                    type="button"
-                                    disabled={
-                                        !form.data.agreed || form.processing
-                                    }
-                                    onClick={() =>
-                                        form.post(
-                                            accept.url(contract.contract_token),
-                                        )
-                                    }
-                                >
-                                    <PenLineIcon data-icon="inline-start" />
-                                    قبول وتوقيع العقد
-                                </Button>
+
+                                <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+                                    <div className="flex items-start gap-3">
+                                        <Checkbox
+                                            id="agreed"
+                                            checked={form.data.agreed}
+                                            onCheckedChange={(c) =>
+                                                form.setData(
+                                                    'agreed',
+                                                    c === true,
+                                                )
+                                            }
+                                            aria-invalid={
+                                                !!form.errors.agreed ||
+                                                undefined
+                                            }
+                                        />
+                                        <Label
+                                            htmlFor="agreed"
+                                            className="text-sm leading-snug font-normal"
+                                        >
+                                            أوافق على جميع شروط العقد
+                                        </Label>
+                                    </div>
+                                    {form.errors.agreed ? (
+                                        <p className="text-sm text-destructive">
+                                            {form.errors.agreed}
+                                        </p>
+                                    ) : null}
+                                    <Button
+                                        type="button"
+                                        disabled={
+                                            !form.data.agreed ||
+                                            !form.data.signature_code ||
+                                            form.processing
+                                        }
+                                        onClick={() =>
+                                            form.post(
+                                                accept.url(
+                                                    contract.contract_token,
+                                                ),
+                                            )
+                                        }
+                                    >
+                                        <PenLineIcon data-icon="inline-start" />
+                                        قبول وتوقيع العقد
+                                    </Button>
+                                </div>
                             </div>
                         </footer>
                     </>

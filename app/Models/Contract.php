@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'status',
     'signed_at',
     'client_ip',
+    'signature_code_hash',
+    'signature_code_sent_at',
 ])]
 class Contract extends Model
 {
@@ -41,6 +43,7 @@ class Contract extends Model
             'start_date' => 'date',
             'end_date' => 'date',
             'signed_at' => 'datetime',
+            'signature_code_sent_at' => 'datetime',
         ];
     }
 

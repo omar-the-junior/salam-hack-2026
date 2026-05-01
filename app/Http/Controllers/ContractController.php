@@ -6,9 +6,12 @@ use App\Http\Requests\Contracts\AcceptContractRequest;
 use App\Http\Requests\Contracts\StoreContractRequest;
 use App\Http\Requests\Contracts\UpdateContractRequest;
 use App\Models\Contract;
+use App\Notifications\ContractSignatureCodeNotification;
 use App\Notifications\ContractSignedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -105,6 +108,7 @@ class ContractController extends Controller
             $taxRate = $validated['tax_rate'] ?? 0;
             $totalValue = $validated['total_value'];
             $taxAmount = $totalValue * $taxRate / 100;
+            $plainCode = (string) random_int(100000, 999999);
 
             $contract = Contract::create([
                 'user_id' => auth()->id(),
@@ -122,7 +126,13 @@ class ContractController extends Controller
                 'end_date' => $validated['end_date'] ?? null,
                 'terms' => $validated['terms'] ?? null,
                 'status' => 'draft',
+                'signature_code_hash' => Hash::make($plainCode),
             ]);
+
+            Notification::route('mail', $validated['client_email'])
+                ->notify(new ContractSignatureCodeNotification($contract, $plainCode));
+
+            $contract->update(['signature_code_sent_at' => now()]);
 
             return redirect()->route('contracts.create.milestones', ['contract_id' => $contract->id]);
         } catch (Throwable $e) {
@@ -190,6 +200,10 @@ class ContractController extends Controller
 
             if ($contract->status !== 'draft') {
                 return redirect()->route('contracts.review', ['token' => $token]);
+            }
+
+            if (! Hash::check($request->validated()['signature_code'], $contract->signature_code_hash ?? '')) {
+                return redirect()->back()->withErrors(['signature_code' => 'رمز التوقيع غير صحيح.'])->withInput();
             }
 
             $contract->update([

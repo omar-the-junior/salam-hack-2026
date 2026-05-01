@@ -19,6 +19,7 @@ class AcceptContractRequest extends FormRequest
     {
         return [
             'agreed' => ['required', 'accepted'],
+            'signature_code' => ['required', 'string', 'digits:6'],
         ];
     }
 }
