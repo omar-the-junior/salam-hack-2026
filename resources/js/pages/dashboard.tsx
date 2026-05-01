@@ -144,6 +144,8 @@ type SummaryStats = {
     active_expense_cards: number;
 };
 
+type IncomeExpenseChartPeriod = 'six-months' | 'month';
+
 const sourceColorPalette = [
     {
         bar: 'bg-success',
@@ -264,6 +266,7 @@ export default function Dashboard({
     upcomingRenewals = [],
     incomeBreakdown,
     chartData = [],
+    chartDataThisMonth = [],
     attentionItems = [],
     summaryStats,
 }: {
@@ -274,6 +277,7 @@ export default function Dashboard({
     upcomingRenewals?: RenewalItem[];
     incomeBreakdown?: IncomeBreakdownData;
     chartData?: ChartDataPoint[];
+    chartDataThisMonth?: ChartDataPoint[];
     attentionItems?: AttentionItem[];
     summaryStats?: SummaryStats;
 }) {
@@ -283,6 +287,11 @@ export default function Dashboard({
     const [showChecklist, setShowChecklist] = useState(Boolean(checklist?.show));
     const [expandedRenewal, setExpandedRenewal] = useState(0);
     const [openRenewalMenu, setOpenRenewalMenu] = useState<number | null>(null);
+    const [incomeExpenseChartPeriod, setIncomeExpenseChartPeriod] =
+        useState<IncomeExpenseChartPeriod>('six-months');
+
+    const incomeExpenseChartRows =
+        incomeExpenseChartPeriod === 'six-months' ? chartData : chartDataThisMonth;
 
     const renewalCategoryClass = (category: string) =>
         ({
@@ -924,23 +933,32 @@ export default function Dashboard({
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>الدخل الشهري</CardTitle>
                                 <CardDescription>
-                                    مقارنة الدخل والمصروفات خلال آخر 6 أشهر
+                                    {incomeExpenseChartPeriod === 'six-months'
+                                        ? 'مقارنة الدخل والمصروفات خلال آخر 6 أشهر'
+                                        : 'مقارنة الدخل والمصروفات حسب أسابيع الشهر الحالي'}
                                 </CardDescription>
                             </div>
                             <ToggleGroup
                                 type="single"
-                                defaultValue="six-months"
-                                className="w-full justify-start overflow-x-auto lg:w-auto"
+                                value={incomeExpenseChartPeriod}
+                                onValueChange={(value) => {
+                                    if (value === 'month' || value === 'six-months') {
+                                        setIncomeExpenseChartPeriod(value);
+                                    }
+                                }}
+                                variant="default"
+                                size="sm"
+                                className="inline-flex w-full shrink-0 flex-wrap gap-1 rounded-xl border border-border/60 bg-muted/40 p-1 shadow-none lg:w-fit"
                             >
                                 <ToggleGroupItem
                                     value="month"
-                                    className="shrink-0"
+                                    className="min-h-8 flex-1 rounded-lg border-0 bg-transparent px-3 shadow-none hover:bg-muted/60 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm lg:flex-none"
                                 >
                                     هذا الشهر
                                 </ToggleGroupItem>
                                 <ToggleGroupItem
                                     value="six-months"
-                                    className="shrink-0"
+                                    className="min-h-8 flex-1 rounded-lg border-0 bg-transparent px-3 shadow-none hover:bg-muted/60 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm lg:flex-none"
                                 >
                                     آخر 6 أشهر
                                 </ToggleGroupItem>
@@ -951,10 +969,11 @@ export default function Dashboard({
                                 config={chartConfig}
                                 className="min-h-[240px] w-full max-w-full"
                             >
-                                <BarChart accessibilityLayer data={chartData}>
+                                <BarChart accessibilityLayer data={incomeExpenseChartRows}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis
                                         dataKey="month"
+                                        reversed
                                         tickLine={false}
                                         tickMargin={10}
                                         axisLine={false}

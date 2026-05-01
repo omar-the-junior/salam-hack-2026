@@ -61,7 +61,8 @@ class DashboardController extends Controller
                 'recentPaymentLinks' => $this->buildRecentPaymentLinks($user),
                 'upcomingRenewals' => $this->buildUpcomingRenewals($user),
                 'incomeBreakdown' => $this->buildIncomeBreakdown($user, $preferredCurrency),
-                'chartData' => $this->buildChartData($user, $incomeSvc, $expenseSvc, $preferredCurrency),
+                'chartData' => $this->buildChartDataLastSixMonths($user, $incomeSvc, $expenseSvc, $preferredCurrency),
+                'chartDataThisMonth' => $this->buildChartDataThisMonthByWeek($user, $incomeSvc, $expenseSvc, $preferredCurrency),
                 'attentionItems' => $this->buildAttentionItems($user),
                 'summaryStats' => $this->buildSummaryStats($user),
             ]);
@@ -261,17 +262,58 @@ class DashboardController extends Controller
     /**
      * @return list<array{month: string, income: float, expenses: float}>
      */
-    private function buildChartData(User $user, IncomeDashboardService $incomeSvc, ExpenseCardService $expenseSvc, string $preferredCurrency): array
+    private function buildChartDataLastSixMonths(User $user, IncomeDashboardService $incomeSvc, ExpenseCardService $expenseSvc, string $preferredCurrency): array
     {
         $incomeChart = $incomeSvc->chartLastSixMonths($user, $preferredCurrency);
+
+        return $this->mergeIncomePeriodsWithMonthlyBurn(
+            $incomeChart['periods'],
+            $expenseSvc,
+            $user,
+            $preferredCurrency,
+            splitMonthlyBurnAcrossBars: false,
+        );
+    }
+
+    /**
+     * @return list<array{month: string, income: float, expenses: float}>
+     */
+    private function buildChartDataThisMonthByWeek(User $user, IncomeDashboardService $incomeSvc, ExpenseCardService $expenseSvc, string $preferredCurrency): array
+    {
+        $incomeChart = $incomeSvc->chartThisMonthByWeek($user, $preferredCurrency);
+
+        return $this->mergeIncomePeriodsWithMonthlyBurn(
+            $incomeChart['periods'],
+            $expenseSvc,
+            $user,
+            $preferredCurrency,
+            splitMonthlyBurnAcrossBars: true,
+        );
+    }
+
+    /**
+     * @param  array<int, array{period: string, value: float}>  $periods
+     * @return list<array{month: string, income: float, expenses: float}>
+     */
+    private function mergeIncomePeriodsWithMonthlyBurn(
+        array $periods,
+        ExpenseCardService $expenseSvc,
+        User $user,
+        string $preferredCurrency,
+        bool $splitMonthlyBurnAcrossBars,
+    ): array {
         $monthlyBurn = $expenseSvc->monthlyBurnByCurrency($user);
         $monthlyExpenses = round((float) ($monthlyBurn[$preferredCurrency] ?? 0.0), 2);
+        $barCount = max(count($periods), 1);
+        $expensesPerBar = $splitMonthlyBurnAcrossBars
+            ? round($monthlyExpenses / $barCount, 2)
+            : $monthlyExpenses;
 
         return array_map(fn (array $period) => [
             'month' => $period['period'],
             'income' => $period['value'],
-            'expenses' => $monthlyExpenses,
-        ], $incomeChart['periods']);
+            'expenses' => $expensesPerBar,
+        ], $periods);
     }
 
     /**

@@ -375,7 +375,12 @@ export default function IncomeIndex({
                         <ChartContainer config={chartConfig} className="h-72 w-full">
                             <BarChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
                                 <CartesianGrid vertical={false} />
-                                <XAxis dataKey="period" tickLine={false} axisLine={false} />
+                                <XAxis
+                                    dataKey="period"
+                                    reversed
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
                                 <ChartTooltip content={<ChartTooltipContent />} />
                                 <Bar dataKey="value" radius={6} fill="var(--color-value)" />
                             </BarChart>

@@ -92,6 +92,7 @@ class DashboardTest extends TestCase
                 ->has('upcomingRenewals')
                 ->has('incomeBreakdown')
                 ->has('chartData')
+                ->has('chartDataThisMonth')
                 ->has('attentionItems')
                 ->has('summaryStats'));
     }
@@ -262,7 +263,26 @@ class DashboardTest extends TestCase
             ->get(route('dashboard'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('chartData', 6));
+                ->has('chartData', 6)
+                ->has('chartDataThisMonth'));
+    }
+
+    public function test_chart_data_this_month_has_week_buckets(): void
+    {
+        Carbon::setTestNow('2026-05-15');
+
+        $user = User::factory()->create(['preferred_currency' => 'EGP']);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where(
+                    'chartDataThisMonth',
+                    fn ($rows) => is_countable($rows) && count($rows) >= 1,
+                ));
+
+        Carbon::setTestNow();
     }
 
     public function test_summary_stats_count_correctly(): void
