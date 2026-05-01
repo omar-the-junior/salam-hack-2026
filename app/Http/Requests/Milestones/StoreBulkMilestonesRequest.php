@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Milestones;
 
+use App\Models\Contract;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreBulkMilestonesRequest extends FormRequest
 {
@@ -32,5 +34,35 @@ class StoreBulkMilestonesRequest extends FormRequest
             'milestones.*.title.required' => 'عنوان المرحلة مطلوب.',
             'milestones.*.percentage.required' => 'نسبة المرحلة مطلوبة.',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            /** @var Contract $contract */
+            $contract = $this->route('contract');
+
+            $rows = $this->input('milestones', []);
+            if (! is_array($rows)) {
+                return;
+            }
+
+            $incomingSum = 0.0;
+            foreach ($rows as $row) {
+                if (! is_array($row) || ! array_key_exists('percentage', $row)) {
+                    continue;
+                }
+                $incomingSum += (float) $row['percentage'];
+            }
+
+            $existingSum = (float) $contract->milestones()->sum('percentage');
+
+            if (round($existingSum + $incomingSum, 2) > 100) {
+                $validator->errors()->add(
+                    'milestones',
+                    'إجمالي نسب المراحل لا يجوز أن يتجاوز 100%. المتبقي حالياً: '.round(max(0, 100 - $existingSum), 2).'%',
+                );
+            }
+        });
     }
 }

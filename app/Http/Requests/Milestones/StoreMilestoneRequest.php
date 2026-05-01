@@ -34,6 +34,20 @@ class StoreMilestoneRequest extends FormRequest
             if ($contract->milestones()->count() >= 5) {
                 $validator->errors()->add('title', 'يجب ألا يتجاوز عدد المراحل الخمسة.');
             }
+
+            if ($validator->errors()->has('percentage')) {
+                return;
+            }
+
+            $existingSum = (float) $contract->milestones()->sum('percentage');
+            $incoming = (float) $this->input('percentage');
+
+            if (round($existingSum + $incoming, 2) > 100) {
+                $validator->errors()->add(
+                    'percentage',
+                    'إجمالي نسب المراحل لا يجوز أن يتجاوز 100%. المتبقي حالياً: '.round(max(0, 100 - $existingSum), 2).'%',
+                );
+            }
         });
     }
 }

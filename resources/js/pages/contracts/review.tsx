@@ -23,6 +23,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 import { accept } from '@/routes/contracts';
 
 type MilestonePublic = {
@@ -60,6 +61,7 @@ type ContractReview = {
 function formatMoney(value: string | number, currency: string): string {
     const n = typeof value === 'string' ? Number.parseFloat(value) : value;
     const safeCurrency = currency === 'USD' ? 'USD' : 'EGP';
+
     return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
         currency: safeCurrency,
@@ -71,6 +73,7 @@ function formatDate(value: string | null): string {
     if (!value) {
         return '—';
     }
+
     return new Date(value).toLocaleDateString('ar-EG', {
         dateStyle: 'long',
     });
@@ -80,6 +83,7 @@ function formatSignedAt(value: string | null): string {
     if (!value) {
         return '';
     }
+
     return new Date(value).toLocaleString('ar-EG', {
         dateStyle: 'long',
         timeStyle: 'short',
@@ -107,19 +111,29 @@ export default function ContractsReview({
     return (
         <div className="min-h-svh bg-muted/30">
             <Head title="مراجعة العقد" />
-            <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
-                <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-4 md:px-6">
-                    <AppLogo className="h-8" />
+            <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
+                <div className="mx-auto flex h-14 w-full max-w-3xl items-center justify-between px-3 sm:h-16 sm:px-4 md:px-6">
+                    <AppLogo className="h-7 sm:h-8" />
                     <Badge
-                        variant="secondary"
-                        className="rounded-full px-3 py-1 text-xs"
+                        variant={isSigned ? 'outline' : 'secondary'}
+                        className={cn(
+                            'rounded-full px-3 py-1 text-xs',
+                            isSigned && 'border-primary/40 text-primary',
+                        )}
                     >
-                        بانتظار الموافقة
+                        {isSigned ? 'موقّع' : 'بانتظار الموافقة'}
                     </Badge>
                 </div>
             </header>
 
-            <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8 pb-32 md:px-6">
+            <main
+                className={cn(
+                    'mx-auto flex w-full max-w-3xl flex-col gap-4 px-3 py-4 sm:gap-6 sm:px-4 sm:py-8 md:px-6',
+                    !isSigned &&
+                        'pb-[calc(13rem+env(safe-area-inset-bottom,0))] sm:pb-[calc(14rem+env(safe-area-inset-bottom,0))]',
+                    isSigned && 'pb-6 sm:pb-8',
+                )}
+            >
                 {flashMsg ? (
                     <Alert>
                         <AlertTitle>تنبيه</AlertTitle>
@@ -138,30 +152,25 @@ export default function ContractsReview({
                 ) : null}
 
                 <div className="text-center">
-                    <h1 className="text-2xl font-semibold leading-snug md:text-3xl">
+                    <h1 className="text-xl font-semibold leading-snug sm:text-2xl md:text-3xl">
                         مراجعة العقد: {contract.project_name}
                     </h1>
                     <p className="mt-2 text-sm text-muted-foreground">
                         بين {freelancerName} (المستقل) و {contract.client_name}{' '}
                         (العميل)
                     </p>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                        رقم المرجع{' '}
+                        <span
+                            className="font-mono font-medium text-foreground"
+                            dir="ltr"
+                        >
+                            #{contract.contract_token}
+                        </span>
+                    </p>
                 </div>
 
-                <article className="flex flex-col gap-10 rounded-2xl border bg-card p-5 shadow-sm md:p-8">
-                    <div className="flex items-start justify-between border-b pb-6">
-                        <div className="flex size-16 items-center justify-center rounded-lg border bg-muted/40">
-                            <AppLogo className="h-6" />
-                        </div>
-                        <div className="text-left">
-                            <p className="text-xs text-muted-foreground">
-                                رقم العقد
-                            </p>
-                            <p className="font-medium">
-                                #{contract.contract_token}
-                            </p>
-                        </div>
-                    </div>
-
+                <article className="flex flex-col gap-6 rounded-2xl border bg-card p-4 shadow-sm md:gap-10 md:p-8">
                     <Card className="border-muted/80 shadow-none">
                         <CardHeader>
                             <CardTitle className="text-base">
@@ -193,8 +202,62 @@ export default function ContractsReview({
                                 جدول الدفعات (المراحل)
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto rounded-lg border">
+                        <CardContent className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 md:hidden">
+                                {contract.milestones.length === 0 ? (
+                                    <p className="py-2 text-center text-sm text-muted-foreground">
+                                        لا توجد مراحل مضافة بعد.
+                                    </p>
+                                ) : (
+                                    contract.milestones.map((m) => (
+                                        <Card
+                                            key={m.id}
+                                            className="gap-0 border-muted/80 py-3 shadow-none"
+                                        >
+                                            <CardHeader className="gap-1 px-4 pb-2 pt-0">
+                                                <CardTitle className="text-start text-base leading-snug">
+                                                    {m.title}
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="flex flex-col gap-2 px-4 pb-0 pt-0 text-sm">
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="text-muted-foreground">
+                                                        النسبة
+                                                    </span>
+                                                    <span className="tabular-nums font-medium">
+                                                        {m.percentage}%
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="text-muted-foreground">
+                                                        القيمة
+                                                    </span>
+                                                    <span className="tabular-nums font-medium">
+                                                        {formatMoney(
+                                                            m.amount,
+                                                            contract.currency,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="text-muted-foreground">
+                                                        تاريخ الاستحقاق
+                                                    </span>
+                                                    <span className="text-start text-muted-foreground">
+                                                        {m.due_date
+                                                            ? formatDate(
+                                                                  m.due_date,
+                                                              )
+                                                            : 'فوري'}
+                                                    </span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))
+                                )}
+                            </div>
+
+                            <div className="hidden overflow-x-auto rounded-lg border md:block">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -320,14 +383,16 @@ export default function ContractsReview({
 
                 {!isSigned ? (
                     <>
-                        <footer className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 p-4 backdrop-blur md:p-5">
-                            <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+                        <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-background/95 pt-3 backdrop-blur supports-backdrop-filter:bg-background/80">
+                            <div
+                                className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0))] sm:gap-4 sm:px-4 sm:pb-[max(1rem,env(safe-area-inset-bottom,0))]"
+                            >
                                 <div className="flex flex-col gap-1.5">
                                     <Label
                                         htmlFor="signature_code"
                                         className="flex items-center gap-1.5 text-sm font-medium"
                                     >
-                                        <ShieldCheckIcon className="size-4 text-muted-foreground" />
+                                        <ShieldCheckIcon className="size-4 shrink-0 text-muted-foreground" />
                                         رمز التوقيع (أُرسل إلى بريدك الإلكتروني)
                                     </Label>
                                     <Input
@@ -347,7 +412,7 @@ export default function ContractsReview({
                                             !!form.errors.signature_code ||
                                             undefined
                                         }
-                                        className="max-w-56 text-center tracking-[0.4em] font-mono"
+                                        className="w-full max-w-full text-center tracking-[0.4em] font-mono sm:max-w-56"
                                     />
                                     {form.errors.signature_code ? (
                                         <p className="text-sm text-destructive">
@@ -356,36 +421,39 @@ export default function ContractsReview({
                                     ) : null}
                                 </div>
 
-                                <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-                                    <div className="flex items-start gap-3">
-                                        <Checkbox
-                                            id="agreed"
-                                            checked={form.data.agreed}
-                                            onCheckedChange={(c) =>
-                                                form.setData(
-                                                    'agreed',
-                                                    c === true,
-                                                )
-                                            }
-                                            aria-invalid={
-                                                !!form.errors.agreed ||
-                                                undefined
-                                            }
-                                        />
-                                        <Label
-                                            htmlFor="agreed"
-                                            className="text-sm leading-snug font-normal"
-                                        >
-                                            أوافق على جميع شروط العقد
-                                        </Label>
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex min-w-0 flex-col gap-2">
+                                        <div className="flex items-start gap-3">
+                                            <Checkbox
+                                                id="agreed"
+                                                checked={form.data.agreed}
+                                                onCheckedChange={(c) =>
+                                                    form.setData(
+                                                        'agreed',
+                                                        c === true,
+                                                    )
+                                                }
+                                                aria-invalid={
+                                                    !!form.errors.agreed ||
+                                                    undefined
+                                                }
+                                            />
+                                            <Label
+                                                htmlFor="agreed"
+                                                className="text-sm leading-snug font-normal"
+                                            >
+                                                أوافق على جميع شروط العقد
+                                            </Label>
+                                        </div>
+                                        {form.errors.agreed ? (
+                                            <p className="text-sm text-destructive">
+                                                {form.errors.agreed}
+                                            </p>
+                                        ) : null}
                                     </div>
-                                    {form.errors.agreed ? (
-                                        <p className="text-sm text-destructive">
-                                            {form.errors.agreed}
-                                        </p>
-                                    ) : null}
                                     <Button
                                         type="button"
+                                        className="w-full shrink-0 sm:w-auto"
                                         disabled={
                                             !form.data.agreed ||
                                             !form.data.signature_code ||

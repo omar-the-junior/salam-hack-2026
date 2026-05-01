@@ -325,6 +325,149 @@ class ContractFlowTest extends TestCase
         ]);
     }
 
+    public function test_store_milestone_rejected_when_aggregate_percentage_exceeds_100(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        foreach ([15, 20, 20] as $i => $pct) {
+            $contract->milestones()->create([
+                'title' => 'مرحلة '.($i + 1),
+                'percentage' => $pct,
+                'amount' => $contract->total_value * $pct / 100,
+                'due_date' => null,
+                'status' => 'pending',
+            ]);
+        }
+
+        $response = $this->from(route('contracts.show', $contract))
+            ->post(route('milestones.store', ['contract' => $contract->id]), [
+                'title' => 'مرحلة زائدة',
+                'percentage' => 50,
+                'due_date' => null,
+            ]);
+
+        $response->assertSessionHasErrors(['percentage']);
+    }
+
+    public function test_store_milestone_succeeds_when_aggregate_percentage_reaches_100(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $contract->milestones()->create([
+            'title' => 'مرحلة أولى',
+            'percentage' => 80,
+            'amount' => 800,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->post(route('milestones.store', ['contract' => $contract->id]), [
+            'title' => 'مرحلة ثانية',
+            'percentage' => 20,
+            'due_date' => null,
+        ]);
+
+        $response->assertRedirect(route('contracts.show', $contract->id));
+        $this->assertDatabaseHas('milestones', [
+            'contract_id' => $contract->id,
+            'title' => 'مرحلة ثانية',
+            'percentage' => 20,
+        ]);
+    }
+
+    public function test_update_milestone_rejected_when_aggregate_percentage_exceeds_100(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $first = $contract->milestones()->create([
+            'title' => 'مرحلة أولى',
+            'percentage' => 40,
+            'amount' => 400,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+        $contract->milestones()->create([
+            'title' => 'مرحلة ثانية',
+            'percentage' => 30,
+            'amount' => 300,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+        $contract->milestones()->create([
+            'title' => 'مرحلة ثالثة',
+            'percentage' => 20,
+            'amount' => 200,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->from(route('milestones.show', $first))
+            ->put(route('milestones.update', $first), [
+                'percentage' => 70,
+            ]);
+
+        $response->assertSessionHasErrors(['percentage']);
+        $first->refresh();
+        $this->assertEqualsWithDelta(40.0, (float) $first->percentage, 0.01);
+    }
+
     public function test_authenticated_owner_bulk_milestones_redirects_to_wizard_summary(): void
     {
         $ownerUser = User::factory()->create();
@@ -359,6 +502,50 @@ class ContractFlowTest extends TestCase
         $this->assertDatabaseHas('milestones', [
             'contract_id' => $contract->id,
             'title' => 'مرحلة أولى',
+        ]);
+    }
+
+    public function test_store_bulk_milestones_rejected_when_existing_plus_payload_exceeds_100(): void
+    {
+        $ownerUser = User::factory()->create();
+        $this->actingAs($ownerUser);
+
+        $contract = Contract::create([
+            'user_id' => $ownerUser->id,
+            'contract_token' => (string) Str::uuid(),
+            'project_name' => 'مشروع',
+            'description' => null,
+            'client_name' => 'عميل',
+            'client_email' => 'client@example.com',
+            'total_value' => 1000,
+            'tax_rate' => 0,
+            'tax_amount' => 0,
+            'grand_total' => 1000,
+            'currency' => 'EGP',
+            'start_date' => null,
+            'end_date' => null,
+            'terms' => null,
+            'status' => 'draft',
+        ]);
+
+        $contract->milestones()->create([
+            'title' => 'موجودة',
+            'percentage' => 70,
+            'amount' => 700,
+            'due_date' => null,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->post(route('milestones.store-bulk', ['contract' => $contract->id]), [
+            'milestones' => [
+                ['title' => 'جديدة 1', 'percentage' => 40, 'due_date' => null],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors(['milestones']);
+        $this->assertDatabaseMissing('milestones', [
+            'contract_id' => $contract->id,
+            'title' => 'جديدة 1',
         ]);
     }
 

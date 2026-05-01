@@ -1,6 +1,6 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import { Link2Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import MilestoneController from '@/actions/App/Http/Controllers/MilestoneController';
 import InputError from '@/components/input-error';
@@ -135,7 +135,22 @@ export default function ContractsShow({
             ? `${window.location.origin}${review.url(contract.contract_token)}`
             : '';
 
-    const canAddMilestone = contract.milestones.length < 5;
+    const milestonePercentageAllocated = useMemo(
+        () =>
+            contract.milestones.reduce((sum, m) => {
+                const n = Number.parseFloat(m.percentage);
+
+                return sum + (Number.isNaN(n) ? 0 : n);
+            }, 0),
+        [contract.milestones],
+    );
+    const milestonePercentageRemaining = Math.max(
+        0,
+        Math.round((100 - milestonePercentageAllocated) * 100) / 100,
+    );
+    const canAddMilestone =
+        contract.milestones.length < 5 &&
+        milestonePercentageRemaining > 0.001;
 
     const clientReviewPath = review.url(contract.contract_token);
 
@@ -194,7 +209,9 @@ export default function ContractsShow({
                                     <DialogHeader>
                                         <DialogTitle>مرحلة جديدة</DialogTitle>
                                         <DialogDescription>
-                                            أضف مرحلة للعقد (حتى 5 مراحل).
+                                            أضف مرحلة للعقد (حتى 5 مراحل، وإجمالي
+                                            النسب 100% كحد أقصى). المتبقي للتوزيع:{' '}
+                                            {milestonePercentageRemaining}%.
                                         </DialogDescription>
                                     </DialogHeader>
                                     <Form
@@ -230,7 +247,10 @@ export default function ContractsShow({
                                                         name="percentage"
                                                         type="number"
                                                         min={0}
-                                                        max={100}
+                                                        max={Math.min(
+                                                            100,
+                                                            milestonePercentageRemaining,
+                                                        )}
                                                         step={0.01}
                                                         required
                                                     />
