@@ -1,17 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
-import {
-    CreditCard,
-    DollarSign,
-    FileText,
-    LayoutGrid,
-    Link2,
-    Mail,
-    Menu,
-    Settings,
-    Users,
-} from 'lucide-react';
-import { NotificationBell } from '@/components/notification-bell';
+import { Menu } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
+import { mainNavItems } from '@/components/app-nav-items';
+import { NotificationBell } from '@/components/notification-bell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,23 +22,6 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import { index as customersIndex } from '@/routes/customers';
-import { index as contractsIndex } from '@/routes/contracts';
-import { index as emailScannerIndex } from '@/routes/email-scanner';
-import { index as expensesIndex } from '@/routes/expenses';
-import { index as incomeIndex } from '@/routes/income';
-import { index as paymentLinksIndex } from '@/routes/payment-links';
-import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    { title: 'لوحة التحكم', href: dashboard(), icon: LayoutGrid },
-    { title: 'روابط الدفع', href: paymentLinksIndex(), icon: Link2 },
-    { title: 'العقود', href: contractsIndex(), icon: FileText },
-    { title: 'العملاء', href: customersIndex(), icon: Users },
-    { title: 'الإيرادات', href: incomeIndex(), icon: DollarSign },
-    { title: 'المصروفات', href: expensesIndex(), icon: CreditCard },
-    { title: 'مسح البريد', href: emailScannerIndex(), icon: Mail },
-];
 
 export function AppHeader() {
     const page = usePage();
@@ -64,7 +38,7 @@ export function AppHeader() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="text-background/80 hover:bg-background/10 hover:text-background lg:hidden"
+                            className="hidden text-background/80 hover:bg-background/10 hover:text-background md:inline-flex lg:hidden"
                             aria-label="فتح القائمة"
                         >
                             <Menu />
@@ -141,18 +115,6 @@ export function AppHeader() {
 
                 {/* Right cluster */}
                 <div className="ms-auto flex items-center gap-2">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-background/70 hover:bg-background/10 hover:text-background"
-                        aria-label="الإعدادات"
-                        asChild
-                    >
-                        <Link href="/settings/profile">
-                            <Settings />
-                        </Link>
-                    </Button>
-
                     <NotificationBell />
 
                     <DropdownMenu>

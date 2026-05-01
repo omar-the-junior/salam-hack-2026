@@ -918,8 +918,8 @@ export default function Dashboard({
                     </Card>
                 </section>
 
-                <section className="grid gap-4 xl:grid-cols-3">
-                    <Card className="shadow-sm xl:col-span-2">
+                <section className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+                    <Card className="min-w-0 overflow-hidden shadow-sm xl:col-span-2">
                         <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>الدخل الشهري</CardTitle>
@@ -930,10 +930,18 @@ export default function Dashboard({
                             <ToggleGroup
                                 type="single"
                                 defaultValue="six-months"
-                                className="justify-start"
+                                className="w-full justify-start overflow-x-auto lg:w-auto"
                             >
-                                <ToggleGroupItem value="month">هذا الشهر</ToggleGroupItem>
-                                <ToggleGroupItem value="six-months">
+                                <ToggleGroupItem
+                                    value="month"
+                                    className="shrink-0"
+                                >
+                                    هذا الشهر
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                    value="six-months"
+                                    className="shrink-0"
+                                >
                                     آخر 6 أشهر
                                 </ToggleGroupItem>
                             </ToggleGroup>
@@ -941,7 +949,7 @@ export default function Dashboard({
                         <CardContent>
                             <ChartContainer
                                 config={chartConfig}
-                                className="min-h-[280px] w-full"
+                                className="min-h-[240px] w-full max-w-full"
                             >
                                 <BarChart accessibilityLayer data={chartData}>
                                     <CartesianGrid vertical={false} />
@@ -971,7 +979,7 @@ export default function Dashboard({
                         </CardContent>
                     </Card>
 
-                    <Card className="shadow-sm">
+                    <Card className="min-w-0 shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>يحتاج انتباهك</CardTitle>
