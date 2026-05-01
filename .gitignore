@@ -26,6 +26,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-  
+
+# Local Stitch / mockup exports (not versioned)
+/design/
+
 /public/sw.js  
 /public/workbox-*.js 
