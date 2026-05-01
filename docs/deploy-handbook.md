@@ -129,7 +129,8 @@ flowchart TD
         Proxy["Dockploy Reverse Proxy\n(SSL Termination)"]
         
         subgraph App ["Application"]
-            Apache["Apache (Laravel)\nPort 80\n(Runs schema migrations on start)"]
+            Apache["App Container\nPort 80\n(Runs migrations on start)"]
+            Scheduler["Scheduler Worker\nphp artisan schedule:work"]
             Vol[/"Docker Volume\n(Storage)"/]
         end
         
@@ -138,6 +139,8 @@ flowchart TD
         Proxy --> App
         Apache --> DB
         Apache --> Vol
+        Scheduler --> DB
+        Scheduler --> Vol
     end
 
     subgraph GitHub ["GitHub Actions"]
@@ -154,10 +157,10 @@ flowchart TD
     class GitHub,Build,GHCR gh
 ```
 
-The production container is a single `php:8.4-apache` image that:
-- Serves HTTP on port 80 (Dockploy's reverse proxy handles SSL termination)
-- Runs `php artisan migrate` and `php artisan optimize` on every startup
-- Connects to an external PostgreSQL database
+The production service is divided into multiple containers using the same base image:
+- **App Container**: Serves HTTP on port 80 (Dockploy's reverse proxy handles SSL termination). It also runs `php artisan migrate` and `php artisan optimize` on startup.
+- **Scheduler Container**: Continuously runs `php artisan schedule:work` in the background to handle daily jobs.
+- Both connect to an external PostgreSQL database and share the `storage` volume.
 
 ### Step 1: Set Up Dockploy on Your VPS
 

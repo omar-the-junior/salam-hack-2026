@@ -26,7 +26,6 @@ flowchart TB
     gemini["Gemini API<br/>AI — email parsing, cancel assistant,<br/>income tagging, forecast"]
     resend["Resend<br/>Transactional email — renewal alerts,<br/>payment reminders, signing notifications"]
     storage["S3-Compatible Storage<br/>MinIO / Cloudflare R2 —<br/>contract PDFs, receipts, exports"]
-    fcm["Firebase Cloud Messaging<br/>Push notifications (post-MVP)"]
 
     class freelancer person
     class client person
@@ -36,7 +35,6 @@ flowchart TB
     class gemini external
     class resend external
     class storage external
-    class fcm postmvp
 
     freelancer -->|"Uses web app (Inertia + React)"| mustahaq
     client -->|"Opens /pay/token — public link"| mustahaq
@@ -45,7 +43,6 @@ flowchart TB
     mustahaq -->|"Parse emails, cancel instructions, forecast"| gemini
     mustahaq -->|"Send email notifications"| resend
     mustahaq -->|"Store/export PDFs and files"| storage
-    mustahaq -.->|"Push notifications"| fcm
 ```
 
 ### Actor Narratives
@@ -64,7 +61,6 @@ flowchart TB
 | **Gemini API** | Powers AI features: email subscription parsing (structured JSON), cancel-subscription assistant (web search + instructions), income auto-tagging, cash-flow forecast. |
 | **Resend** | Transactional email provider for renewal alerts, payment reminders, contract-signing confirmations. |
 | **S3-Compatible Storage** | Stores generated contract PDFs, exported reports, and uploaded receipts/invoices. MinIO for local dev, Cloudflare R2 for production. |
-| **Firebase Cloud Messaging** | Push notifications for renewal reminders and payment status. Post-MVP. |
 
 ---
 
@@ -86,8 +82,7 @@ flowchart TB
         web_app["Laravel Web App<br/>PHP / Laravel 11<br/>MVC + Inertia.js v3<br/>Routing · Auth · Validation · Business Logic"]
         spa["React SPA<br/>React 18 + TypeScript<br/>shadcn/ui · TailwindCSS<br/>Client-rendered pages via Inertia"]
         db[("PostgreSQL Database<br/>Production-grade · All entities<br/>Users · PaymentLinks · Contracts · Income · Expenses")
-        queue["Queue Worker<br/>Laravel Queue<br/>Email scan · Renewal alerts · PDF generation"]
-        files[("File Storage<br/>MinIO / Cloudflare R2<br/>Contract PDFs · Exports · Receipts")]
+        queue["Queue Worker<br/>Laravel Queue<br/>Email scan · Renewal alerts · PDF generation"]        scheduler["Scheduler<br/>Laravel Scheduler<br/>Triggers daily tasks (e.g. UC-011)"]        files[("File Storage<br/>MinIO / Cloudflare R2<br/>Contract PDFs · Exports · Receipts")]
     end
 
     paymob["Paymob API<br/>Payment gateway"]
@@ -104,6 +99,7 @@ flowchart TB
     class spa container
     class db db
     class queue queue
+    class scheduler queue
     class files storage
     class paymob external
     class gmail external
@@ -116,6 +112,7 @@ flowchart TB
     spa -->|"Inertia form submissions"| web_app
     web_app -->|"Eloquent ORM"| db
     web_app -->|"dispatch() jobs"| queue
+    scheduler -->|"trigger commands"| web_app
     queue -->|"Read/write job state"| db
     queue -->|"Parse emails, cancel instructions"| gemini
     queue -->|"Fetch email messages"| gmail
@@ -133,6 +130,7 @@ flowchart TB
 | **React SPA** | React 18 + TypeScript, shadcn/ui components, TailwindCSS | Client-rendered UI. Receives page props from Inertia. No React Router — navigation is driven by Laravel routes via Inertia visits. |
 | **PostgreSQL Database** | PostgreSQL 15+ (production), SQLite (local dev) | Relational DB. All entities from DB-design.md. UUIDs for primary keys on financial records. |
 | **Queue Worker** | Laravel Queue (sync or database driver for MVP) | Runs background jobs: email scan pipeline (UC-009/010), renewal alert dispatch (UC-011), PDF generation (UC-012), data export (UC-013). |
+| **Scheduler** | Laravel Scheduler | Dedicated container process running `schedule:work` to fire scheduled daily tasks (UC-011). |
 | **File Storage** | MinIO (dev) / Cloudflare R2 (prod) | Contract PDFs, income/expense export files, receipt uploads. Accessed via Laravel `Storage` facade. |
 
 ### Key Data Flows
@@ -252,7 +250,7 @@ flowchart TB
 
 #### Notification Module
 - **Listeners:** Event-driven (Laravel events + listeners)
-- **Channels:** Email (Resend), Push (FCM post-MVP)
+- **Channels:** Email (Resend)
 - **Triggers:** Payment paid/overdue, contract signed, renewal due, scan complete
 
 #### Middleware Stack
