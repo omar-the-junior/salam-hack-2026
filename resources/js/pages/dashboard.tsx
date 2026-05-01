@@ -595,7 +595,7 @@ export default function Dashboard({
                 </section>
 
                 <section className="grid gap-4 xl:grid-cols-3">
-                    <Card className="shadow-sm">
+                    <Card className="min-w-0 overflow-hidden shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>روابط الدفع الأخيرة</CardTitle>
@@ -623,7 +623,7 @@ export default function Dashboard({
                                 recentPaymentLinks.map((item) => (
                                     <div
                                         key={`${item.client}-${item.description}`}
-                                        className="flex items-center justify-between gap-4 rounded-xl border bg-muted/30 p-3"
+                                        className="flex min-w-0 items-center justify-between gap-4 rounded-xl border bg-muted/30 p-3"
                                     >
                                         <div className="flex min-w-0 items-center gap-3">
                                             <Avatar className="size-11 rounded-2xl">
@@ -667,7 +667,7 @@ export default function Dashboard({
                         </CardFooter>
                     </Card>
 
-                    <Card className="shadow-sm">
+                    <Card className="min-w-0 overflow-hidden shadow-sm">
                         <CardHeader className="flex flex-row items-center justify-between gap-4">
                             <div className="flex flex-col gap-1.5">
                                 <CardTitle>الفواتير والمدفوعات</CardTitle>
@@ -701,7 +701,7 @@ export default function Dashboard({
                                         >
                                             <button
                                                 type="button"
-                                                className="flex w-full items-center gap-3 p-3 text-start"
+                                                className="flex min-w-0 w-full items-center gap-3 p-3 text-start"
                                                 onClick={() =>
                                                     setExpandedRenewal(
                                                         expandedRenewal === index ? -1 : index,
@@ -744,7 +744,7 @@ export default function Dashboard({
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div className="text-end">
+                                                <div className="min-w-0 text-end">
                                                     <p className="text-[11px] text-muted-foreground">
                                                         {billingCycleLabels[item.billing_cycle] ??
                                                             item.billing_cycle}
@@ -848,7 +848,7 @@ export default function Dashboard({
                         </CardFooter>
                     </Card>
 
-                    <Card className="shadow-sm">
+                    <Card className="min-w-0 overflow-hidden shadow-sm">
                         <CardHeader>
                             <CardTitle>توزيع مصادر الدخل</CardTitle>
                             <CardDescription>
@@ -883,12 +883,12 @@ export default function Dashboard({
                                     </div>
                                     <div className="flex flex-col gap-4">
                                         {incomeBreakdown.sources.map((source, idx) => (
-                                            <div key={source.source} className="flex flex-col gap-2">
+                                            <div key={source.source} className="min-w-0 flex flex-col gap-2">
                                                 <div className="flex items-center justify-between gap-3 text-sm">
-                                                    <span className="font-medium">
+                                                    <span className="min-w-0 truncate font-medium">
                                                         {source.label}
                                                     </span>
-                                                    <span className="text-muted-foreground tabular-nums">
+                                                    <span className="shrink-0 text-muted-foreground tabular-nums">
                                                         {formatCurrency(source.amount)}{' '}
                                                         {currencyLabel(
                                                             incomeBreakdown.currency,
