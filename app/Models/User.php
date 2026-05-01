@@ -111,4 +111,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(EmailScan::class)->latest('created_at');
     }
+
+    /**
+     * Get the renewal alerts for the user.
+     */
+    public function renewalAlerts(): HasMany
+    {
+        return $this->hasMany(RenewalAlert::class);
+    }
 }

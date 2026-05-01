@@ -63,6 +63,7 @@ import {
     create as paymentLinkCreate,
     index as paymentLinkIndex,
 } from '@/routes/payment-links';
+import { dismiss as renewalAlertDismiss } from '@/routes/renewal-alerts';
 
 type PaymentStatus = 'paid' | 'pending' | 'overdue';
 type AttentionSeverity = 'danger' | 'warning' | 'info' | 'success';
@@ -132,6 +133,7 @@ type AttentionItem = {
     action: string;
     severity: string;
     type: string;
+    alertId?: string;
 };
 type SummaryStats = {
     pending_payment_links: number;
@@ -1022,6 +1024,19 @@ export default function Dashboard({
                                                     <Link href={emailScannerIndex()}>
                                                         {item.action}
                                                     </Link>
+                                                </Button>
+                                            ) : item.type === 'renewal_soon' ? (
+                                                <Button
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    className="shrink-0"
+                                                    onClick={() => {
+                                                        if (item.alertId) {
+                                                            router.put(renewalAlertDismiss(item.alertId).url);
+                                                        }
+                                                    }}
+                                                >
+                                                    {item.action}
                                                 </Button>
                                             ) : (
                                                 <Button

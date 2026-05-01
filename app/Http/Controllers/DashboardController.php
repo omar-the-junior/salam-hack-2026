@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ExpenseCard;
 use App\Models\PaymentLink;
+use App\Models\RenewalAlert;
 use App\Models\User;
 use App\Models\UserWallet;
 use App\Services\Expense\ExpenseCardService;
@@ -272,7 +273,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return list<array{title: string, description: string, action: string, severity: string, type: string}>
+     * @return list<array{title: string, description: string, action: string, severity: string, type: string, alertId?: string}>
      */
     private function buildAttentionItems(User $user): array
     {
@@ -297,27 +298,24 @@ class DashboardController extends Controller
             }
         }
 
-        if (Schema::hasTable('expense_cards')) {
-            $soonRenewal = ExpenseCard::query()
-                ->where('user_id', $user->id)
-                ->where('status', 'active')
-                ->where('type', 'recurring')
-                ->whereNotNull('next_renewal_date')
-                ->where('next_renewal_date', '>=', Carbon::today()->toDateString())
-                ->where('next_renewal_date', '<=', Carbon::today()->addDays(7)->toDateString())
-                ->orderBy('next_renewal_date')
-                ->first(['name', 'amount', 'currency']);
+        $recentAlert = RenewalAlert::query()
+            ->where('user_id', $user->id)
+            ->whereNull('dismissed_at')
+            ->with('expenseCard')
+            ->latest('alerted_at')
+            ->first();
 
-            if ($soonRenewal !== null) {
-                $amount = number_format((float) $soonRenewal->amount, 0);
-                $items[] = [
-                    'title' => 'اشتراك يتجدد قريبًا',
-                    'description' => $soonRenewal->name.' · '.$amount.' '.$soonRenewal->currency,
-                    'action' => 'إلغاء',
-                    'severity' => 'warning',
-                    'type' => 'renewal_soon',
-                ];
-            }
+        if ($recentAlert !== null && $recentAlert->expenseCard !== null) {
+            $soonRenewal = $recentAlert->expenseCard;
+            $amount = number_format((float) $soonRenewal->amount, 0);
+            $items[] = [
+                'title' => 'اشتراك يتجدد قريبًا',
+                'description' => $soonRenewal->name.' · '.$amount.' '.$soonRenewal->currency,
+                'action' => 'إلغاء',
+                'severity' => 'warning',
+                'type' => 'renewal_soon',
+                'alertId' => $recentAlert->id,
+            ];
         }
 
         $hasGmail = Schema::hasTable('connected_accounts') && DB::table('connected_accounts')
