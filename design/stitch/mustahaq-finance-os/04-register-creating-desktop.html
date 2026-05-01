@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>مُسْتَحَقّ - جاري إنشاء الحساب</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#dcdddd",
+                        "marketing-grid": "rgba(128, 128, 128, 0.07)",
+                        "outline": "#747878",
+                        "ring": "oklch(0.87 0 0)",
+                        "outline-variant": "#c4c7c7",
+                        "on-tertiary": "#ffffff",
+                        "background": "oklch(1 0 0)",
+                        "tertiary": "#1d1c1a",
+                        "surface-container-high": "#ebe7e7",
+                        "inverse-on-surface": "#f4f0ef",
+                        "tertiary-container": "#32312f",
+                        "on-error": "#ffffff",
+                        "chart-1": "oklch(0.646 0.222 41.116)",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "primary-fixed-dim": "#c8c6c6",
+                        "secondary": "#5d5f5f",
+                        "on-primary-fixed": "#1b1c1c",
+                        "on-tertiary-fixed-variant": "#484744",
+                        "chart-3": "oklch(0.398 0.07 227.392)",
+                        "secondary-fixed": "#e2e2e2",
+                        "chart-2": "oklch(0.6 0.118 184.704)",
+                        "primary-fixed": "#e4e2e1",
+                        "on-surface-variant": "#444748",
+                        "surface": "#fdf8f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-variant": "#e5e2e1",
+                        "tertiary-fixed": "#e6e2de",
+                        "surface-tint": "#5f5e5e",
+                        "on-tertiary-fixed": "#1c1b1a",
+                        "on-surface": "#1c1b1b",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "primary-container": "#313131",
+                        "surface-container-low": "#f7f3f2",
+                        "on-primary-fixed-variant": "#474747",
+                        "on-primary-container": "#9a9998",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#9b9996",
+                        "surface-container": "#f1edec",
+                        "muted": "oklch(0.97 0 0)",
+                        "destructive": "oklch(0.577 0.245 27.325)",
+                        "scrim": "rgba(0, 0, 0, 0.8)",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed-variant": "#454747",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#ddd9d8",
+                        "surface-bright": "#fdf8f8",
+                        "on-secondary-container": "#5f6161",
+                        "primary": "oklch(0.205 0 0)",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#c8c6c6",
+                        "on-background": "#1c1b1b",
+                        "on-error-container": "#93000a",
+                        "foreground": "oklch(0.145 0 0)",
+                        "tertiary-fixed-dim": "#c9c6c3",
+                        "surface-container-lowest": "#ffffff",
+                        "border": "oklch(0.922 0 0)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebarWidthExpanded": "16rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "controlHeightSmall": "2rem",
+                        "cardPaddingX": "1.5rem",
+                        "cardInternalGap": "1.5rem",
+                        "controlHeightDefault": "2.25rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "marketingCardPadding": "2rem",
+                        "pageGutterWide": "2rem",
+                        "controlHeightProminent": "3.5rem",
+                        "unit": "0.25rem",
+                        "marketingSectionY": "6rem",
+                        "formFieldGap": "0.5rem",
+                        "cardPaddingY": "1.5rem",
+                        "pageGutter": "1rem",
+                        "marketingFeatureGridGap": "2rem",
+                        "gap-standard": "1.5rem",
+                        "containerMaxWidthContent": "80rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "container-max": "80rem",
+                        "dashboardTileGap": "1rem",
+                        "section-marketing": "6rem",
+                        "controlHeightLarge": "2.5rem",
+                        "touch-target": "2.25rem",
+                        "touchTargetMin": "2.25rem",
+                        "gap-dense": "1rem",
+                        "formSectionGap": "1.5rem",
+                        "sidebar-expanded": "16rem"
+                    },
+                    "fontFamily": {
+                        "caption": ["Cairo"],
+                        "bodyLarge": ["Cairo"],
+                        "sidebarGroupLabel": ["Cairo"],
+                        "sectionTitle": ["Cairo"],
+                        "label-caps": ["Cairo"],
+                        "section-title": ["Cairo"],
+                        "marketingWordmark": ["Cairo"],
+                        "body": ["Cairo"],
+                        "bodySmall": ["Cairo"],
+                        "ui-control": ["Cairo"],
+                        "uiControl": ["Cairo"],
+                        "featureTitle": ["Cairo"],
+                        "label": ["Cairo"],
+                        "hero": ["Cairo"],
+                        "cardTitle": ["Cairo"],
+                        "body-lg": ["Cairo"],
+                        "displayHero": ["Cairo"]
+                    },
+                    "fontSize": {
+                        "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "bodyLarge": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }],
+                        "sidebarGroupLabel": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.25rem)", { "lineHeight": "2.5rem", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "label-caps": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.25rem)", { "lineHeight": "2.5rem", "fontWeight": "700" }],
+                        "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "700" }],
+                        "body": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "400" }],
+                        "bodySmall": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+                        "ui-control": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "500" }],
+                        "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "500" }],
+                        "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "500" }],
+                        "hero": ["clamp(2.25rem, 5vw, 4.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "800" }],
+                        "cardTitle": ["1rem", { "lineHeight": "1", "fontWeight": "600" }],
+                        "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }],
+                        "displayHero": ["clamp(2.25rem, 5vw, 4.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(128, 128, 128, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(128, 128, 128, 0.05) 1px, transparent 1px);
+            background-size: 1rem 1rem;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin 2s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center bg-grid-pattern relative overflow-hidden">
+<!-- Loading Overlay -->
+<div class="absolute inset-0 bg-surface/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+<div class="relative flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-6xl animate-spin-slow" style="font-variation-settings: 'FILL' 0, 'wght' 300;">sync</span>
+<span class="material-symbols-outlined absolute text-on-surface text-2xl" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+<h2 class="font-featureTitle text-featureTitle text-on-surface mb-2">جاري إنشاء حسابك</h2>
+<p class="font-body text-body text-on-surface-variant max-w-sm text-center">يرجى الانتظار لحظات بينما نقوم بإعداد مساحة العمل الخاصة بك في مُسْتَحَقّ.</p>
+<!-- Progress Bar (Simulated) -->
+<div class="w-64 h-1.5 bg-surface-container-highest rounded-full mt-8 overflow-hidden">
+<div class="h-full bg-primary rounded-full w-2/3" style="transition: width 0.5s ease-in-out;"></div>
+</div>
+</div>
+<div class="w-full max-w-containerMaxWidthNarrow px-pageGutter flex flex-col md:flex-row gap-8 items-center md:items-stretch bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden relative z-10 pointer-events-none opacity-50">
+<!-- Form Section -->
+<div class="w-full md:w-1/2 p-cardPaddingX py-cardPaddingY flex flex-col justify-center">
+<div class="mb-8 text-center md:text-right">
+<h1 class="font-marketingWordmark text-marketingWordmark text-primary-container tracking-tight mb-2">مُسْتَحَقّ</h1>
+<p class="font-body text-body text-on-surface-variant">أهلاً بك. لنبدأ بإعداد حسابك الجديد.</p>
+</div>
+<form class="flex flex-col gap-formSectionGap">
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface">الاسم الكامل</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">person</span>
+<input class="w-full h-controlHeightProminent bg-surface-container-low border border-outline-variant rounded text-on-surface font-body text-body pl-3 pr-10 focus:ring-1 focus:ring-ring focus:border-ring outline-none transition-shadow cursor-not-allowed" disabled="" type="text" value="أحمد محمد"/>
+</div>
+</div>
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface">البريد الإلكتروني</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">mail</span>
+<input class="w-full h-controlHeightProminent bg-surface-container-low border border-outline-variant rounded text-on-surface font-body text-body pl-3 pr-10 focus:ring-1 focus:ring-ring focus:border-ring outline-none transition-shadow cursor-not-allowed" dir="ltr" disabled="" type="email" value="ahmed@example.com"/>
+</div>
+</div>
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface">كلمة المرور</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">lock</span>
+<input class="w-full h-controlHeightProminent bg-surface-container-low border border-outline-variant rounded text-on-surface font-body text-body pl-3 pr-10 focus:ring-1 focus:ring-ring focus:border-ring outline-none transition-shadow cursor-not-allowed" dir="ltr" disabled="" type="password" value="••••••••••••"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer" style="font-variation-settings: 'FILL' 0;">visibility_off</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<input checked="" class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-ring cursor-not-allowed" disabled="" type="checkbox"/>
+<label class="font-bodySmall text-bodySmall text-on-surface-variant">
+                        أوافق على <a class="text-primary-container underline hover:text-on-surface transition-colors cursor-not-allowed" href="#">الشروط</a> و <a class="text-primary-container underline hover:text-on-surface transition-colors cursor-not-allowed" href="#">الخصوصية</a>
+</label>
+</div>
+<button class="mt-4 h-controlHeightProminent w-full bg-primary-container text-on-primary font-uiControl text-uiControl rounded shadow-sm hover:bg-tertiary-container transition-colors flex items-center justify-center gap-2 cursor-wait" disabled="" type="button">
+<span class="material-symbols-outlined animate-spin" style="font-variation-settings: 'FILL' 0;">progress_activity</span>
+                    إنشاء حساب
+                </button>
+<div class="text-center mt-4">
+<p class="font-bodySmall text-bodySmall text-on-surface-variant">
+                        لديك حساب بالفعل؟ <a class="text-primary-container font-medium hover:underline cursor-not-allowed" href="#">تسجيل الدخول</a>
+</p>
+</div>
+</form>
+</div>
+<!-- Visual / Branding Section (Hidden on mobile) -->
+<div class="hidden md:flex w-1/2 bg-surface-container-low p-8 flex-col justify-between relative overflow-hidden border-r border-outline-variant">
+<!-- Decorative Elements -->
+<div class="absolute top-0 right-0 w-full h-full bg-grid-pattern opacity-20 pointer-events-none"></div>
+<div class="relative z-10">
+<h2 class="font-sectionTitle text-sectionTitle text-on-surface mb-4">نظام الإدارة المالية</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">المنصة المتكاملة للمستقلين والشركات الصغيرة لإدارة فواتيرهم ومصروفاتهم بدقة وسهولة.</p>
+</div>
+<div class="relative z-10 flex flex-col gap-4 mt-12">
+<!-- Bento-style feature cards -->
+<div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant shadow-sm flex items-start gap-4">
+<div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h3 class="font-cardTitle text-cardTitle text-on-surface mb-1">فواتير احترافية</h3>
+<p class="font-bodySmall text-bodySmall text-on-surface-variant">إنشاء وإرسال فواتير متوافقة مع المتطلبات الضريبية.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg border border-outline-variant shadow-sm flex items-start gap-4 opacity-80">
+<div class="w-10 h-10 rounded bg-primary/5 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+</div>
+<div>
+<h3 class="font-cardTitle text-cardTitle text-on-surface mb-1">تقارير دقيقة</h3>
+<p class="font-bodySmall text-bodySmall text-on-surface-variant">تتبع أرباحك ومصروفاتك من خلال لوحة تحكم شاملة.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

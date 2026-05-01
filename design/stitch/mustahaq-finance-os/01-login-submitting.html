@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>تسجيل الدخول - مُسْتَحَقّ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#5d5f5f",
+                      "marketing-grid": "rgba(128, 128, 128, 0.07)",
+                      "muted": "oklch(0.97 0 0)",
+                      "chart-2": "oklch(0.6 0.118 184.704)",
+                      "tertiary-fixed-dim": "#c9c6c3",
+                      "primary-fixed-dim": "#c8c6c6",
+                      "foreground": "oklch(0.145 0 0)",
+                      "surface-tint": "#5f5e5e",
+                      "chart-3": "oklch(0.398 0.07 227.392)",
+                      "secondary-fixed": "#e2e2e2",
+                      "on-background": "#1c1b1b",
+                      "tertiary-container": "#32312f",
+                      "surface-variant": "#e5e2e1",
+                      "error-container": "#ffdad6",
+                      "ring": "oklch(0.87 0 0)",
+                      "primary-container": "#313131",
+                      "on-surface-variant": "#444748",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#1b1c1c",
+                      "on-primary-fixed-variant": "#474747",
+                      "outline-variant": "#c4c7c7",
+                      "outline": "#747878",
+                      "tertiary-fixed": "#e6e2de",
+                      "inverse-primary": "#c8c6c6",
+                      "inverse-on-surface": "#f4f0ef",
+                      "on-tertiary-fixed-variant": "#484744",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#c6c6c7",
+                      "background": "oklch(1 0 0)",
+                      "primary": "oklch(0.205 0 0)",
+                      "on-tertiary-fixed": "#1c1b1a",
+                      "surface-container-high": "#ebe7e7",
+                      "surface-container-low": "#f7f3f2",
+                      "surface-container": "#f1edec",
+                      "secondary-container": "#dcdddd",
+                      "on-primary-container": "#9a9998",
+                      "border": "oklch(0.922 0 0)",
+                      "surface": "#fdf8f8",
+                      "on-error": "#ffffff",
+                      "surface-dim": "#ddd9d8",
+                      "primary-fixed": "#e4e2e1",
+                      "surface-container-highest": "#e5e2e1",
+                      "destructive": "oklch(0.577 0.245 27.325)",
+                      "tertiary": "#1d1c1a",
+                      "error": "#ba1a1a",
+                      "chart-1": "oklch(0.646 0.222 41.116)",
+                      "surface-bright": "#fdf8f8",
+                      "scrim": "rgba(0, 0, 0, 0.8)",
+                      "on-secondary-fixed-variant": "#454747",
+                      "inverse-surface": "#313030",
+                      "on-surface": "#1c1b1b",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#5f6161",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-container": "#9b9996"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "pageGutter": "1rem",
+                      "gap-standard": "1.5rem",
+                      "formSectionGap": "1.5rem",
+                      "dashboardTileGap": "1rem",
+                      "gap-dense": "1rem",
+                      "controlHeightLarge": "2.5rem",
+                      "touch-target": "2.25rem",
+                      "cardPaddingY": "1.5rem",
+                      "unit": "0.25rem",
+                      "touchTargetMin": "2.25rem",
+                      "pageGutterWide": "2rem",
+                      "marketingFeatureGridGap": "2rem",
+                      "sidebarWidthMobileSheet": "18rem",
+                      "sidebar-expanded": "16rem",
+                      "controlHeightSmall": "2rem",
+                      "controlHeightProminent": "3.5rem",
+                      "marketingSectionY": "6rem",
+                      "containerMaxWidthNarrow": "48rem",
+                      "containerMaxWidthContent": "80rem",
+                      "section-marketing": "6rem",
+                      "sidebarWidthCollapsed": "3rem",
+                      "container-max": "80rem",
+                      "cardPaddingX": "1.5rem",
+                      "formFieldGap": "0.5rem",
+                      "sidebarWidthExpanded": "16rem",
+                      "marketingCardPadding": "2rem",
+                      "controlHeightDefault": "2.25rem",
+                      "cardInternalGap": "1.5rem"
+              },
+              "fontFamily": {
+                      "caption": [
+                              "Cairo"
+                      ],
+                      "body": [
+                              "Cairo"
+                      ],
+                      "bodySmall": [
+                              "Cairo"
+                      ],
+                      "displayHero": [
+                              "Cairo"
+                      ],
+                      "cardTitle": [
+                              "Cairo"
+                      ],
+                      "sectionTitle": [
+                              "Cairo"
+                      ],
+                      "sidebarGroupLabel": [
+                              "Cairo"
+                      ],
+                      "hero": [
+                              "Cairo"
+                      ],
+                      "body-lg": [
+                              "Cairo"
+                      ],
+                      "bodyLarge": [
+                              "Cairo"
+                      ],
+                      "uiControl": [
+                              "Cairo"
+                      ],
+                      "label": [
+                              "Cairo"
+                      ],
+                      "marketingWordmark": [
+                              "Cairo"
+                      ],
+                      "ui-control": [
+                              "Cairo"
+                      ],
+                      "label-caps": [
+                              "Cairo"
+                      ],
+                      "section-title": [
+                              "Cairo"
+                      ],
+                      "featureTitle": [
+                              "Cairo"
+                      ]
+              },
+              "fontSize": {
+                      "caption": [
+                              "0.75rem",
+                              {
+                                      "lineHeight": "1rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body": [
+                              "1rem",
+                              {
+                                      "lineHeight": "1.5rem",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "bodySmall": [
+                              "0.875rem",
+                              {
+                                      "lineHeight": "1.25rem",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "displayHero": [
+                              "clamp(2.25rem, 5vw, 4.5rem)",
+                              {
+                                      "lineHeight": "1.25",
+                                      "letterSpacing": "-0.025em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "cardTitle": [
+                              "1rem",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "sectionTitle": [
+                              "clamp(1.875rem, 3vw, 2.25rem)",
+                              {
+                                      "lineHeight": "2.5rem",
+                                      "letterSpacing": "-0.025em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "sidebarGroupLabel": [
+                              "0.75rem",
+                              {
+                                      "lineHeight": "1rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "hero": [
+                              "clamp(2.25rem, 5vw, 4.5rem)",
+                              {
+                                      "lineHeight": "1.25",
+                                      "letterSpacing": "-0.025em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "1.125rem",
+                              {
+                                      "lineHeight": "1.75rem",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "bodyLarge": [
+                              "1.125rem",
+                              {
+                                      "lineHeight": "1.75rem",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "uiControl": [
+                              "0.875rem",
+                              {
+                                      "lineHeight": "1.25rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label": [
+                              "0.875rem",
+                              {
+                                      "lineHeight": "1.25rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "marketingWordmark": [
+                              "1.5rem",
+                              {
+                                      "lineHeight": "2rem",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "ui-control": [
+                              "0.875rem",
+                              {
+                                      "lineHeight": "1.25rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-caps": [
+                              "0.75rem",
+                              {
+                                      "lineHeight": "1rem",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "section-title": [
+                              "clamp(1.875rem, 3vw, 2.25rem)",
+                              {
+                                      "lineHeight": "2.5rem",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "featureTitle": [
+                              "1.25rem",
+                              {
+                                      "lineHeight": "1.75rem",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest min-h-screen flex items-center justify-center p-pageGutter md:p-pageGutterWide relative selection:bg-primary selection:text-on-primary">
+<!-- Ambient Background Texture -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(128,128,128,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.04)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
+<!-- Login Card Container -->
+<main class="w-full max-w-containerMaxWidthNarrow bg-surface rounded-[1.5rem] shadow-sm border border-outline-variant overflow-hidden flex flex-col md:flex-row relative z-10">
+<!-- Form Section -->
+<section class="flex-1 p-8 md:p-12 lg:p-cardPaddingX flex flex-col justify-center">
+<!-- Brand -->
+<div class="mb-10 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="font-marketingWordmark text-marketingWordmark text-on-surface">مُسْتَحَقّ</span>
+</div>
+<!-- Header -->
+<div class="mb-10">
+<h1 class="font-sectionTitle text-sectionTitle text-on-surface mb-2">تسجيل الدخول</h1>
+<p class="font-body text-body text-on-surface-variant">مرحباً بك مجدداً في مساحة عملك المهنية.</p>
+</div>
+<!-- Login Form (Submitting State) -->
+<form class="flex flex-col gap-formSectionGap" novalidate="">
+<!-- Email Input (Disabled) -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface cursor-not-allowed" for="email">البريد الإلكتروني</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute right-4 text-outline z-10 select-none">mail</span>
+<input class="w-full h-controlHeightProminent bg-surface-container rounded-lg border border-outline-variant pr-12 pl-4 font-uiControl text-uiControl text-on-surface-variant cursor-not-allowed opacity-60 shadow-inner" disabled="" id="email" type="email" value="ahmed.admin@example.com"/>
+</div>
+</div>
+<!-- Password Input (Disabled) -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface cursor-not-allowed" for="password">كلمة المرور</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute right-4 text-outline z-10 select-none">lock</span>
+<input class="w-full h-controlHeightProminent bg-surface-container rounded-lg border border-outline-variant pr-12 pl-4 font-uiControl text-uiControl text-on-surface-variant cursor-not-allowed opacity-60 shadow-inner" disabled="" id="password" type="password" value="••••••••••••"/>
+</div>
+</div>
+<!-- Options -->
+<div class="flex justify-between items-center mt-2 opacity-60 pointer-events-none">
+<label class="flex items-center gap-2 cursor-not-allowed">
+<input checked="" class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container cursor-not-allowed" disabled="" type="checkbox"/>
+<span class="font-caption text-caption text-on-surface-variant">تذكرني</span>
+</label>
+<span class="font-caption text-caption text-on-surface-variant">نسيت كلمة المرور؟</span>
+</div>
+<!-- Submit Button (Loading State) -->
+<button class="h-controlHeightProminent mt-4 bg-primary text-on-primary rounded-lg font-uiControl text-uiControl flex items-center justify-center gap-3 shadow-sm opacity-90 cursor-wait relative overflow-hidden transition-all duration-300" disabled="" type="button">
+<div class="absolute inset-0 bg-white/10"></div>
+<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+<span>جاري تسجيل الدخول...</span>
+</button>
+</form>
+<!-- Footer links -->
+<div class="mt-10 text-center opacity-60 pointer-events-none">
+<p class="font-caption text-caption text-on-surface-variant">
+                    ليس لديك حساب؟ <span class="text-primary font-semibold">إنشاء حساب جديد</span>
+</p>
+</div>
+</section>
+<!-- Decorative Side Panel (Hidden on Mobile) -->
+<section class="hidden md:flex flex-1 relative bg-surface-container-high overflow-hidden items-end p-12">
+<!-- Image with brand prompt -->
+<img alt="" class="absolute inset-0 w-full h-full object-cover opacity-[0.85] mix-blend-multiply grayscale-[20%]" data-alt="clean minimal modern office desk with architectural shadows in soft warm natural light, high-end corporate aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWc_wzwEEXn6SIfJsoawkYkgQPuzEdE-WwVqNtOiI083QfRTEBXjaGGhPFzyRttQj_MQrR1EDy6ENRdnHJwle57iXPKdyEhvMUbehr1eAUKdG5d7sUbLE4DeyWaTs_1LsF1rGNZyDO4p4JFkVMuXhEiQGpEBh59wN253zZMTsYlb7U9CaJnBy8BtZlvvNANZCHTF7uuWoQcj0RhWTp3OgJNuA8xKdql0DDTemNvYcqh3R-ca04j5YAPOat89RitGjcJnfI88kLpyA"/>
+<!-- Overlay gradient for text legibility -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high/90 via-surface-container-high/40 to-transparent"></div>
+<!-- Value Proposition Quote -->
+<div class="relative z-10 max-w-sm">
+<span class="material-symbols-outlined text-primary mb-4 text-[32px] opacity-80" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<p class="font-featureTitle text-featureTitle text-on-surface leading-snug">
+                    "نحن نبني الأدوات التي تمنحك الوضوح، لتتفرغ أنت لبناء نجاحك."
+                </p>
+</div>
+</section>
+</main>
+</body></html>

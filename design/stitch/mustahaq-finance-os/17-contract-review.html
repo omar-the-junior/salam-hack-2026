@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>مراجعة العقد - مُسْتَحَقّ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "secondary-container": "#c7dfff",
+                        "coralDebt": "#DC4A3D",
+                        "cloud": "#F9FAF8",
+                        "primary": "#005c55",
+                        "outline-variant": "#bdc9c6",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#80d5cb",
+                        "surface-variant": "#e0e3e1",
+                        "outline": "#6e7977",
+                        "on-secondary-container": "#4b637e",
+                        "dateGold": "#D99A2B",
+                        "on-surface-variant": "#3e4947",
+                        "surface-container-high": "#e5e9e7",
+                        "on-surface": "#181c1c",
+                        "nileTealDeep": "#0B4F4A",
+                        "secondary": "#49607c",
+                        "mustahaqInk": "#102A43",
+                        "on-tertiary-container": "#ffe5db",
+                        "surface-tint": "#006a63",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "primary-fixed": "#9cf2e8",
+                        "papyrus": "#F7F2E8",
+                        "on-error": "#ffffff",
+                        "on-background": "#181c1c",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "primary-fixed-dim": "#80d5cb",
+                        "on-primary-container": "#a3faef",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eef1f0",
+                        "surface-container-low": "#f1f4f3",
+                        "error-container": "#ffdad6",
+                        "profitMint": "#16A34A",
+                        "surface-bright": "#f7faf8",
+                        "tertiary": "#7f4025",
+                        "surface-dim": "#d7dbd9",
+                        "sand": "#E8DDC7",
+                        "tertiary-container": "#9c573a",
+                        "on-secondary-fixed": "#011d35",
+                        "on-secondary-fixed-variant": "#314863",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7faf8",
+                        "inverse-surface": "#2d3130",
+                        "primary-container": "#0f766e",
+                        "on-primary-fixed-variant": "#00504a",
+                        "surface-container": "#ebefed",
+                        "nileTeal": "#0F766E",
+                        "slate": "#52616B",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f7faf8",
+                        "surface-container-highest": "#e0e3e1",
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "on-tertiary-fixed": "#370e00",
+                        "secondary-fixed": "#d1e4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "twoxl": "1rem"
+                    },
+                    "spacing": {
+                        "controlHeightSmall": "2.25rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "pageGutter": "1rem",
+                        "marketingSectionY": "6rem",
+                        "formSectionGap": "1.5rem",
+                        "formFieldGap": "0.5rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "gap-dashboard": "1rem",
+                        "containerMaxWidthContent": "80rem",
+                        "cardInternalGap": "1.25rem",
+                        "gap-form": "1.5rem",
+                        "gutter-desktop": "2rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "section-marketing": "6rem",
+                        "controlHeightDefault": "2.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "marketingFeatureGridGap": "1.5rem",
+                        "pageGutterWide": "2rem",
+                        "touch-target": "2.75rem",
+                        "unit": "0.25rem",
+                        "marketingCardPadding": "2rem",
+                        "cardPaddingY": "1.5rem",
+                        "dashboardTileGap": "1rem",
+                        "controlHeightLarge": "3rem",
+                        "cardPaddingX": "1.5rem",
+                        "controlHeightProminent": "3.5rem",
+                        "touchTargetMin": "2.75rem",
+                        "gutter-mobile": "1rem",
+                        "documentMargin": "2rem"
+                    },
+                    "fontFamily": {
+                        "sectionTitle": ["Noto Kufi Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "financial-figure": ["IBM Plex Sans Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "display-hero": ["Noto Kufi Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"],
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "feature-title": ["Noto Kufi Arabic"],
+                        "body-large": ["IBM Plex Sans Arabic"],
+                        "financialFigure": ["IBM Plex Sans Arabic"]
+                    },
+                    "fontSize": {
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", {"lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700"}],
+                        "cardTitle": ["1rem", {"lineHeight": "1.35", "fontWeight": "700"}],
+                        "caption": ["0.75rem", {"lineHeight": "1rem", "fontWeight": "500"}],
+                        "body": ["1rem", {"lineHeight": "1.6rem", "fontWeight": "400"}],
+                        "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", {"lineHeight": "1.1", "fontWeight": "700"}],
+                        "label": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "600"}],
+                        "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", {"lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800"}],
+                        "bodySmall": ["0.875rem", {"lineHeight": "1.35rem", "fontWeight": "400"}],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", {"lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800"}],
+                        "bodyLarge": ["1.125rem", {"lineHeight": "1.85rem", "fontWeight": "400"}],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", {"lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700"}],
+                        "featureTitle": ["1.25rem", {"lineHeight": "1.75rem", "fontWeight": "700"}],
+                        "marketingWordmark": ["1.5rem", {"lineHeight": "2rem", "fontWeight": "800"}],
+                        "uiControl": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "600"}],
+                        "feature-title": ["1.25rem", {"lineHeight": "1.75rem", "fontWeight": "700"}],
+                        "body-large": ["1.125rem", {"lineHeight": "1.85rem", "fontWeight": "400"}],
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", {"lineHeight": "1.1", "fontWeight": "700"}]
+                    },
+                    "boxShadow": {
+                        "sm": "0 1px 2px 0 rgba(16, 42, 67, 0.05)",
+                        "md": "0 4px 6px -1px rgba(16, 42, 67, 0.1), 0 2px 4px -1px rgba(16, 42, 67, 0.06)",
+                        "lg": "0 10px 15px -3px rgba(16, 42, 67, 0.1), 0 4px 6px -2px rgba(16, 42, 67, 0.05)",
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cloud text-on-surface min-h-screen font-body flex flex-col pt-16 pb-32">
+<!-- Top Navigation (Simplified for Public View) -->
+<header class="fixed top-0 left-0 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-surface-variant z-50 flex items-center px-gutter-desktop shadow-sm">
+<div class="max-w-containerMaxWidthNarrow mx-auto w-full flex items-center justify-between">
+<div class="font-marketingWordmark text-marketingWordmark text-nileTeal">
+                مُسْتَحَقّ
+            </div>
+<div class="flex items-center gap-2 text-dateGold bg-dateGold/10 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pending</span>
+<span class="font-label text-label">بانتظار الموافقة</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-containerMaxWidthNarrow mx-auto px-gutter-mobile md:px-gutter-desktop mt-8">
+<!-- Document Title & Parties -->
+<div class="mb-8 text-center space-y-4">
+<h1 class="font-sectionTitle text-sectionTitle text-mustahaqInk">مراجعة العقد: تطوير منصة التجارة الإلكترونية</h1>
+<div class="flex items-center justify-center gap-4 text-mustahaqInk/70 font-body text-body">
+<span>بين <strong class="text-mustahaqInk">أحمد المستقل</strong> (المستقل)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-variant"></span>
+<span>و <strong class="text-mustahaqInk">شركة التقنية المتقدمة</strong> (العميل)</span>
+</div>
+</div>
+<!-- The Document Surface -->
+<article class="bg-papyrus rounded-twoxl shadow-md p-6 md:p-documentMargin border border-sand mb-12">
+<!-- Header Logo/Stamp Area -->
+<div class="flex justify-between items-start mb-12 pb-6 border-b border-sand">
+<div class="w-16 h-16 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<!-- Placeholder for Freelancer Logo -->
+<span class="material-symbols-outlined text-3xl text-outline">architecture</span>
+</div>
+<div class="text-left">
+<div class="font-label text-label text-mustahaqInk/60 mb-1">تاريخ الإصدار</div>
+<div class="font-body text-body text-mustahaqInk">٢٤ أكتوبر ٢٠٢٣</div>
+</div>
+</div>
+<!-- Description -->
+<section class="mb-12">
+<h2 class="font-cardTitle text-cardTitle text-mustahaqInk mb-4">وصف المشروع</h2>
+<p class="font-body text-body leading-relaxed text-on-surface-variant">
+                    يهدف هذا المشروع إلى تصميم وتطوير منصة تجارة إلكترونية متكاملة للعميل، تشمل واجهة المستخدم الأمامية (Frontend) ولوحة تحكم الإدارة (Backend)، مع دمج بوابات الدفع المحلية في المملكة العربية السعودية. يلتزم المستقل بتقديم كود نظيف وموثق بالكامل بناءً على المتطلبات المتفق عليها في وثيقة المواصفات الملحقة.
+                </p>
+</section>
+<!-- Milestones Table -->
+<section class="mb-12">
+<h2 class="font-cardTitle text-cardTitle text-mustahaqInk mb-4">جدول الدفعات (المراحل)</h2>
+<div class="overflow-x-auto rounded-lg border border-sand bg-surface-container-lowest/50">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-sand/30 border-b border-sand font-label text-label text-mustahaqInk">
+<th class="p-4 w-1/2">المرحلة</th>
+<th class="p-4 w-1/6">النسبة</th>
+<th class="p-4 w-1/6">القيمة</th>
+<th class="p-4 w-1/6">تاريخ الاستحقاق</th>
+</tr>
+</thead>
+<tbody class="font-body text-body text-on-surface-variant">
+<tr class="border-b border-sand/50 last:border-0">
+<td class="p-4">الدفعة المقدمة (عند توقيع العقد)</td>
+<td class="p-4">٣٠٪</td>
+<td class="p-4">١٥,٠٠٠ ر.س</td>
+<td class="p-4 text-mustahaqInk/60">فوري</td>
+</tr>
+<tr class="border-b border-sand/50 last:border-0">
+<td class="p-4">اعتماد التصميم النهائي لواجهة المستخدم</td>
+<td class="p-4">٤٠٪</td>
+<td class="p-4">٢٠,٠٠٠ ر.س</td>
+<td class="p-4 text-mustahaqInk/60">١٥ نوفمبر ٢٠٢٣</td>
+</tr>
+<tr class="border-b border-sand/50 last:border-0">
+<td class="p-4">تسليم المشروع النهائي واختباره</td>
+<td class="p-4">٣٠٪</td>
+<td class="p-4">١٥,٠٠٠ ر.س</td>
+<td class="p-4 text-mustahaqInk/60">١٥ ديسمبر ٢٠٢٣</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Financial Summary -->
+<section class="mb-12 flex justify-end">
+<div class="w-full md:w-1/2 bg-surface-container-lowest/80 rounded-lg p-6 border border-sand shadow-sm">
+<div class="flex justify-between items-center mb-3 font-body text-body text-on-surface-variant">
+<span>المجموع الفرعي</span>
+<span>٥٠,٠٠٠ ر.س</span>
+</div>
+<div class="flex justify-between items-center mb-4 font-body text-body text-on-surface-variant">
+<span>ضريبة القيمة المضافة (١٥٪)</span>
+<span>٧,٥٠٠ ر.س</span>
+</div>
+<div class="pt-4 border-t border-sand flex justify-between items-end">
+<span class="font-cardTitle text-cardTitle text-mustahaqInk">الإجمالي المطلوب</span>
+<span class="font-financialFigure text-financialFigure text-nileTeal">٥٧,٥٠٠ <span class="text-body text-nileTeal/70 font-body">ر.س</span></span>
+</div>
+</div>
+</section>
+<!-- Terms and Conditions -->
+<section>
+<h2 class="font-cardTitle text-cardTitle text-mustahaqInk mb-4">الشروط والأحكام</h2>
+<div class="bg-surface-container-lowest/40 rounded-lg p-6 border border-sand/60 prose prose-sm max-w-none text-on-surface-variant leading-relaxed">
+<ol class="list-decimal list-inside space-y-3 font-body text-bodySmall">
+<li><strong>الملكية الفكرية:</strong> تنتقل حقوق الملكية الفكرية للكود المصدري والتصاميم إلى العميل بمجرد سداد كامل الدفعات المتفق عليها.</li>
+<li><strong>التأخير:</strong> في حال تأخر العميل في سداد الدفعات المستحقة لمدة تزيد عن ٧ أيام عمل، يحق للمستقل إيقاف العمل لحين استلام الدفعة.</li>
+<li><strong>التعديلات:</strong> يشمل العقد جولتين من التعديلات على التصميم. أي تعديلات إضافية تتطلب تقييماً منفصلاً وفاتورة جديدة.</li>
+<li><strong>السرية:</strong> يلتزم الطرفان بالحفاظ على سرية المعلومات المتبادلة وعدم إفشائها لأطراف ثالثة دون إذن خطي مسبق.</li>
+<li><strong>إنهاء العقد:</strong> يمكن إنهاء العقد باتفاق الطرفين خطياً، مع تصفية الحسابات بناءً على العمل المنجز حتى تاريخ الإنهاء.</li>
+</ol>
+</div>
+</section>
+</article>
+</main>
+<!-- Sticky Acceptance Footer -->
+<footer class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-surface-variant shadow-[0_-4px_6px_-1px_rgba(16,42,67,0.05)] p-4 md:p-6 z-40">
+<div class="max-w-containerMaxWidthNarrow mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative flex items-center justify-center">
+<input class="peer appearance-none w-5 h-5 border-2 border-outline rounded bg-surface-container-lowest checked:bg-nileTeal checked:border-nileTeal focus:ring-2 focus:ring-nileTeal focus:ring-offset-2 transition-colors" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-on-primary text-sm opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity font-bold">check</span>
+</div>
+<span class="font-label text-label text-mustahaqInk group-hover:text-nileTeal transition-colors">أوافق على جميع شروط العقد</span>
+</label>
+<!-- Disabled State Button (visually requires JS to enable, simulated here as disabled per requirements) -->
+<button class="w-full md:w-auto h-controlHeightProminent px-8 bg-surface-variant text-on-surface-variant font-uiControl text-uiControl rounded-lg shadow-xs opacity-60 cursor-not-allowed flex items-center justify-center gap-2 transition-all" disabled="">
+<span class="material-symbols-outlined text-lg">draw</span>
+                قبول وتوقيع العقد
+            </button>
+<!-- Note: For a real implementation, you would swap the disabled button with this active one when checked:
+            <button class="w-full md:w-auto h-controlHeightProminent px-8 bg-nileTeal text-on-primary font-uiControl text-uiControl rounded-lg shadow-xs hover:bg-nileTealDeep hover:shadow-sm active:scale-95 flex items-center justify-center gap-2 transition-all">
+                <span class="material-symbols-outlined text-lg">draw</span>
+                قبول وتوقيع العقد
+            </button>
+            -->
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>مُسْتَحَقّ - بناء مراحل الدفع</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "secondary-container": "#c7dfff",
+                        "coralDebt": "#DC4A3D",
+                        "cloud": "#F9FAF8",
+                        "primary": "#005c55",
+                        "outline-variant": "#bdc9c6",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#80d5cb",
+                        "surface-variant": "#e0e3e1",
+                        "outline": "#6e7977",
+                        "on-secondary-container": "#4b637e",
+                        "dateGold": "#D99A2B",
+                        "on-surface-variant": "#3e4947",
+                        "surface-container-high": "#e5e9e7",
+                        "on-surface": "#181c1c",
+                        "nileTealDeep": "#0B4F4A",
+                        "secondary": "#49607c",
+                        "mustahaqInk": "#102A43",
+                        "on-tertiary-container": "#ffe5db",
+                        "surface-tint": "#006a63",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "primary-fixed": "#9cf2e8",
+                        "papyrus": "#F7F2E8",
+                        "on-error": "#ffffff",
+                        "on-background": "#181c1c",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "primary-fixed-dim": "#80d5cb",
+                        "on-primary-container": "#a3faef",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eef1f0",
+                        "surface-container-low": "#f1f4f3",
+                        "error-container": "#ffdad6",
+                        "profitMint": "#16A34A",
+                        "surface-bright": "#f7faf8",
+                        "tertiary": "#7f4025",
+                        "surface-dim": "#d7dbd9",
+                        "sand": "#E8DDC7",
+                        "tertiary-container": "#9c573a",
+                        "on-secondary-fixed": "#011d35",
+                        "on-secondary-fixed-variant": "#314863",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7faf8",
+                        "inverse-surface": "#2d3130",
+                        "primary-container": "#0f766e",
+                        "on-primary-fixed-variant": "#00504a",
+                        "surface-container": "#ebefed",
+                        "nileTeal": "#0F766E",
+                        "slate": "#52616B",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f7faf8",
+                        "surface-container-highest": "#e0e3e1",
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "on-tertiary-fixed": "#370e00",
+                        "secondary-fixed": "#d1e4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "controlHeightSmall": "2.25rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "pageGutter": "1rem",
+                        "marketingSectionY": "6rem",
+                        "formSectionGap": "1.5rem",
+                        "formFieldGap": "0.5rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "gap-dashboard": "1rem",
+                        "containerMaxWidthContent": "80rem",
+                        "cardInternalGap": "1.25rem",
+                        "gap-form": "1.5rem",
+                        "gutter-desktop": "2rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "section-marketing": "6rem",
+                        "controlHeightDefault": "2.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "marketingFeatureGridGap": "1.5rem",
+                        "pageGutterWide": "2rem",
+                        "touch-target": "2.75rem",
+                        "unit": "0.25rem",
+                        "marketingCardPadding": "2rem",
+                        "cardPaddingY": "1.5rem",
+                        "dashboardTileGap": "1rem",
+                        "controlHeightLarge": "3rem",
+                        "cardPaddingX": "1.5rem",
+                        "controlHeightProminent": "3.5rem",
+                        "touchTargetMin": "2.75rem",
+                        "gutter-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "sectionTitle": ["Noto Kufi Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "financial-figure": ["IBM Plex Sans Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "display-hero": ["Noto Kufi Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"],
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "feature-title": ["Noto Kufi Arabic"],
+                        "body-large": ["IBM Plex Sans Arabic"],
+                        "financialFigure": ["IBM Plex Sans Arabic"]
+                    },
+                    "fontSize": {
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "cardTitle": ["1rem", { "lineHeight": "1.35", "fontWeight": "700" }],
+                        "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "body": ["1rem", { "lineHeight": "1.6rem", "fontWeight": "400" }],
+                        "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodySmall": ["0.875rem", { "lineHeight": "1.35rem", "fontWeight": "400" }],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodyLarge": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "800" }],
+                        "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "feature-title": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "body-large": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+<!-- Decorative ambient background -->
+<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute top-0 right-0 w-1/2 h-1/2 bg-papyrus/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+</div>
+<main class="w-full max-w-containerMaxWidthNarrow relative z-10 flex flex-col gap-8">
+<!-- Header & Stepper -->
+<header class="flex flex-col gap-4 text-center">
+<h1 class="font-sectionTitle text-sectionTitle text-mustahaqInk">إنشاء عقد جديد</h1>
+<div class="flex items-center justify-center gap-4 text-sm font-label text-outline">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-profitMint text-xl">check_circle</span>
+                    تفاصيل العميل
+                </span>
+<div class="h-px w-8 bg-surface-variant"></div>
+<span class="flex items-center gap-1 text-nileTeal font-bold">
+<span class="flex items-center justify-center w-6 h-6 rounded-full bg-nileTeal text-on-primary text-xs">2</span>
+                    الخطوة 2 من 3: بناء مراحل الدفع
+                </span>
+<div class="h-px w-8 bg-surface-variant"></div>
+<span class="flex items-center gap-1 opacity-50">
+<span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-outline text-xs">3</span>
+                    الشروط والمراجعة
+                </span>
+</div>
+</header>
+<!-- Main Document Card -->
+<div class="bg-papyrus rounded-xl shadow-md border border-sand p-8 flex flex-col gap-8 relative overflow-hidden">
+<!-- Subtle document texture/border line -->
+<div class="absolute top-0 bottom-0 right-6 w-px bg-sand opacity-50"></div>
+<!-- Allocation Progress -->
+<section class="flex flex-col gap-2 z-10">
+<div class="flex justify-between items-end">
+<h2 class="font-cardTitle text-cardTitle text-mustahaqInk">نسبة التوزيع</h2>
+<span class="font-financialFigure text-lg text-nileTeal">60%</span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-nileTeal rounded-full transition-all duration-300" style="width: 60%;"></div>
+</div>
+<p class="font-caption text-caption text-outline">يجب أن يصل الإجمالي إلى 100% للمتابعة.</p>
+</section>
+<!-- Milestones List -->
+<section class="flex flex-col gap-6 z-10">
+<!-- Milestone 1 (Completed) -->
+<div class="bg-surface rounded-lg p-6 border border-surface-variant shadow-sm flex flex-col gap-4 relative transition-colors focus-within:border-nileTeal focus-within:ring-1 focus-within:ring-nileTeal">
+<div class="flex justify-between items-center border-b border-surface-variant pb-4">
+<h3 class="font-label text-label text-mustahaqInk flex items-center gap-2">
+<span class="material-symbols-outlined text-nileTeal" style="font-variation-settings: 'FILL' 1;">flag</span>
+                            الدفعة المقدمة
+                        </h3>
+<button aria-label="حذف" class="text-outline hover:text-coralDebt transition-colors p-1">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">عنوان المرحلة</label>
+<input class="h-controlHeightDefault bg-transparent border-b border-outline-variant focus:border-nileTeal focus:ring-0 px-0 font-body text-body text-mustahaqInk" placeholder="أدخل العنوان" type="text" value="توقيع العقد"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">النسبة المئوية</label>
+<div class="relative">
+<input class="w-full h-controlHeightDefault bg-transparent border-b border-outline-variant focus:border-nileTeal focus:ring-0 px-0 font-financial-figure text-body text-mustahaqInk text-left pr-6" placeholder="0" type="number" value="30"/>
+<span class="absolute left-0 top-1/2 -translate-y-1/2 text-outline font-body text-sm">%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">المبلغ (تلقائي)</label>
+<div class="h-controlHeightDefault flex items-center gap-1 font-financial-figure text-body text-mustahaqInk border-b border-transparent">
+<span>3,000</span>
+<span class="text-xs text-outline">ر.س</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">تاريخ الاستحقاق</label>
+<input class="h-controlHeightDefault bg-transparent border-b border-outline-variant focus:border-nileTeal focus:ring-0 px-0 font-body text-body text-mustahaqInk" type="date" value="2024-11-01"/>
+</div>
+</div>
+</div>
+<!-- Milestone 2 (Active/Editing) -->
+<div class="bg-surface rounded-lg p-6 border-2 border-nileTeal shadow-sm flex flex-col gap-4 relative">
+<div class="flex justify-between items-center border-b border-surface-variant pb-4">
+<h3 class="font-label text-label text-mustahaqInk flex items-center gap-2">
+<span class="material-symbols-outlined text-nileTeal" style="font-variation-settings: 'FILL' 1;">flag</span>
+                            مرحلة التسليم الأولى
+                        </h3>
+<button aria-label="حذف" class="text-outline hover:text-coralDebt transition-colors p-1">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">عنوان المرحلة</label>
+<input class="h-controlHeightDefault bg-transparent border-b border-nileTeal focus:border-nileTeal focus:ring-0 px-0 font-body text-body text-mustahaqInk" placeholder="أدخل العنوان" type="text" value="تسليم التصاميم المبدئية"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">النسبة المئوية</label>
+<div class="relative">
+<input class="w-full h-controlHeightDefault bg-transparent border-b border-nileTeal focus:border-nileTeal focus:ring-0 px-0 font-financial-figure text-body text-mustahaqInk text-left pr-6" placeholder="0" type="number" value="30"/>
+<span class="absolute left-0 top-1/2 -translate-y-1/2 text-outline font-body text-sm">%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">المبلغ (تلقائي)</label>
+<div class="h-controlHeightDefault flex items-center gap-1 font-financial-figure text-body text-mustahaqInk border-b border-transparent">
+<span>3,000</span>
+<span class="text-xs text-outline">ر.س</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-caption text-caption text-on-surface-variant">تاريخ الاستحقاق</label>
+<input class="h-controlHeightDefault bg-transparent border-b border-nileTeal focus:border-nileTeal focus:ring-0 px-0 font-body text-body text-mustahaqInk" type="date" value="2024-11-15"/>
+</div>
+</div>
+</div>
+<!-- Add Milestone Button -->
+<button class="w-full h-controlHeightProminent border-2 border-dashed border-outline-variant rounded-lg text-nileTeal font-label text-label flex items-center justify-center gap-2 hover:bg-nileTeal/5 hover:border-nileTeal transition-all duration-200">
+<span class="material-symbols-outlined">add</span>
+                    إضافة مرحلة دفع (المتبقي: 40%)
+                </button>
+</section>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-4 justify-between items-center mt-4">
+<button class="w-full sm:w-auto px-8 h-controlHeightProminent bg-surface border border-outline rounded-lg font-uiControl text-uiControl text-on-surface hover:bg-surface-variant transition-colors flex items-center justify-center shadow-sm">
+                السابق
+            </button>
+<button class="w-full sm:w-auto px-8 h-controlHeightProminent bg-nileTeal text-on-primary rounded-lg font-uiControl text-uiControl hover:bg-nileTealDeep transition-colors flex items-center justify-center shadow-sm">
+                التالي: الشروط والمراجعة
+            </button>
+</div>
+</main>
+</body></html>

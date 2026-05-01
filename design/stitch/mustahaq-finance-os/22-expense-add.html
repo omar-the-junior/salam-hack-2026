@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إضافة مصروف يدوي</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container": "#ebefed",
+                        "background": "#f7faf8",
+                        "surface-container-highest": "#e0e3e1",
+                        "secondary-fixed": "#d1e4ff",
+                        "on-primary-fixed": "#00201d",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#314863",
+                        "outline": "#6e7977",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#011d35",
+                        "surface-container-low": "#f1f4f3",
+                        "profitMint": "#16A34A",
+                        "coralDebt": "#DC4A3D",
+                        "slate": "#52616B",
+                        "sand": "#E8DDC7",
+                        "on-tertiary-container": "#ffe5db",
+                        "surface": "#f7faf8",
+                        "primary": "#005c55",
+                        "on-background": "#181c1c",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdbce",
+                        "on-surface": "#181c1c",
+                        "on-surface-variant": "#3e4947",
+                        "secondary-container": "#c7dfff",
+                        "surface-variant": "#e0e3e1",
+                        "tertiary": "#7f4025",
+                        "error-container": "#ffdad6",
+                        "cloud": "#F9FAF8",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "surface-dim": "#d7dbd9",
+                        "surface-container-high": "#e5e9e7",
+                        "inverse-surface": "#2d3130",
+                        "nileTealDeep": "#0B4F4A",
+                        "inverse-primary": "#80d5cb",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#9cf2e8",
+                        "on-primary-container": "#a3faef",
+                        "secondary": "#49607c",
+                        "on-primary-fixed-variant": "#00504a",
+                        "outline-variant": "#bdc9c6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#80d5cb",
+                        "dateGold": "#D99A2B",
+                        "nileTeal": "#0F766E",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "surface-bright": "#f7faf8",
+                        "tertiary-container": "#9c573a",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#006a63",
+                        "primary-container": "#0f766e",
+                        "mustahaqInk": "#102A43",
+                        "inverse-on-surface": "#eef1f0",
+                        "papyrus": "#F7F2E8",
+                        "on-secondary-container": "#4b637e"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "gutter-desktop": "2rem",
+                        "touchTargetMin": "2.75rem",
+                        "gap-form": "1.5rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "formSectionGap": "1.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "pageGutter": "1rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "controlHeightSmall": "2.25rem",
+                        "formFieldGap": "0.5rem",
+                        "dashboardTileGap": "1rem",
+                        "containerMaxWidthContent": "80rem",
+                        "cardPaddingX": "1.5rem",
+                        "section-marketing": "6rem",
+                        "pageGutterWide": "2rem",
+                        "marketingSectionY": "6rem",
+                        "controlHeightLarge": "3rem",
+                        "unit": "0.25rem",
+                        "touch-target": "2.75rem",
+                        "controlHeightDefault": "2.5rem",
+                        "cardInternalGap": "1.25rem",
+                        "gutter-mobile": "1rem",
+                        "cardPaddingY": "1.5rem",
+                        "gap-dashboard": "1rem",
+                        "marketingCardPadding": "2rem",
+                        "controlHeightProminent": "3.5rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "marketingFeatureGridGap": "1.5rem"
+                    },
+                    fontFamily: {
+                        "financialFigure": ["IBM Plex Sans Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"]
+                    },
+                    fontSize: {
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { lineHeight: "1.1", fontWeight: "700" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { lineHeight: "1.25", letterSpacing: "-0.025em", fontWeight: "700" }],
+                        "featureTitle": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "700" }],
+                        "bodySmall": ["0.875rem", { lineHeight: "1.35rem", fontWeight: "400" }],
+                        "bodyLarge": ["1.125rem", { lineHeight: "1.85rem", fontWeight: "400" }],
+                        "uiControl": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "600" }],
+                        "caption": ["0.75rem", { lineHeight: "1rem", fontWeight: "500" }],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { lineHeight: "1.18", letterSpacing: "-0.035em", fontWeight: "800" }],
+                        "body": ["1rem", { lineHeight: "1.6rem", fontWeight: "400" }],
+                        "marketingWordmark": ["1.5rem", { lineHeight: "2rem", fontWeight: "800" }],
+                        "label": ["0.875rem", { lineHeight: "1.25rem", fontWeight: "600" }],
+                        "cardTitle": ["1rem", { lineHeight: "1.35", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row rtl font-body">
+<!-- SideNavBar (Web) -->
+<nav aria-label="Sidebar Navigation" class="hidden md:flex bg-stone-50 dark:bg-stone-950 text-teal-700 dark:text-teal-400 font-sans text-sm font-semibold docked fixed right-0 h-full w-64 border-l border-l border-stone-200 dark:border-stone-800 flat no shadows flex flex-col h-full py-6 rtl z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-outline" data-icon="storefront">storefront</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-teal-700 dark:text-teal-400 tracking-tighter">Finance Hub</h1>
+<p class="font-caption text-caption text-outline">Independent Professional</p>
+</div>
+</div>
+<div class="px-4 mb-6">
+<button class="w-full bg-nileTeal text-on-primary rounded-lg h-controlHeightProminent flex items-center justify-center gap-2 font-uiControl text-uiControl shadow-sm hover:bg-nileTealDeep transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Generate Report
+            </button>
+</div>
+<ul class="flex flex-col gap-1 flex-grow">
+<li><a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>Home</a></li>
+<li><a class="bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-lg mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200" href="#"><span class="material-symbols-outlined" data-icon="account_balance_wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>Ledger</a></li>
+<li><a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>Payments</a></li>
+<li><a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>Subscriptions</a></li>
+<li><a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>Audit</a></li>
+</ul>
+<div class="mt-auto flex flex-col gap-1 pt-4 border-t border-surface-container-highest px-2">
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>Help Center</a>
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200 rounded-lg" href="#"><span class="material-symbols-outlined" data-icon="logout">logout</span>Sign Out</a>
+</div>
+</nav>
+<!-- TopNavBar (Mobile/Tablet) -->
+<header class="md:hidden bg-stone-50 dark:bg-stone-900 text-teal-700 dark:text-teal-400 font-sans text-sm font-medium tracking-tight docked full-width top-0 z-50 border-b border-stone-200 dark:border-stone-800 shadow-sm flex justify-between items-center px-8 w-full h-16 sticky">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-teal-700 dark:text-teal-400 tracking-tighter">Mustahaq</span>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="notifications" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-outline hover:text-nileTeal transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-xl" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="settings" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-outline hover:text-nileTeal transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a smiling middle-aged man with short hair and glasses against a light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_g46wyLFg_gmJ8_8RPwn_c65kBpBTf67-Tx1yjVqjOMa8YJGkGRj9Xs7JhQev0M8PpULhPzYmkMn63ODJtSsDLettW3NSSFWS050kzsQ28oP4gY-sMJi6x10wZ2xuSRNA-oZYj_mOB4yFlNrJzsmD-YBVDz_BHMGFU_Quq2AWhQCyTzlaO0XmttLNJ6QOn6SzZ_7Gg-Paj7BBWGmaJ9-fEBrzfc1QcBChOrvXhv8uuZOnidN88NLsDw1hZ0y3v8_cm908jj6e8C4"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 md:mr-64 p-gutter-mobile md:p-pageGutterWide bg-background flex justify-center pb-24 md:pb-pageGutterWide">
+<div class="w-full max-w-containerMaxWidthNarrow mt-8 md:mt-12">
+<!-- Header Section -->
+<div class="mb-8">
+<a class="inline-flex items-center gap-2 text-outline hover:text-on-background transition-colors font-uiControl text-uiControl mb-4" href="#">
+<span class="material-symbols-outlined text-lg rtl:rotate-180" data-icon="arrow_back">arrow_back</span>
+                    عودة إلى المصروفات
+                </a>
+<h2 class="font-section-title text-section-title text-on-background">إضافة مصروف يدوي</h2>
+<p class="font-body text-body text-on-surface-variant mt-2">قم بتسجيل تفاصيل المصروف الجديد بدقة لضمان صحة تقاريرك المالية.</p>
+</div>
+<!-- Form Container (Document Mode feel) -->
+<div class="bg-papyrus rounded-xl shadow-md p-cardPaddingX md:p-marketingCardPadding border border-surface-container-highest">
+<form class="space-y-gap-form">
+<!-- Basic Info Group -->
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="serviceName">اسم الخدمة أو المصروف</label>
+<input class="w-full h-controlHeightDefault px-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body" id="serviceName" name="serviceName" placeholder="مثال: اشتراك برنامج تصميم" required="" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-form">
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="category">التصنيف</label>
+<div class="relative">
+<select class="w-full h-controlHeightDefault pl-10 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body appearance-none" id="category" name="category" required="">
+<option disabled="" selected="" value="">اختر التصنيف</option>
+<option value="software">برمجيات وأدوات</option>
+<option value="marketing">تسويق وإعلانات</option>
+<option value="equipment">معدات مكتبية</option>
+<option value="services">خدمات مهنية</option>
+<option value="other">أخرى</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="expenseType">نوع المصروف</label>
+<div class="relative">
+<select class="w-full h-controlHeightDefault pl-10 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body appearance-none" id="expenseType" name="expenseType" required="">
+<option value="one-time">لمرة واحدة</option>
+<option value="recurring">متكرر</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Financial Group -->
+<div class="pt-4 border-t border-surface-container-highest">
+<h3 class="font-featureTitle text-featureTitle text-mustahaqInk mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-nileTeal" data-icon="payments">payments</span>
+                            التفاصيل المالية
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-form">
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="amount">المبلغ</label>
+<div class="relative">
+<input class="w-full h-controlHeightDefault pl-3 pr-10 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body" id="amount" min="0" name="amount" placeholder="0.00" required="" step="0.01" type="number"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="attach_money">attach_money</span>
+</div>
+</div>
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background">العملة</label>
+<div class="flex gap-4">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="text-nileTeal focus:ring-nileTeal border-outline-variant group-hover:border-nileTeal transition-colors" name="currency" type="radio" value="EGP"/>
+<span class="font-body text-body text-on-surface-variant group-hover:text-on-background transition-colors">جنية مصري (EGP)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="text-nileTeal focus:ring-nileTeal border-outline-variant group-hover:border-nileTeal transition-colors" name="currency" type="radio" value="USD"/>
+<span class="font-body text-body text-on-surface-variant group-hover:text-on-background transition-colors">دولار أمريكي (USD)</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Recurring Details Group (Assumed visible based on 'recurring' selection logic usually handled by JS, but showing for design) -->
+<div class="pt-4 border-t border-surface-container-highest bg-surface-container-low -mx-cardPaddingX md:-mx-marketingCardPadding px-cardPaddingX md:px-marketingCardPadding py-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-form">
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="billingCycle">دورة الدفع</label>
+<div class="relative">
+<select class="w-full h-controlHeightDefault pl-10 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body appearance-none" id="billingCycle" name="billingCycle">
+<option value="monthly">شهري</option>
+<option value="quarterly">ربع سنوي</option>
+<option value="annually">سنوي</option>
+</select>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-formFieldGap">
+<label class="block font-label text-label text-on-background" for="nextRenewal">تاريخ التجديد القادم</label>
+<div class="relative">
+<input class="w-full h-controlHeightDefault pl-10 pr-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-nileTeal focus:border-nileTeal transition-all text-on-background font-body text-body" id="nextRenewal" name="nextRenewal" type="date"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="event">event</span>
+</div>
+<p class="font-caption text-caption text-outline">سيتم تذكيرك قبل هذا الموعد.</p>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-6 flex flex-col md:flex-row justify-end gap-4 border-t border-surface-container-highest mt-6">
+<button class="h-controlHeightProminent px-6 rounded-lg border border-sand bg-transparent text-on-surface-variant font-uiControl text-uiControl hover:bg-surface-container transition-colors focus:ring-2 focus:ring-nileTeal focus:outline-none" type="button">
+                            إلغاء
+                        </button>
+<button class="h-controlHeightProminent px-8 rounded-lg bg-nileTeal text-on-primary font-uiControl text-uiControl shadow-sm hover:bg-nileTealDeep transition-all focus:ring-2 focus:ring-offset-2 focus:ring-nileTeal focus:outline-none flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-sm" data-icon="add_circle">add_circle</span>
+                            إضافة المصروف
+                        </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest border-t border-surface-container-highest z-50 flex justify-around items-center h-16 pb-safe">
+<a class="flex flex-col items-center gap-1 text-outline hover:text-nileTeal transition-colors flex-1 py-2" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="dashboard">dashboard</span>
+<span class="font-caption text-caption">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-nileTeal flex-1 py-2 relative" href="#">
+<div class="absolute inset-0 bg-teal-50 rounded-lg mx-2 opacity-50 pointer-events-none"></div>
+<span class="material-symbols-outlined text-xl z-10" data-icon="account_balance_wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-caption text-caption z-10 font-semibold">Ledger</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-outline hover:text-nileTeal transition-colors flex-1 py-2" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="receipt_long">receipt_long</span>
+<span class="font-caption text-caption">Payments</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-outline hover:text-nileTeal transition-colors flex-1 py-2" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="calendar_today">calendar_today</span>
+<span class="font-caption text-caption">Subs</span>
+</a>
+</nav>
+</body></html>

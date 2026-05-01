@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>مراجعة الاشتراكات المكتشفة - Mustahaq</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#ebefed",
+                      "background": "#f7faf8",
+                      "surface-container-highest": "#e0e3e1",
+                      "secondary-fixed": "#d1e4ff",
+                      "on-primary-fixed": "#00201d",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#314863",
+                      "outline": "#6e7977",
+                      "secondary-fixed-dim": "#b0c9e8",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#011d35",
+                      "surface-container-low": "#f1f4f3",
+                      "profitMint": "#16A34A",
+                      "coralDebt": "#DC4A3D",
+                      "slate": "#52616B",
+                      "sand": "#E8DDC7",
+                      "on-tertiary-container": "#ffe5db",
+                      "surface": "#f7faf8",
+                      "primary": "#005c55",
+                      "on-background": "#181c1c",
+                      "on-tertiary-fixed": "#370e00",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#ffdbce",
+                      "on-surface": "#181c1c",
+                      "on-surface-variant": "#3e4947",
+                      "secondary-container": "#c7dfff",
+                      "surface-variant": "#e0e3e1",
+                      "tertiary": "#7f4025",
+                      "error-container": "#ffdad6",
+                      "cloud": "#F9FAF8",
+                      "on-tertiary-fixed-variant": "#72361b",
+                      "surface-dim": "#d7dbd9",
+                      "surface-container-high": "#e5e9e7",
+                      "inverse-surface": "#2d3130",
+                      "nileTealDeep": "#0B4F4A",
+                      "inverse-primary": "#80d5cb",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#9cf2e8",
+                      "on-primary-container": "#a3faef",
+                      "secondary": "#49607c",
+                      "on-primary-fixed-variant": "#00504a",
+                      "outline-variant": "#bdc9c6",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#80d5cb",
+                      "dateGold": "#D99A2B",
+                      "nileTeal": "#0F766E",
+                      "tertiary-fixed-dim": "#ffb598",
+                      "surface-bright": "#f7faf8",
+                      "tertiary-container": "#9c573a",
+                      "on-secondary": "#ffffff",
+                      "surface-tint": "#006a63",
+                      "primary-container": "#0f766e",
+                      "mustahaqInk": "#102A43",
+                      "inverse-on-surface": "#eef1f0",
+                      "papyrus": "#F7F2E8",
+                      "on-secondary-container": "#4b637e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-desktop": "2rem",
+                      "touchTargetMin": "2.75rem",
+                      "gap-form": "1.5rem",
+                      "containerMaxWidthNarrow": "48rem",
+                      "formSectionGap": "1.5rem",
+                      "sidebarWidthCollapsed": "3rem",
+                      "pageGutter": "1rem",
+                      "sidebarWidthMobileSheet": "18rem",
+                      "controlHeightSmall": "2.25rem",
+                      "formFieldGap": "0.5rem",
+                      "dashboardTileGap": "1rem",
+                      "containerMaxWidthContent": "80rem",
+                      "cardPaddingX": "1.5rem",
+                      "section-marketing": "6rem",
+                      "pageGutterWide": "2rem",
+                      "marketingSectionY": "6rem",
+                      "controlHeightLarge": "3rem",
+                      "unit": "0.25rem",
+                      "touch-target": "2.75rem",
+                      "controlHeightDefault": "2.5rem",
+                      "cardInternalGap": "1.25rem",
+                      "gutter-mobile": "1rem",
+                      "cardPaddingY": "1.5rem",
+                      "gap-dashboard": "1rem",
+                      "marketingCardPadding": "2rem",
+                      "controlHeightProminent": "3.5rem",
+                      "sidebarWidthExpanded": "16rem",
+                      "marketingFeatureGridGap": "1.5rem"
+              },
+              "fontFamily": {
+                      "financialFigure": ["IBM Plex Sans Arabic"],
+                      "financial-figure": ["IBM Plex Sans Arabic"],
+                      "section-title": ["Noto Kufi Arabic"],
+                      "featureTitle": ["Noto Kufi Arabic"],
+                      "bodySmall": ["IBM Plex Sans Arabic"],
+                      "bodyLarge": ["IBM Plex Sans Arabic"],
+                      "uiControl": ["IBM Plex Sans Arabic"],
+                      "caption": ["IBM Plex Sans Arabic"],
+                      "feature-title": ["Noto Kufi Arabic"],
+                      "displayHero": ["Noto Kufi Arabic"],
+                      "body": ["IBM Plex Sans Arabic"],
+                      "sectionTitle": ["Noto Kufi Arabic"],
+                      "body-large": ["IBM Plex Sans Arabic"],
+                      "marketingWordmark": ["Noto Kufi Arabic"],
+                      "display-hero": ["Noto Kufi Arabic"],
+                      "label": ["IBM Plex Sans Arabic"],
+                      "cardTitle": ["Noto Kufi Arabic"]
+              },
+              "fontSize": {
+                      "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                      "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                      "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                      "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                      "bodySmall": ["0.875rem", { "lineHeight": "1.35rem", "fontWeight": "400" }],
+                      "bodyLarge": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                      "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                      "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                      "feature-title": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                      "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                      "body": ["1rem", { "lineHeight": "1.6rem", "fontWeight": "400" }],
+                      "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                      "body-large": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                      "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "800" }],
+                      "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                      "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                      "cardTitle": ["1rem", { "lineHeight": "1.35", "fontWeight": "700" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex rtl">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col bg-stone-50 dark:bg-stone-950 font-sans text-sm font-semibold docked fixed right-0 h-full w-64 border-l border-stone-200 dark:border-stone-800 flat no shadows rtl py-6 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-nileTeal flex items-center justify-center text-white font-bold text-xl">M</div>
+<div>
+<h1 class="text-xl font-bold text-teal-700 dark:text-teal-400">Finance Hub</h1>
+<p class="text-xs text-stone-500 font-normal">Independent Professional</p>
+</div>
+</div>
+</div>
+<div class="flex-1 px-2 space-y-1">
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Home
+            </a>
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                Ledger
+            </a>
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                Payments
+            </a>
+<a class="bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-lg mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+                Subscriptions
+            </a>
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+                Audit
+            </a>
+</div>
+<div class="px-6 mt-auto mb-6">
+<button class="w-full bg-nileTeal text-on-primary py-2 px-4 rounded-lg font-uiControl text-uiControl hover:bg-nileTealDeep transition-colors shadow-sm">
+                Generate Report
+            </button>
+</div>
+<div class="px-2 space-y-1">
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                Help Center
+            </a>
+<a class="text-stone-600 dark:text-stone-400 mx-2 my-1 flex items-center px-4 py-2 gap-3 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all rounded-lg active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 md:mr-64 p-pageGutter md:p-pageGutterWide max-w-containerMaxWidthContent w-full mx-auto">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div>
+<h2 class="font-sectionTitle text-sectionTitle text-mustahaqInk mb-1">مراجعة الاشتراكات المكتشفة</h2>
+<p class="font-body text-body text-outline">تم اكتشاف 3 اشتراكات جديدة من بريدك الإلكتروني.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-high text-on-surface hover:bg-surface-dim transition-colors py-controlHeightSmall px-4 rounded-lg font-uiControl text-uiControl flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+                    تصفية
+                </button>
+<button class="bg-nileTeal text-on-primary hover:bg-nileTealDeep transition-colors py-controlHeightSmall px-6 rounded-lg font-uiControl text-uiControl shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">done_all</span>
+                    اعتماد الكل
+                </button>
+</div>
+</header>
+<!-- Queue Grid -->
+<div class="grid grid-cols-1 gap-dashboardTileGap">
+<!-- Subscription Card 1 -->
+<article class="bg-papyrus rounded-xl shadow-md border border-sand p-cardPaddingY px-cardPaddingX relative overflow-hidden flex flex-col md:flex-row gap-6 md:items-center justify-between">
+<!-- Decorative left border -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-profitMint"></div>
+<div class="flex items-start gap-4 flex-1">
+<div class="w-12 h-12 rounded-lg bg-white shadow-sm flex items-center justify-center border border-outline-variant shrink-0">
+<img alt="Canva Logo" class="w-8 h-8 object-contain" data-alt="Close up of Canva app icon on a clean white background, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZcTqDMlWHOYQbesumrXaWH4Q3wYMHmV-bDWzRPy7YhnoCXHQa5pWWlGUNQlSaKAiXngIJOlZ0uv069wp2P4PtXxZGqms61Z7OADC9c6iTRtIp0NwQnx1gWLOokcN1bIZfQHtGmPunAIXjuFDM5lCyZUoCoEw4U9HI5y44773NWpuV2UheB7_bJREm49v3n1433p7C72DJFGA6gl1AIW7l_hD5N31VZKAvVg2jxS3C_FglGJ1Ve00UYOTPEIHrNdWoboYKhW2msHQ"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-1">
+<h3 class="font-cardTitle text-cardTitle text-mustahaqInk">Canva Pro</h3>
+<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                                ثقة عالية
+                            </span>
+</div>
+<div class="flex items-center gap-4 text-sm text-outline mb-3 font-bodySmall">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">autorenew</span>
+                                شهري
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">credit_card</span>
+                                بطاقة تنتهي بـ 4242
+                            </span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50 relative">
+<span class="material-symbols-outlined absolute top-3 right-3 text-outline/50">mail</span>
+<p class="font-caption text-caption text-on-surface-variant pr-8 line-clamp-2">
+                                "مرحباً أحمد، نؤكد استلام دفعتك لاشتراك Canva Pro الشهري. تم خصم المبلغ بنجاح..."
+                            </p>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 md:border-r border-outline-variant/30 pt-4 md:pt-0 md:pr-6 shrink-0">
+<div class="text-right">
+<p class="font-caption text-caption text-outline mb-1">المبلغ المكتشف</p>
+<p class="font-financialFigure text-2xl text-mustahaqInk leading-none flex items-baseline gap-1" dir="ltr">
+<span class="text-sm text-outline">SAR</span>
+<span>45.00</span>
+</p>
+</div>
+<div class="flex items-center gap-2 w-full md:w-auto">
+<button class="flex-1 md:flex-none border border-coralDebt text-coralDebt hover:bg-coralDebt/10 transition-colors py-2 px-4 rounded-lg font-uiControl text-uiControl flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">close</span>
+                            رفض
+                        </button>
+<button class="flex-1 md:flex-none bg-surface-tint text-on-primary hover:bg-nileTealDeep transition-colors py-2 px-6 rounded-lg font-uiControl text-uiControl shadow-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            إضافة
+                        </button>
+</div>
+</div>
+</article>
+<!-- Subscription Card 2 -->
+<article class="bg-papyrus rounded-xl shadow-md border border-sand p-cardPaddingY px-cardPaddingX relative overflow-hidden flex flex-col md:flex-row gap-6 md:items-center justify-between">
+<!-- Decorative left border -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-dateGold"></div>
+<div class="flex items-start gap-4 flex-1">
+<div class="w-12 h-12 rounded-lg bg-white shadow-sm flex items-center justify-center border border-outline-variant shrink-0 text-slate">
+<span class="material-symbols-outlined text-3xl">cloud</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-1">
+<h3 class="font-cardTitle text-cardTitle text-mustahaqInk">Google Workspace</h3>
+<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                                ثقة متوسطة
+                            </span>
+</div>
+<div class="flex items-center gap-4 text-sm text-outline mb-3 font-bodySmall">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">autorenew</span>
+                                شهري
+                            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+                                تحويل بنكي
+                            </span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50 relative">
+<span class="material-symbols-outlined absolute top-3 right-3 text-outline/50">mail</span>
+<p class="font-caption text-caption text-on-surface-variant pr-8 line-clamp-2">
+                                "فاتورتك لخدمات Google Workspace متوفرة الآن. سيتم استحقاق الدفع في 15 من الشهر الجاري..."
+                            </p>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:items-end justify-between gap-4 border-t md:border-t-0 md:border-r border-outline-variant/30 pt-4 md:pt-0 md:pr-6 shrink-0">
+<div class="text-right">
+<p class="font-caption text-caption text-outline mb-1">المبلغ المكتشف (تقديري)</p>
+<p class="font-financialFigure text-2xl text-mustahaqInk leading-none flex items-baseline gap-1" dir="ltr">
+<span class="text-sm text-outline">SAR</span>
+<span>120.00</span>
+</p>
+</div>
+<div class="flex items-center gap-2 w-full md:w-auto">
+<button class="flex-1 md:flex-none border border-coralDebt text-coralDebt hover:bg-coralDebt/10 transition-colors py-2 px-4 rounded-lg font-uiControl text-uiControl flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">close</span>
+                            رفض
+                        </button>
+<button class="flex-1 md:flex-none bg-surface-tint text-on-primary hover:bg-nileTealDeep transition-colors py-2 px-6 rounded-lg font-uiControl text-uiControl shadow-sm flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            إضافة
+                        </button>
+</div>
+</div>
+</article>
+</div>
+</main>
+</body></html>

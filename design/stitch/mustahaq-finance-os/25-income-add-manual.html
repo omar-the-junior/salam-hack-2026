@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إضافة إيراد يدوي - مستحق</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "mustahaqInk": "#102A43",
+                        "background": "#f7faf8",
+                        "primary-fixed": "#9cf2e8",
+                        "surface-container-high": "#e5e9e7",
+                        "cloud": "#F9FAF8",
+                        "primary": "#005c55",
+                        "nileTealDeep": "#0B4F4A",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#00504a",
+                        "coralDebt": "#DC4A3D",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "outline": "#6e7977",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#011d35",
+                        "on-secondary-fixed-variant": "#314863",
+                        "on-secondary-container": "#4b637e",
+                        "primary-fixed-dim": "#80d5cb",
+                        "on-tertiary-fixed": "#370e00",
+                        "nileTeal": "#0F766E",
+                        "surface-container-highest": "#e0e3e1",
+                        "outline-variant": "#bdc9c6",
+                        "on-error": "#ffffff",
+                        "secondary": "#49607c",
+                        "primary-container": "#0f766e",
+                        "papyrus": "#F7F2E8",
+                        "on-surface-variant": "#3e4947",
+                        "on-primary-container": "#a3faef",
+                        "inverse-primary": "#80d5cb",
+                        "surface": "#f7faf8",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#9c573a",
+                        "surface-container-low": "#f1f4f3",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#181c1c",
+                        "surface-container": "#ebefed",
+                        "slate": "#52616B",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "surface-variant": "#e0e3e1",
+                        "on-primary-fixed": "#00201d",
+                        "surface-tint": "#006a63",
+                        "sand": "#E8DDC7",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2d3130",
+                        "tertiary": "#7f4025",
+                        "dateGold": "#D99A2B",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "inverse-on-surface": "#eef1f0",
+                        "secondary-fixed": "#d1e4ff",
+                        "profitMint": "#16A34A",
+                        "surface-bright": "#f7faf8",
+                        "surface-dim": "#d7dbd9",
+                        "tertiary-fixed": "#ffdbce",
+                        "secondary-container": "#c7dfff",
+                        "on-surface": "#181c1c",
+                        "on-tertiary-container": "#ffe5db"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target": "2.75rem",
+                        "gap-dashboard": "1rem",
+                        "cardInternalGap": "1.25rem",
+                        "marketingFeatureGridGap": "1.5rem",
+                        "controlHeightDefault": "2.5rem",
+                        "cardPaddingY": "1.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "cardPaddingX": "1.5rem",
+                        "controlHeightProminent": "3.5rem",
+                        "marketingSectionY": "6rem",
+                        "formFieldGap": "0.5rem",
+                        "controlHeightSmall": "2.25rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "containerMaxWidthContent": "80rem",
+                        "touchTargetMin": "2.75rem",
+                        "marketingCardPadding": "2rem",
+                        "gutter-mobile": "1rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "gutter-desktop": "2rem",
+                        "gap-form": "1.5rem",
+                        "formSectionGap": "1.5rem",
+                        "controlHeightLarge": "3rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "dashboardTileGap": "1rem",
+                        "pageGutter": "1rem",
+                        "pageGutterWide": "2rem",
+                        "section-marketing": "6rem",
+                        "unit": "0.25rem"
+                    },
+                    "fontFamily": {
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "body-large": ["IBM Plex Sans Arabic"],
+                        "feature-title": ["Noto Kufi Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "display-hero": ["Noto Kufi Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"],
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "financial-figure": ["IBM Plex Sans Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "sectionTitle": ["Noto Kufi Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "financialFigure": ["IBM Plex Sans Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"]
+                    },
+                    "fontSize": {
+                        "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "800" }],
+                        "body-large": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "feature-title": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "body": ["1rem", { "lineHeight": "1.6rem", "fontWeight": "400" }],
+                        "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "bodySmall": ["0.875rem", { "lineHeight": "1.35rem", "fontWeight": "400" }],
+                        "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodyLarge": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "cardTitle": ["1rem", { "lineHeight": "1.35", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col items-center justify-center p-pageGutter">
+<main class="w-full max-w-xl mx-auto">
+<div class="bg-papyrus rounded-xl shadow-md border border-outline-variant p-8 relative overflow-hidden">
+<!-- Decorative Header Accent -->
+<div class="absolute top-0 left-0 w-full h-2 bg-nileTeal"></div>
+<header class="mb-8 flex items-center justify-between">
+<div>
+<h1 class="font-sectionTitle text-sectionTitle text-mustahaqInk mb-2">إضافة إيراد يدوي</h1>
+<p class="font-body text-body text-on-surface-variant">سجل إيراداتك من المصادر المختلفة لتتبع تدفقاتك النقدية.</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+</div>
+</header>
+<form class="space-y-gap-form">
+<!-- Amount & Date Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-form">
+<!-- Amount Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface" for="amount">المبلغ</label>
+<div class="relative flex items-center">
+<input class="w-full h-controlHeightProminent bg-surface border border-outline-variant rounded-lg pl-24 pr-4 font-financialFigure text-financialFigure text-mustahaqInk focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow shadow-sm" id="amount" name="amount" placeholder="0.00" required="" type="number"/>
+<div class="absolute left-2 flex items-center bg-surface-container-low rounded-md border border-outline-variant overflow-hidden h-10">
+<select class="bg-transparent border-none text-on-surface font-uiControl text-uiControl focus:ring-0 cursor-pointer pl-2 pr-6 h-full py-0" id="currency" name="currency">
+<option value="EGP">EGP</option>
+<option value="USD">USD</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Date Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface" for="date">التاريخ</label>
+<div class="relative">
+<input class="w-full h-controlHeightProminent bg-surface border border-outline-variant rounded-lg px-4 font-body text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow shadow-sm appearance-none" id="date" name="date" required="" type="date"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">calendar_month</span>
+</div>
+</div>
+</div>
+<!-- Source Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface" for="source">مصدر الدخل</label>
+<div class="relative">
+<select class="w-full h-controlHeightProminent bg-surface border border-outline-variant rounded-lg px-4 pr-10 font-body text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow shadow-sm appearance-none cursor-pointer" id="source" name="source" required="">
+<option disabled="" selected="" value="">اختر مصدر الدخل...</option>
+<option value="upwork">Upwork</option>
+<option value="fiverr">Fiverr</option>
+<option value="bank_transfer">تحويل بنكي</option>
+<option value="fawry">فوري</option>
+<option value="vodafone_cash">Vodafone Cash</option>
+<option value="other">أخرى</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Client Name Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface" for="client_name">اسم العميل <span class="text-on-surface-variant font-normal">(اختياري)</span></label>
+<input class="w-full h-controlHeightProminent bg-surface border border-outline-variant rounded-lg px-4 font-body text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow shadow-sm" id="client_name" name="client_name" placeholder="أدخل اسم العميل أو الشركة" type="text"/>
+</div>
+<!-- Category Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface">التصنيف</label>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+<label class="relative flex items-center justify-center p-3 border border-outline-variant rounded-lg cursor-pointer bg-surface hover:bg-surface-container-low transition-colors has-[:checked]:bg-primary-container has-[:checked]:border-primary has-[:checked]:text-on-primary-container">
+<input class="sr-only" name="category" type="radio" value="freelance"/>
+<span class="font-uiControl text-uiControl">عمل حر</span>
+</label>
+<label class="relative flex items-center justify-center p-3 border border-outline-variant rounded-lg cursor-pointer bg-surface hover:bg-surface-container-low transition-colors has-[:checked]:bg-primary-container has-[:checked]:border-primary has-[:checked]:text-on-primary-container">
+<input class="sr-only" name="category" type="radio" value="product_sale"/>
+<span class="font-uiControl text-uiControl">بيع منتج</span>
+</label>
+<label class="relative flex items-center justify-center p-3 border border-outline-variant rounded-lg cursor-pointer bg-surface hover:bg-surface-container-low transition-colors has-[:checked]:bg-primary-container has-[:checked]:border-primary has-[:checked]:text-on-primary-container">
+<input class="sr-only" name="category" type="radio" value="consulting"/>
+<span class="font-uiControl text-uiControl">استشارات</span>
+</label>
+<label class="relative flex items-center justify-center p-3 border border-outline-variant rounded-lg cursor-pointer bg-surface hover:bg-surface-container-low transition-colors has-[:checked]:bg-primary-container has-[:checked]:border-primary has-[:checked]:text-on-primary-container">
+<input class="sr-only" name="category" type="radio" value="content_creation"/>
+<span class="font-uiControl text-uiControl">صناعة محتوى</span>
+</label>
+<label class="relative flex items-center justify-center p-3 border border-outline-variant rounded-lg cursor-pointer bg-surface hover:bg-surface-container-low transition-colors has-[:checked]:bg-primary-container has-[:checked]:border-primary has-[:checked]:text-on-primary-container md:col-span-2">
+<input class="sr-only" name="category" type="radio" value="other"/>
+<span class="font-uiControl text-uiControl">أخرى</span>
+</label>
+</div>
+</div>
+<!-- Notes Field -->
+<div class="flex flex-col gap-formFieldGap">
+<label class="font-label text-label text-on-surface" for="notes">ملاحظات <span class="text-on-surface-variant font-normal">(اختياري)</span></label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-lg p-4 font-body text-body text-on-surface focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow shadow-sm resize-none" id="notes" name="notes" placeholder="أضف أي تفاصيل أخرى هنا..." rows="3"></textarea>
+</div>
+<!-- Actions -->
+<div class="flex flex-col md:flex-row-reverse gap-4 pt-4 border-t border-outline-variant/30 mt-6">
+<button class="flex-1 h-controlHeightProminent bg-nileTeal text-on-primary font-uiControl text-uiControl rounded-lg shadow-sm hover:bg-nileTealDeep transition-colors flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                        حفظ الإيراد
+                    </button>
+<button class="w-full md:w-auto px-8 h-controlHeightProminent bg-transparent border-2 border-sand text-on-surface font-uiControl text-uiControl rounded-lg hover:bg-surface-container-low transition-colors flex items-center justify-center" type="button">
+                        إلغاء
+                    </button>
+</div>
+</form>
+</div>
+</main>
+</body></html>

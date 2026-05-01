@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إيصال الدفع - مُسْتَحَقّ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "secondary-container": "#c7dfff",
+                        "coralDebt": "#DC4A3D",
+                        "cloud": "#F9FAF8",
+                        "primary": "#005c55",
+                        "outline-variant": "#bdc9c6",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#80d5cb",
+                        "surface-variant": "#e0e3e1",
+                        "outline": "#6e7977",
+                        "on-secondary-container": "#4b637e",
+                        "dateGold": "#D99A2B",
+                        "on-surface-variant": "#3e4947",
+                        "surface-container-high": "#e5e9e7",
+                        "on-surface": "#181c1c",
+                        "nileTealDeep": "#0B4F4A",
+                        "secondary": "#49607c",
+                        "mustahaqInk": "#102A43",
+                        "on-tertiary-container": "#ffe5db",
+                        "surface-tint": "#006a63",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "primary-fixed": "#9cf2e8",
+                        "papyrus": "#F7F2E8",
+                        "on-error": "#ffffff",
+                        "on-background": "#181c1c",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "primary-fixed-dim": "#80d5cb",
+                        "on-primary-container": "#a3faef",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eef1f0",
+                        "surface-container-low": "#f1f4f3",
+                        "error-container": "#ffdad6",
+                        "profitMint": "#16A34A",
+                        "surface-bright": "#f7faf8",
+                        "tertiary": "#7f4025",
+                        "surface-dim": "#d7dbd9",
+                        "sand": "#E8DDC7",
+                        "tertiary-container": "#9c573a",
+                        "on-secondary-fixed": "#011d35",
+                        "on-secondary-fixed-variant": "#314863",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7faf8",
+                        "inverse-surface": "#2d3130",
+                        "primary-container": "#0f766e",
+                        "on-primary-fixed-variant": "#00504a",
+                        "surface-container": "#ebefed",
+                        "nileTeal": "#0F766E",
+                        "slate": "#52616B",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f7faf8",
+                        "surface-container-highest": "#e0e3e1",
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "on-tertiary-fixed": "#370e00",
+                        "secondary-fixed": "#d1e4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "controlHeightSmall": "2.25rem",
+                        "sidebarWidthMobileSheet": "18rem",
+                        "pageGutter": "1rem",
+                        "marketingSectionY": "6rem",
+                        "formSectionGap": "1.5rem",
+                        "formFieldGap": "0.5rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "gap-dashboard": "1rem",
+                        "containerMaxWidthContent": "80rem",
+                        "cardInternalGap": "1.25rem",
+                        "gap-form": "1.5rem",
+                        "gutter-desktop": "2rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "section-marketing": "6rem",
+                        "controlHeightDefault": "2.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "marketingFeatureGridGap": "1.5rem",
+                        "pageGutterWide": "2rem",
+                        "touch-target": "2.75rem",
+                        "unit": "0.25rem",
+                        "marketingCardPadding": "2rem",
+                        "cardPaddingY": "1.5rem",
+                        "dashboardTileGap": "1rem",
+                        "controlHeightLarge": "3rem",
+                        "cardPaddingX": "1.5rem",
+                        "controlHeightProminent": "3.5rem",
+                        "touchTargetMin": "2.75rem",
+                        "gutter-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "sectionTitle": ["Noto Kufi Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "financial-figure": ["IBM Plex Sans Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "display-hero": ["Noto Kufi Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"],
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "feature-title": ["Noto Kufi Arabic"],
+                        "body-large": ["IBM Plex Sans Arabic"],
+                        "financialFigure": ["IBM Plex Sans Arabic"]
+                    },
+                    "fontSize": {
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "cardTitle": ["1rem", { "lineHeight": "1.35", "fontWeight": "700" }],
+                        "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "body": ["1rem", { "lineHeight": "1.6rem", "fontWeight": "400" }],
+                        "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodySmall": ["0.875rem", { "lineHeight": "1.35rem", "fontWeight": "400" }],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodyLarge": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "800" }],
+                        "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "feature-title": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "body-large": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-dim min-h-screen flex flex-col justify-center items-center p-gutter-mobile md:p-gutter-desktop antialiased">
+<!-- Canvas area - No Navigation for Transactional Success Screen -->
+<main class="w-full max-w-containerMaxWidthNarrow mx-auto flex flex-col gap-6">
+<!-- Main Receipt Card Document -->
+<article class="bg-surface-container-lowest rounded-xl shadow-lg relative overflow-hidden flex flex-col">
+<!-- Decorative Success Top Border -->
+<div class="h-2 bg-profitMint w-full absolute top-0 left-0 right-0"></div>
+<div class="p-cardPaddingX py-cardPaddingY md:p-gutter-desktop flex flex-col gap-formSectionGap mt-2">
+<!-- Success Header -->
+<header class="flex flex-col items-center text-center gap-4 border-b border-surface-variant pb-6">
+<span class="material-symbols-outlined text-[4rem] text-profitMint" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<h1 class="font-sectionTitle text-sectionTitle text-on-surface mb-2">تم الدفع بنجاح</h1>
+<p class="font-bodyLarge text-bodyLarge text-on-surface-variant">تم تأكيد استلام الدفعة بأمان واكتمال المعاملة.</p>
+</div>
+</header>
+<!-- Meta Reference Information -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-surface-container-low p-4 rounded-lg border border-outline-variant/30">
+<div class="flex flex-col gap-1">
+<span class="font-label text-label text-on-surface-variant">رقم المرجع</span>
+<span class="font-uiControl text-uiControl text-on-surface" dir="ltr">MST-123456</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label text-label text-on-surface-variant">تاريخ الدفع</span>
+<span class="font-uiControl text-uiControl text-on-surface">15 أكتوبر 2023, 14:30 بتوقيت الرياض</span>
+</div>
+</section>
+<!-- Project / Link Summary -->
+<section class="flex flex-col gap-2 pt-2 border-b border-surface-variant pb-6">
+<h2 class="font-cardTitle text-cardTitle text-on-surface">تفاصيل الخدمة</h2>
+<p class="font-body text-body text-on-surface-variant">الدفعة النهائية لمشروع تطوير وتصميم الهوية البصرية للعلامة التجارية شاملة دليل الاستخدام والتطبيقات الأساسية.</p>
+</section>
+<!-- Financial Breakdown -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<span class="font-body text-body text-on-surface-variant">المبلغ الأساسي</span>
+<span class="font-body text-body text-on-surface" dir="ltr">5,000.00 ر.س</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body text-body text-on-surface-variant">ضريبة القيمة المضافة (15%)</span>
+<span class="font-body text-body text-on-surface" dir="ltr">750.00 ر.س</span>
+</div>
+<!-- Total Prominent Row -->
+<div class="mt-2 pt-4 border-t-2 border-dashed border-outline-variant flex justify-between items-end">
+<span class="font-cardTitle text-cardTitle text-on-surface">إجمالي المبلغ المدفوع</span>
+<span class="font-financialFigure text-financialFigure text-nileTeal" dir="ltr">5,750.00 ر.س</span>
+</div>
+</section>
+<!-- Actions -->
+<section class="flex flex-col sm:flex-row gap-4 mt-6">
+<button class="flex-1 h-controlHeightProminent bg-nileTeal text-on-primary font-uiControl text-uiControl rounded-lg flex items-center justify-center gap-2 hover:bg-nileTealDeep transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined">download</span>
+                        تحميل الإيصال PDF
+                    </button>
+<button class="flex-1 h-controlHeightProminent bg-surface-container-lowest border border-outline text-on-surface-variant font-uiControl text-uiControl rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors" type="button">
+<span class="material-symbols-outlined">content_copy</span>
+                        نسخ رابط الإيصال
+                    </button>
+</section>
+</div>
+</article>
+<!-- Brand Footer Anchor -->
+<footer class="text-center flex flex-col items-center gap-1 opacity-70">
+<span class="font-marketingWordmark text-marketingWordmark text-mustahaqInk">مُسْتَحَقّ</span>
+<span class="font-caption text-caption text-on-surface-variant">نظام التشغيل المالي للمستقلين</span>
+</footer>
+</main>
+</body></html>

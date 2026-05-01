@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>مُسْتَحَقّ - إعداد الحساب</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#5f5e5e",
+                    "on-tertiary-fixed": "#1c1b1a",
+                    "primary-container": "#313131",
+                    "on-surface": "#1c1b1b",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "on-primary-fixed-variant": "#474747",
+                    "surface-container-low": "#f7f3f2",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#9a9998",
+                    "on-tertiary-container": "#9b9996",
+                    "scrim": "rgba(0, 0, 0, 0.8)",
+                    "on-primary": "#ffffff",
+                    "destructive": "oklch(0.577 0.245 27.325)",
+                    "surface-container": "#f1edec",
+                    "muted": "oklch(0.97 0 0)",
+                    "on-secondary-fixed-variant": "#454747",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#313030",
+                    "surface-dim": "#ddd9d8",
+                    "surface-bright": "#fdf8f8",
+                    "error-container": "#ffdad6",
+                    "primary": "oklch(0.205 0 0)",
+                    "on-background": "#1c1b1b",
+                    "inverse-primary": "#c8c6c6",
+                    "on-secondary-container": "#5f6161",
+                    "tertiary-fixed-dim": "#c9c6c3",
+                    "surface-container-lowest": "#ffffff",
+                    "border": "oklch(0.922 0 0)",
+                    "on-error-container": "#93000a",
+                    "foreground": "oklch(0.145 0 0)",
+                    "secondary-container": "#dcdddd",
+                    "marketing-grid": "rgba(128, 128, 128, 0.07)",
+                    "outline-variant": "#c4c7c7",
+                    "outline": "#747878",
+                    "ring": "oklch(0.87 0 0)",
+                    "tertiary": "#1d1c1a",
+                    "inverse-on-surface": "#f4f0ef",
+                    "surface-container-high": "#ebe7e7",
+                    "on-tertiary": "#ffffff",
+                    "background": "oklch(1 0 0)",
+                    "secondary": "#5d5f5f",
+                    "on-primary-fixed": "#1b1c1c",
+                    "primary-fixed-dim": "#c8c6c6",
+                    "chart-1": "oklch(0.646 0.222 41.116)",
+                    "tertiary-container": "#32312f",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "secondary-fixed": "#e2e2e2",
+                    "chart-2": "oklch(0.6 0.118 184.704)",
+                    "on-tertiary-fixed-variant": "#484744",
+                    "chart-3": "oklch(0.398 0.07 227.392)",
+                    "on-surface-variant": "#444748",
+                    "primary-fixed": "#e4e2e1",
+                    "surface-variant": "#e5e2e1",
+                    "tertiary-fixed": "#e6e2de",
+                    "surface": "#fdf8f8",
+                    "surface-container-highest": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "80rem",
+                    "dashboardTileGap": "1rem",
+                    "section-marketing": "6rem",
+                    "controlHeightLarge": "2.5rem",
+                    "touch-target": "2.25rem",
+                    "touchTargetMin": "2.25rem",
+                    "gap-dense": "1rem",
+                    "formSectionGap": "1.5rem",
+                    "sidebar-expanded": "16rem",
+                    "marketingSectionY": "6rem",
+                    "formFieldGap": "0.5rem",
+                    "cardPaddingY": "1.5rem",
+                    "pageGutter": "1rem",
+                    "marketingFeatureGridGap": "2rem",
+                    "gap-standard": "1.5rem",
+                    "containerMaxWidthContent": "80rem",
+                    "sidebarWidthMobileSheet": "18rem",
+                    "containerMaxWidthNarrow": "48rem",
+                    "marketingCardPadding": "2rem",
+                    "pageGutterWide": "2rem",
+                    "controlHeightProminent": "3.5rem",
+                    "unit": "0.25rem",
+                    "sidebarWidthExpanded": "16rem",
+                    "sidebarWidthCollapsed": "3rem",
+                    "controlHeightSmall": "2rem",
+                    "cardPaddingX": "1.5rem",
+                    "cardInternalGap": "1.5rem",
+                    "controlHeightDefault": "2.25rem"
+            },
+            "fontFamily": {
+                    "hero": ["Cairo"],
+                    "cardTitle": ["Cairo"],
+                    "body-lg": ["Cairo"],
+                    "displayHero": ["Cairo"],
+                    "uiControl": ["Cairo"],
+                    "featureTitle": ["Cairo"],
+                    "ui-control": ["Cairo"],
+                    "label": ["Cairo"],
+                    "section-title": ["Cairo"],
+                    "marketingWordmark": ["Cairo"],
+                    "body": ["Cairo"],
+                    "bodySmall": ["Cairo"],
+                    "caption": ["Cairo"],
+                    "bodyLarge": ["Cairo"],
+                    "sidebarGroupLabel": ["Cairo"],
+                    "sectionTitle": ["Cairo"],
+                    "label-caps": ["Cairo"]
+            },
+            "fontSize": {
+                    "hero": ["clamp(2.25rem, 5vw, 4.5rem)", {"lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "800"}],
+                    "cardTitle": ["1rem", {"lineHeight": "1", "fontWeight": "600"}],
+                    "body-lg": ["1.125rem", {"lineHeight": "1.75rem", "fontWeight": "400"}],
+                    "displayHero": ["clamp(2.25rem, 5vw, 4.5rem)", {"lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "800"}],
+                    "uiControl": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "500"}],
+                    "featureTitle": ["1.25rem", {"lineHeight": "1.75rem", "fontWeight": "700"}],
+                    "ui-control": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "500"}],
+                    "label": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "500"}],
+                    "section-title": ["clamp(1.875rem, 3vw, 2.25rem)", {"lineHeight": "2.5rem", "fontWeight": "700"}],
+                    "marketingWordmark": ["1.5rem", {"lineHeight": "2rem", "fontWeight": "700"}],
+                    "body": ["1rem", {"lineHeight": "1.5rem", "fontWeight": "400"}],
+                    "bodySmall": ["0.875rem", {"lineHeight": "1.25rem", "fontWeight": "400"}],
+                    "caption": ["0.75rem", {"lineHeight": "1rem", "fontWeight": "500"}],
+                    "bodyLarge": ["1.125rem", {"lineHeight": "1.75rem", "fontWeight": "400"}],
+                    "sidebarGroupLabel": ["0.75rem", {"lineHeight": "1rem", "fontWeight": "500"}],
+                    "sectionTitle": ["clamp(1.875rem, 3vw, 2.25rem)", {"lineHeight": "2.5rem", "letterSpacing": "-0.025em", "fontWeight": "700"}],
+                    "label-caps": ["0.75rem", {"lineHeight": "1rem", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Hide scrollbar for clean full-screen look */
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+        body::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface min-h-screen flex flex-col items-center justify-center p-pageGutter relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Brand Wordmark -->
+<div class="absolute top-8 left-0 right-0 flex justify-center w-full px-pageGutter">
+<span class="font-marketingWordmark text-marketingWordmark text-primary font-bold tracking-tight">مُسْتَحَقّ</span>
+</div>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-[48rem] flex flex-col items-center mt-16 md:mt-0">
+<!-- Question -->
+<h1 class="font-sectionTitle text-sectionTitle text-on-surface mb-12 text-center">
+            كيف ستستخدم مُسْتَحَقّ؟
+        </h1>
+<!-- Selection Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap-standard w-full mb-12">
+<!-- Card 1: Freelancer -->
+<label class="group relative bg-surface-container-lowest border border-outline-variant rounded-xl p-cardPaddingY px-cardPaddingX cursor-pointer hover:shadow-sm hover:border-primary hover:bg-surface-bright transition-all duration-200 flex flex-col items-start text-right focus-within:ring-2 focus-within:ring-ring focus-within:ring-opacity-50">
+<input class="absolute opacity-0 w-0 h-0 peer" name="user_type" type="radio" value="freelancer"/>
+<!-- Active State Indicator (Border) -->
+<div class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 pointer-events-none transition-colors"></div>
+<!-- Icon -->
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary-container/10 peer-checked:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary peer-checked:text-primary" style="font-variation-settings: 'FILL' 0;">person</span>
+</div>
+<!-- Text -->
+<h2 class="font-cardTitle text-cardTitle text-on-surface mb-2 relative z-10">مستقل</h2>
+<p class="font-body text-body text-on-surface-variant relative z-10">أعمل بشكل مستقل مع العملاء</p>
+<!-- Checkmark Indicator (Visible when selected) -->
+<div class="absolute top-cardPaddingY left-cardPaddingX opacity-0 peer-checked:opacity-100 transition-opacity text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</label>
+<!-- Card 2: Small Business Owner -->
+<label class="group relative bg-surface-container-lowest border border-outline-variant rounded-xl p-cardPaddingY px-cardPaddingX cursor-pointer hover:shadow-sm hover:border-primary hover:bg-surface-bright transition-all duration-200 flex flex-col items-start text-right focus-within:ring-2 focus-within:ring-ring focus-within:ring-opacity-50">
+<input class="absolute opacity-0 w-0 h-0 peer" name="user_type" type="radio" value="business"/>
+<!-- Active State Indicator (Border) -->
+<div class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 pointer-events-none transition-colors"></div>
+<!-- Icon -->
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mb-6 group-hover:bg-primary-container/10 peer-checked:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary peer-checked:text-primary" style="font-variation-settings: 'FILL' 0;">storefront</span>
+</div>
+<!-- Text -->
+<h2 class="font-cardTitle text-cardTitle text-on-surface mb-2 relative z-10">صاحب عمل</h2>
+<p class="font-body text-body text-on-surface-variant relative z-10">أدير عملاً أو وكالة</p>
+<!-- Checkmark Indicator (Visible when selected) -->
+<div class="absolute top-cardPaddingY left-cardPaddingX opacity-0 peer-checked:opacity-100 transition-opacity text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</label>
+</div>
+<!-- Primary Action -->
+<button class="w-full md:w-[240px] h-controlHeightProminent bg-primary text-on-primary font-uiControl text-uiControl rounded-DEFAULT shadow-sm flex items-center justify-center hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-surface" type="button">
+            متابعة
+        </button>
+</main>
+</body></html>

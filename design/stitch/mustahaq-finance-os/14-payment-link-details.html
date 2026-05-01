@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>تفاصيل رابط الدفع - مُسْتَحَقّ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Noto+Kufi+Arabic:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e0e3e1",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f7faf8",
+                        "surface-container": "#ebefed",
+                        "on-secondary-fixed-variant": "#314863",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "mustahaqInk": "#102A43",
+                        "surface-variant": "#e0e3e1",
+                        "primary-container": "#0f766e",
+                        "coralDebt": "#DC4A3D",
+                        "on-tertiary-container": "#ffe5db",
+                        "background": "#f7faf8",
+                        "surface-container-low": "#f1f4f3",
+                        "inverse-surface": "#2d3130",
+                        "on-surface": "#181c1c",
+                        "on-secondary-fixed": "#011d35",
+                        "on-background": "#181c1c",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "slate": "#52616B",
+                        "papyrus": "#F7F2E8",
+                        "on-tertiary-fixed-variant": "#72361b",
+                        "on-tertiary-fixed": "#370e00",
+                        "on-error": "#ffffff",
+                        "profitMint": "#16A34A",
+                        "surface-dim": "#d7dbd9",
+                        "secondary-container": "#c7dfff",
+                        "secondary-fixed": "#d1e4ff",
+                        "tertiary-fixed": "#ffdbce",
+                        "secondary": "#49607c",
+                        "surface-container-high": "#e5e9e7",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#00201d",
+                        "primary-fixed": "#9cf2e8",
+                        "on-primary-container": "#a3faef",
+                        "outline-variant": "#bdc9c6",
+                        "cloud": "#F9FAF8",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#4b637e",
+                        "on-primary-fixed-variant": "#00504a",
+                        "nileTeal": "#0F766E",
+                        "surface-container-lowest": "#ffffff",
+                        "nileTealDeep": "#0B4F4A",
+                        "tertiary-container": "#9c573a",
+                        "on-surface-variant": "#3e4947",
+                        "inverse-on-surface": "#eef1f0",
+                        "primary-fixed-dim": "#80d5cb",
+                        "outline": "#6e7977",
+                        "secondary-fixed-dim": "#b0c9e8",
+                        "on-error-container": "#93000a",
+                        "dateGold": "#D99A2B",
+                        "surface-bright": "#f7faf8",
+                        "surface-tint": "#006a63",
+                        "primary": "#005c55",
+                        "inverse-primary": "#80d5cb",
+                        "tertiary": "#7f4025",
+                        "sand": "#E8DDC7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "controlHeightLarge": "3rem",
+                        "unit": "0.25rem",
+                        "containerMaxWidthNarrow": "48rem",
+                        "cardPaddingX": "1.5rem",
+                        "sidebarWidthExpanded": "16rem",
+                        "controlHeightDefault": "2.5rem",
+                        "controlHeightProminent": "3.5rem",
+                        "cardInternalGap": "1.25rem",
+                        "marketingFeatureGridGap": "1.5rem",
+                        "pageGutter": "1rem",
+                        "containerMaxWidthContent": "80rem",
+                        "marketingSectionY": "6rem",
+                        "formFieldGap": "0.5rem",
+                        "touch-target": "2.75rem",
+                        "gap-dashboard": "1rem",
+                        "gutter-desktop": "2rem",
+                        "formSectionGap": "1.5rem",
+                        "pageGutterWide": "2rem",
+                        "cardPaddingY": "1.5rem",
+                        "marketingCardPadding": "2rem",
+                        "touchTargetMin": "2.75rem",
+                        "controlHeightSmall": "2.25rem",
+                        "section-marketing": "6rem",
+                        "gap-form": "1.5rem",
+                        "sidebarWidthCollapsed": "3rem",
+                        "dashboardTileGap": "1rem",
+                        "gutter-mobile": "1rem",
+                        "sidebarWidthMobileSheet": "18rem"
+                    },
+                    "fontFamily": {
+                        "uiControl": ["IBM Plex Sans Arabic"],
+                        "financialFigure": ["IBM Plex Sans Arabic"],
+                        "label": ["IBM Plex Sans Arabic"],
+                        "display-hero": ["Noto Kufi Arabic"],
+                        "caption": ["IBM Plex Sans Arabic"],
+                        "cardTitle": ["Noto Kufi Arabic"],
+                        "sectionTitle": ["Noto Kufi Arabic"],
+                        "feature-title": ["Noto Kufi Arabic"],
+                        "marketingWordmark": ["Noto Kufi Arabic"],
+                        "section-title": ["Noto Kufi Arabic"],
+                        "financial-figure": ["IBM Plex Sans Arabic"],
+                        "bodySmall": ["IBM Plex Sans Arabic"],
+                        "displayHero": ["Noto Kufi Arabic"],
+                        "bodyLarge": ["IBM Plex Sans Arabic"],
+                        "body-large": ["IBM Plex Sans Arabic"],
+                        "body": ["IBM Plex Sans Arabic"],
+                        "featureTitle": ["Noto Kufi Arabic"]
+                    },
+                    "fontSize": {
+                        "uiControl": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "financialFigure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "label": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "600" }],
+                        "display-hero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "caption": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "500" }],
+                        "cardTitle": ["1rem", { "lineHeight": "1.35", "fontWeight": "700" }],
+                        "sectionTitle": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "feature-title": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }],
+                        "marketingWordmark": ["1.5rem", { "lineHeight": "2rem", "fontWeight": "800" }],
+                        "section-title": ["clamp(1.875rem, 3vw, 2.5rem)", { "lineHeight": "1.25", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+                        "financial-figure": ["clamp(1.75rem, 3vw, 3rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "bodySmall": ["0.875rem", { "lineHeight": "1.35rem", "fontWeight": "400" }],
+                        "displayHero": ["clamp(2.5rem, 5.5vw, 5rem)", { "lineHeight": "1.18", "letterSpacing": "-0.035em", "fontWeight": "800" }],
+                        "bodyLarge": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "body-large": ["1.125rem", { "lineHeight": "1.85rem", "fontWeight": "400" }],
+                        "body": ["1rem", { "lineHeight": "1.6rem", "fontWeight": "400" }],
+                        "featureTitle": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar (Mobile) / Web Nav -->
+<header class="flex flex-row-reverse justify-between items-center w-full px-6 py-3 h-16 bg-[#FDFCFB] dark:bg-stone-950 font-sans antialiased text-sm font-medium tracking-tight docked full-width top-0 border-b border-stone-200 dark:border-stone-800 shadow-sm md:hidden z-20">
+<div class="flex items-center gap-4">
+<button class="hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors rounded-full p-2 active:scale-95 duration-150 text-stone-500 dark:text-stone-400">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="text-2xl font-bold text-teal-900 dark:text-teal-50 tracking-tighter">Mustahaq</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors rounded-full p-2 active:scale-95 duration-150 text-stone-500 dark:text-stone-400">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors rounded-full p-2 active:scale-95 duration-150 text-stone-500 dark:text-stone-400">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-stone-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAf7Lmvz5-RR7AREdqn8wAtyeMruukJ6Fgu3l8xNTGNAYpc0aVcJweD_r2HKdypGtAfz7rq57DShWnmfpLvYjCqbag-QxFzFXiLVsO3gzWZAAFhKd7F4VpCSHdtoGdBEChLIVVQP1eV9i_PQpHjIKuPaJ4OLfzQNp7oDZHEmZsovv7mtoCRyiylV1hSELkvSEo1Xv0T7iAvBV-vKJHKwTMdI1GO_XKl2pa4f1bxahO3RBMWd4fUPdLi0L9muepSiYkRnzudIH_TfCs"/>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-uiControl text-uiControl hover:bg-nileTealDeep transition-colors hidden sm:block">
+                Create Payment
+            </button>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen p-4 gap-2 bg-[#FDFCFB] dark:bg-stone-950 font-sans text-right leading-relaxed fixed right-0 w-64 border-l border-stone-200 dark:border-stone-800 shadow-md z-10">
+<div class="flex flex-col items-center justify-center p-6 border-b border-stone-100 dark:border-stone-800 mb-4">
+<span class="text-xl font-black text-teal-900 dark:text-teal-50 mb-1">Mustahaq</span>
+<span class="text-caption font-caption text-slate">نظام التشغيل المالي</span>
+</div>
+<div class="flex-1 overflow-y-auto flex flex-col gap-1">
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-uiControl text-uiControl">الرئيسية</span>
+</a>
+<a class="flex flex-row-reverse items-center gap-3 bg-teal-50 dark:bg-teal-900/20 text-teal-800 dark:text-teal-300 rounded-lg p-3 border-r-4 border-teal-700 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-uiControl text-uiControl font-bold">المدفوعات</span>
+</a>
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-uiControl text-uiControl">العملاء</span>
+</a>
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-uiControl text-uiControl">العقود</span>
+</a>
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-uiControl text-uiControl">التقارير</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-stone-100 dark:border-stone-800">
+<button class="w-full bg-nileTeal text-on-primary py-3 rounded-lg font-uiControl text-uiControl hover:bg-nileTealDeep transition-colors shadow-sm flex items-center justify-center gap-2 flex-row-reverse">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                رابط دفع جديد
+            </button>
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out mt-2" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-uiControl text-uiControl">الدعم</span>
+</a>
+<a class="flex flex-row-reverse items-center gap-3 text-stone-600 dark:text-stone-400 p-3 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-all duration-200 ease-in-out text-coralDebt" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-uiControl text-uiControl">تسجيل الخروج</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:mr-64 pt-6 pb-24 md:pb-12 px-4 md:px-8 xl:px-12 max-w-containerMaxWidthContent mx-auto w-full">
+<!-- Header & Breadcrumb -->
+<div class="flex flex-col gap-4 mb-8">
+<div class="flex items-center gap-2 text-stone-500 text-sm font-label flex-row-reverse">
+<a class="hover:text-nileTeal transition-colors" href="#">المدفوعات</a>
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span class="text-mustahaqInk font-bold">تفاصيل الرابط #INV-2023-089</span>
+</div>
+<div class="flex flex-col sm:flex-row-reverse justify-between items-start sm:items-center gap-4">
+<h1 class="font-sectionTitle text-sectionTitle text-mustahaqInk">تفاصيل الدفعة</h1>
+<div class="flex gap-3 w-full sm:w-auto flex-row-reverse">
+<button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-surface text-mustahaqInk border border-outline-variant rounded-lg font-uiControl text-uiControl hover:bg-stone-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        تعديل
+                    </button>
+<button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-surface text-coralDebt border border-coralDebt/30 rounded-lg font-uiControl text-uiControl hover:bg-error-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+                        إلغاء الرابط
+                    </button>
+</div>
+</div>
+</div>
+<!-- Asymmetric Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Primary Column: Status & Link (Document Style) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Main Status Card (Document/Paper aesthetic) -->
+<div class="bg-papyrus rounded-[1.25rem] p-8 shadow-md border border-sand/50 relative overflow-hidden">
+<!-- Subtle texture/pattern overlay -->
+<div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(var(--tw-colors-mustahaqInk) 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="relative z-10 flex flex-col gap-8">
+<!-- Top Row: Badge & Date -->
+<div class="flex justify-between items-center flex-row-reverse">
+<div class="flex items-center gap-2 bg-dateGold/10 text-dateGold px-4 py-1.5 rounded-full border border-dateGold/20 flex-row-reverse">
+<span class="material-symbols-outlined text-[18px] fill">schedule</span>
+<span class="font-label text-label font-bold">بانتظار الدفع</span>
+</div>
+<div class="text-left">
+<p class="font-caption text-caption text-slate mb-1">تاريخ الإنشاء</p>
+<p class="font-bodySmall text-bodySmall text-mustahaqInk font-medium">15 أكتوبر 2023</p>
+</div>
+</div>
+<!-- Central Figure -->
+<div class="text-center py-6 border-y border-sand">
+<p class="font-caption text-caption text-slate mb-2 uppercase tracking-wider">المبلغ الإجمالي المستحق</p>
+<div class="flex items-baseline justify-center gap-2 flex-row-reverse">
+<span class="font-financialFigure text-financialFigure text-mustahaqInk tracking-tight">4,500.00</span>
+<span class="font-uiControl text-uiControl text-slate font-bold">SAR</span>
+</div>
+<p class="font-bodySmall text-bodySmall text-slate mt-2">شامل ضريبة القيمة المضافة (15%)</p>
+</div>
+<!-- Shareable Link Area -->
+<div class="flex flex-col gap-3">
+<label class="font-label text-label text-mustahaqInk flex items-center gap-2 flex-row-reverse">
+<span class="material-symbols-outlined text-[18px] text-nileTeal">link</span>
+                                رابط الدفع المباشر
+                            </label>
+<div class="flex flex-row-reverse items-stretch h-14 bg-surface rounded-lg border border-outline-variant shadow-sm overflow-hidden focus-within:border-nileTeal focus-within:ring-1 focus-within:ring-nileTeal transition-all">
+<div class="flex-1 px-4 flex items-center bg-white justify-end overflow-hidden">
+<span class="font-bodySmall text-bodySmall text-slate truncate dir-ltr font-mono text-left w-full">https://pay.mustahaq.com/link/v2/xyz987abc</span>
+</div>
+<button class="px-6 bg-nileTeal text-on-primary font-uiControl text-uiControl hover:bg-nileTealDeep transition-colors flex items-center gap-2 border-r border-nileTealDeep shadow-inner active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+                                    نسخ الرابط
+                                </button>
+</div>
+<div class="flex gap-2 justify-end mt-2">
+<button class="p-2 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-slate" title="مشاركة عبر واتساب">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"></path></svg>
+</button>
+<button class="p-2 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-slate" title="إرسال بريد إلكتروني">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Column: Details & Technical (Bento Grid Style) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Client Info Card -->
+<div class="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant flex flex-col gap-4">
+<h3 class="font-cardTitle text-cardTitle text-mustahaqInk flex items-center gap-2 flex-row-reverse border-b border-surface-container-high pb-3">
+<span class="material-symbols-outlined text-nileTeal">person</span>
+                        تفاصيل العميل
+                    </h3>
+<div class="flex items-start gap-4 flex-row-reverse mt-2">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-cardTitle text-lg shrink-0">
+                            م
+                        </div>
+<div class="text-right">
+<p class="font-uiControl text-uiControl text-mustahaqInk mb-1">مؤسسة الأفق للتجارة</p>
+<p class="font-bodySmall text-bodySmall text-slate mb-1">ahmed@alufuq.com</p>
+<p class="font-bodySmall text-bodySmall text-slate">+966 50 123 4567</p>
+</div>
+</div>
+</div>
+<!-- Description & Terms -->
+<div class="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant flex flex-col gap-4">
+<h3 class="font-cardTitle text-cardTitle text-mustahaqInk flex items-center gap-2 flex-row-reverse border-b border-surface-container-high pb-3">
+<span class="material-symbols-outlined text-nileTeal">notes</span>
+                        الوصف والشروط
+                    </h3>
+<div class="text-right">
+<p class="font-label text-label text-slate mb-1">البيان</p>
+<p class="font-bodySmall text-bodySmall text-mustahaqInk leading-relaxed mb-4">
+                            الدفعة المقدمة (40%) لمشروع تطوير المنصة الإلكترونية حسب العقد المبرم بتاريخ 10 أكتوبر 2023.
+                        </p>
+<div class="bg-surface-container-low p-4 rounded-lg border border-surface-variant">
+<p class="font-label text-label text-slate mb-1 flex items-center gap-1 flex-row-reverse">
+<span class="material-symbols-outlined text-[16px]">event</span>
+                                تاريخ الاستحقاق
+                            </p>
+<p class="font-uiControl text-uiControl text-mustahaqInk">30 أكتوبر 2023</p>
+</div>
+</div>
+</div>
+<!-- Technical Details (Tucked away) -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-surface-variant flex flex-col gap-3">
+<button class="flex justify-between items-center w-full text-slate hover:text-mustahaqInk transition-colors flex-row-reverse group">
+<span class="font-label text-label flex items-center gap-2 flex-row-reverse">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+                            تفاصيل تقنية
+                        </span>
+<span class="material-symbols-outlined group-hover:translate-y-0.5 transition-transform">expand_more</span>
+</button>
+<!-- Toggled content (simulated open for scannability) -->
+<div class="pt-3 border-t border-surface-dim grid grid-cols-2 gap-4 text-right">
+<div>
+<p class="font-caption text-caption text-slate mb-1">معرف المرجع</p>
+<p class="font-mono text-xs text-mustahaqInk bg-surface-container px-2 py-1 rounded inline-block">REF-9X8Y-7Z6</p>
+</div>
+<div>
+<p class="font-caption text-caption text-slate mb-1">بوابة الدفع</p>
+<p class="font-bodySmall text-bodySmall text-mustahaqInk">Mada / Visa / MC</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex flex-row-reverse justify-around items-center px-4 py-3 pb-safe bg-[#FDFCFB]/90 dark:bg-stone-950/90 backdrop-blur-md rounded-t-2xl border-t border-stone-200 dark:border-stone-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="text-[10px] font-medium font-sans">الرئيسية</span>
+</a>
+<a class="flex flex-col items-center justify-center text-teal-800 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-900/30 rounded-xl px-4 py-1 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1 fill" data-icon="link">link</span>
+<span class="text-[10px] font-medium font-sans font-bold">الروابط</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="text-[10px] font-medium font-sans">الفواتير</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="text-[10px] font-medium font-sans">الحساب</span>
+</a>
+</nav>
+</body></html>
