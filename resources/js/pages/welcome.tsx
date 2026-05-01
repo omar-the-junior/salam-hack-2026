@@ -535,7 +535,7 @@ export default function Welcome({
                     </section>
 
                     {/* FAQ */}
-                    <section className="mt-20">
+                    <section id="faq" className="mt-20">
                         <div className="mb-10 text-center">
                             <h2 className="font-display text-3xl text-[#102a43] md:text-4xl">
                                 أسئلة شائعة
@@ -584,6 +584,119 @@ export default function Welcome({
                         </div>
                     </section>
 
+                    {/* Blog */}
+                    <section id="blog" className="mt-20">
+                        <div className="mb-10 text-center">
+                            <h2 className="font-display text-3xl text-[#102a43] md:text-4xl">
+                                من مدوّنة مُستحق
+                            </h2>
+                            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
+                                نصائح وأفكار تساعدك تدير شغلك المالي بذكاء
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            {[
+                                {
+                                    slug: 'track-income-without-excel',
+                                    tag: 'إدارة الدخل',
+                                    title: '٥ طرق عملية لتتبع دخلك كمستقل بدون إكسل',
+                                    excerpt: 'لو لسه بتكتب دخلك في شيت وتنسى تحدثه، جرب الحلول دي اللي توفر عليك ساعات كل شهر وتخليك فاهم دخلك الحقيقي.',
+                                    date: '١٥ أبريل ٢٠٢٦',
+                                },
+                                {
+                                    slug: 'forgotten-subscriptions-eating-income',
+                                    tag: 'الاشتراكات',
+                                    title: 'ازاي الاشتراكات المنسية تاكل من دخلك بدون ما تحس؟',
+                                    excerpt: 'أغلب المستقلين بيكون عندهم ٤-٦ اشتراكات مش بيستخدموها. تعرف ازاي تكتشفها وتوقفها وتوفر مبلغ محترم كل شهر.',
+                                    date: '٨ أبريل ٢٠٢٦',
+                                },
+                                {
+                                    slug: 'payment-links-fastest-way-to-get-paid',
+                                    tag: 'روابط الدفع',
+                                    title: 'روابط الدفع: أسرع طريقة تتحصل من عملائك في المنطقة',
+                                    excerpt: 'بدل ما تراسل عميلك كل مرة وتستنى التحويل، شاركه رابط دفع يخلّيه يدفع بثواني بأي طريقة تناسبه.',
+                                    date: '١ أبريل ٢٠٢٦',
+                                },
+                            ].map((post) => (
+                                <Link key={post.title} href={`/blog#${post.slug}`} className="group rounded-2xl border border-teal-100 bg-white/75 p-6 shadow-sm transition-shadow hover:shadow-md">
+                                    <Badge variant="secondary" className="mb-3 bg-teal-50 text-teal-700 text-[10px]">{post.tag}</Badge>
+                                    <h3 className="mb-2 font-display text-lg text-[#102a43] group-hover:text-teal-700 transition-colors">
+                                        {post.title}
+                                    </h3>
+                                    <p className="mb-4 text-sm leading-7 text-slate-600">
+                                        {post.excerpt}
+                                    </p>
+                                    <p className="text-xs text-slate-400">{post.date}</p>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Contact */}
+                    <section id="contact" className="mt-20">
+                        <div className="mb-10 text-center">
+                            <h2 className="font-display text-3xl text-[#102a43] md:text-4xl">
+                                تواصل معنا
+                            </h2>
+                            <p className="mx-auto mt-3 max-w-2xl text-slate-600">
+                                عندك سؤال أو اقتراح؟ حابب تتعاون معانا؟ راسلنا وهنرد عليك بسرعة.
+                            </p>
+                        </div>
+
+                        <div className="mx-auto max-w-2xl">
+                            <div className="rounded-2xl border border-teal-100 bg-white/75 p-8 shadow-sm">
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-[#102a43]">الاسم</label>
+                                        <input
+                                            type="text"
+                                            placeholder="اسمك"
+                                            className="w-full rounded-lg border border-teal-100 bg-white px-4 py-2.5 text-sm text-[#102a43] placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1.5 block text-sm font-medium text-[#102a43]">البريد الإلكتروني</label>
+                                        <input
+                                            type="email"
+                                            placeholder="email@example.com"
+                                            className="w-full rounded-lg border border-teal-100 bg-white px-4 py-2.5 text-sm text-[#102a43] placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                                            dir="ltr"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mt-4">
+                                    <label className="mb-1.5 block text-sm font-medium text-[#102a43]">الرسالة</label>
+                                    <textarea
+                                        rows={4}
+                                        placeholder="اكتب رسالتك هنا..."
+                                        className="w-full rounded-lg border border-teal-100 bg-white px-4 py-2.5 text-sm text-[#102a43] placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                                    />
+                                </div>
+                                <Button className="mt-4 w-full rounded-xl bg-teal-700 hover:bg-teal-800">
+                                    أرسل الرسالة
+                                </Button>
+
+                                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 border-t border-teal-100 pt-6 text-sm text-slate-500">
+                                    <a href="mailto:support@mustahaq.app" className="inline-flex items-center gap-1.5 hover:text-teal-700" dir="ltr">
+                                        <Mail className="size-4" />
+                                        support@mustahaq.app
+                                    </a>
+                                    <span className="text-slate-300">|</span>
+                                    <a href="https://twitter.com/mustahaq" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-teal-700" dir="ltr">
+                                        <svg className="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                        @mustahaq
+                                    </a>
+                                    <span className="text-slate-300">|</span>
+                                    <a href="https://wa.me/201000000000" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-teal-700">
+                                        <Send className="size-4" />
+                                        واتساب
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     {/* Final CTA */}
                     <section className="mt-20">
                         <div className="relative overflow-hidden rounded-3xl bg-linear-to-l from-teal-700 to-teal-600 px-8 py-14 text-center shadow-lg">
@@ -617,16 +730,16 @@ export default function Welcome({
                     <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 md:flex-row">
                         <AppLogo className="h-8" />
                         <div className="flex flex-wrap justify-center gap-5 text-xs text-slate-500">
-                            <a href="#" className="hover:text-primary">
+                            <Link href="/terms" className="hover:text-primary">
                                 الشروط والأحكام
-                            </a>
-                            <a href="#" className="hover:text-primary">
+                            </Link>
+                            <Link href="/privacy" className="hover:text-primary">
                                 سياسة الخصوصية
-                            </a>
-                            <a href="#" className="hover:text-primary">
+                            </Link>
+                            <a href="#contact" className="hover:text-primary">
                                 تواصل معنا
                             </a>
-                            <a href="#" className="hover:text-primary">
+                            <a href="#faq" className="hover:text-primary">
                                 الأسئلة الشائعة
                             </a>
                         </div>

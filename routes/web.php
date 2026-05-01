@@ -6,6 +6,9 @@ use App\Http\Middleware\EnsureOnboardingComplete;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome', ['canRegister' => true])->name('home');
+Route::inertia('/terms', 'terms')->name('terms');
+Route::inertia('/privacy', 'privacy')->name('privacy');
+Route::inertia('/blog', 'blog')->name('blog');
 
 Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name('oauth.google.redirect');
 Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');
