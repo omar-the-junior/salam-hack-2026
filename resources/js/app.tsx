@@ -1,4 +1,5 @@
-import { createInertiaApp } from '@inertiajs/react';
+import { getInitialPageFromDOM } from '@inertiajs/core';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { DirectionProvider } from '@/components/ui/direction';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -7,10 +8,52 @@ import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const inertiaRootId = 'app';
+
+function readSharedAppNameFromPage(page: { props?: { name?: unknown } } | null | undefined): string | null {
+    const name = page?.props?.name;
+
+    return typeof name === 'string' && name.trim() !== '' ? name : null;
+}
+
+let sharedAppName: string | null =
+    typeof document !== 'undefined' ? readSharedAppNameFromPage(getInitialPageFromDOM(inertiaRootId)) : null;
+
+if (typeof window !== 'undefined') {
+    const syncSharedAppName = (event: Event): void => {
+        const page = (event as CustomEvent<{ page: { props?: { name?: unknown } } }>).detail?.page;
+        const name = readSharedAppNameFromPage(page);
+
+        if (name) {
+            sharedAppName = name;
+        }
+    };
+
+    router.on('navigate', syncSharedAppName);
+    router.on('success', syncSharedAppName);
+}
+
+function resolveAppName(): string {
+    if (sharedAppName) {
+        return sharedAppName;
+    }
+
+    const viteName = import.meta.env.VITE_APP_NAME;
+
+    if (typeof viteName === 'string' && viteName.trim() !== '') {
+        return viteName;
+    }
+
+    return 'مُسْتَحَقّ';
+}
 
 createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
+    id: inertiaRootId,
+    title: (title) => {
+        const appName = resolveAppName();
+
+        return title ? `${title} - ${appName}` : appName;
+    },
     layout: (name) => {
         switch (true) {
             case name === 'welcome':
