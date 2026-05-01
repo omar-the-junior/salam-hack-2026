@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\RenewalAlertController;
 use App\Http\Middleware\EnsureOnboardingComplete;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,6 @@ Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function () 
     Route::match(['put', 'patch'], 'expenses/{expense}/status', [ExpenseController::class, 'status'])->name('expenses.status');
     Route::post('expenses/{expense}/fetch-cancel-instructions', [ExpenseController::class, 'fetchCancelInstructions'])->name('expenses.fetchCancelInstructions');
     Route::delete('expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+
+    Route::put('renewal-alerts/{renewalAlert}/dismiss', [RenewalAlertController::class, 'dismiss'])->name('renewal-alerts.dismiss');
 });
