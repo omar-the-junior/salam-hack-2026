@@ -118,13 +118,40 @@ Visit `http://localhost:8000`. Local dev uses SQLite by default — no PostgreSQ
 
 ### Architecture
 
-```
-git push main
-  → GitHub Actions builds Docker image
-  → image pushed to ghcr.io/omar-the-junior/salam-hack-2026:main
-  → webhook triggers Dockploy
-  → Dockploy pulls new image and restarts container
-  → container connects to external PostgreSQL
+```mermaid
+flowchart TD
+    classDef vps fill:#f8f9fa,stroke:#cbd5e1,stroke-width:2px,color:#0f172a
+    classDef container fill:#e2e8f0,stroke:#94a3b8,stroke-width:1px,color:#0f172a
+    classDef gh fill:#1e293b,stroke:#0f172a,stroke-width:1px,color:#fff
+
+    subgraph VPS ["VPS (Dockploy)"]
+        direction TB
+        Proxy["Dockploy Reverse Proxy\n(SSL Termination)"]
+        
+        subgraph App ["Application"]
+            Apache["Apache (Laravel)\nPort 80\n(Runs schema migrations on start)"]
+            Vol[/"Docker Volume\n(Storage)"/]
+        end
+        
+        DB[("PostgreSQL\n(External)\nPort 5432")]
+        
+        Proxy --> App
+        Apache --> DB
+        Apache --> Vol
+    end
+
+    subgraph GitHub ["GitHub Actions"]
+        Build["Build & Push Docker Image\n(auto on push to main)"]
+    end
+    
+    GHCR[/"GHCR Package\nghcr.io/omar-the-junior/salam-hack-2026:main"/]
+    
+    Build --> GHCR
+    GHCR -->|Webhook triggers Pull & Restart| Proxy
+    
+    class VPS vps
+    class App,DB,Proxy,Apache,Vol container
+    class GitHub,Build,GHCR gh
 ```
 
 The production container is a single `php:8.4-apache` image that:
