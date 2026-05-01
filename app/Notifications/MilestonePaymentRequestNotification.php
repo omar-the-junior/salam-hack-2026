@@ -28,7 +28,7 @@ class MilestonePaymentRequestNotification extends Notification
     public function via(object $notifiable): array
     {
         // Client is not a User — delivered by email only; no DB notification.
-        return ['mail'];
+        return ['mail','database'];
     }
 
     public function toMail(object $notifiable): MailMessage
