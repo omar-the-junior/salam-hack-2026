@@ -160,15 +160,15 @@ export default function EmailScannerIndex() {
                         {currentStatus === 'queued' ? (
                             <Card className="border-dashed">
                                 <CardHeader>
-                                    <CardTitle className="text-base">تمت إضافة الفحص للطابور</CardTitle>
-                                    <CardDescription>جاري تجهيز الاتصال مع Gmail...</CardDescription>
+                                    <CardTitle className="text-base">جاري الفحص</CardTitle>
+                                    <CardDescription>يرجى الانتظار — قد يستغرق الفحص عدة دقائق.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <Progress value={20} />
                                     <div className="mt-4">
                                         <Badge variant="secondary">
                                             <LoaderCircleIcon className="mr-1 size-3 animate-spin" />
-                                            في الطابور
+                                            جاري المعالجة
                                         </Badge>
                                     </div>
                                 </CardContent>

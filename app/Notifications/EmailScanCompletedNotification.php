@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 /**
  * Channels: database only (no email per UC-015 matrix)
  * Recipient: Freelancer (User)
- * Trigger: ScanEmailsJob finishes successfully (UC-009)
+ * Trigger: Email scan completes successfully after Gmail sync (UC-009)
  */
 class EmailScanCompletedNotification extends Notification
 {

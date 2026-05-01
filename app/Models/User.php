@@ -109,6 +109,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function latestScan(): HasOne
     {
-        return $this->hasOne(EmailScan::class)->latestOfMany('created_at');
+        return $this->hasOne(EmailScan::class)->latest('created_at');
     }
 }

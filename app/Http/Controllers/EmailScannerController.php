@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ScanEmailsJob;
 use App\Models\EmailScan;
 use App\Models\EmailScanResult;
 use App\Models\ExpenseCard;
+use App\Services\Email\EmailScanService;
 use App\Services\Gmail\GmailConnectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -283,7 +283,7 @@ class EmailScannerController extends Controller
         }
     }
 
-    public function scan(): RedirectResponse|JsonResponse
+    public function scan(EmailScanService $emailScanService): RedirectResponse|JsonResponse
     {
         try {
             $user = auth()->user();
@@ -309,17 +309,29 @@ class EmailScannerController extends Controller
                 return back();
             }
 
+            set_time_limit(600);
+
             $scan = EmailScan::create([
                 'user_id' => $user->id,
                 'status' => 'queued',
             ]);
 
-            ScanEmailsJob::dispatch($user->id, $scan->id);
+            $scan = $emailScanService->run($user, $scan);
 
-            Inertia::flash('toast', [
-                'type' => 'info',
-                'message' => 'جاري فحص بريدك الإلكتروني في الخلفية — سنُعلمك عند الانتهاء.',
-            ]);
+            if ($scan->status === 'completed') {
+                $count = $scan->found_count ?? 0;
+                Inertia::flash('toast', [
+                    'type' => 'success',
+                    'message' => $count > 0
+                        ? 'اكتمل الفحص — تم العثور على '.$count.' اشتراك(ات). يمكنك مراجعة النتائج.'
+                        : 'اكتمل الفحص — لم يتم العثور على اشتراكات جديدة.',
+                ]);
+            } else {
+                Inertia::flash('toast', [
+                    'type' => 'error',
+                    'message' => 'فشل فحص البريد. حاول مرة أخرى لاحقًا.',
+                ]);
+            }
 
             return redirect()->route('email-scanner.index');
         } catch (Throwable $e) {

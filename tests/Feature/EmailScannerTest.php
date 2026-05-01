@@ -8,6 +8,7 @@ use App\Models\EmailScan;
 use App\Models\EmailScanResult;
 use App\Models\User;
 use App\Services\Email\EmailParserService;
+use App\Services\Gmail\GmailScannerService;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -350,6 +351,84 @@ class EmailScannerTest extends TestCase
 
         $response->assertRedirect(route('email-scanner.index'));
         $this->assertDatabaseCount('email_scans', 0);
+    }
+
+    public function test_scan_runs_synchronously_and_completes_with_results(): void
+    {
+        $user = User::factory()->create(['email' => 'scanner-sync@example.com']);
+
+        ConnectedAccount::factory()->create([
+            'user_id' => $user->id,
+            'provider' => 'gmail',
+            'email' => 'user@gmail.com',
+        ]);
+
+        $this->mock(GmailScannerService::class, function ($mock): void {
+            $mock->shouldReceive('fetchEmails')
+                ->once()
+                ->andReturn([
+                    [
+                        'id' => 'gmail-msg-unique-001',
+                        'subject' => 'Your Netflix invoice',
+                        'from' => 'billing@netflix.com',
+                        'date' => '2026-04-01',
+                        'snippet' => 'Your monthly charge',
+                        'body' => 'You were charged $15.99 for Netflix',
+                    ],
+                ]);
+        });
+
+        $this->mockAgent('{"is_subscription":true,"service_name":"Netflix","amount":15.99,"currency":"USD","billing_cycle":"monthly","billing_date":"2026-04-01","confidence":"high"}');
+
+        $response = $this->actingAs($user)->post(route('email-scanner.scan'));
+
+        $response->assertRedirect(route('email-scanner.index'));
+
+        $this->assertDatabaseHas('email_scans', [
+            'user_id' => $user->id,
+            'status' => 'completed',
+        ]);
+
+        $scan = EmailScan::where('user_id', $user->id)->first();
+        $this->assertNotNull($scan);
+        $this->assertSame(1, $scan->found_count);
+
+        $this->assertDatabaseHas('email_scan_results', [
+            'user_id' => $user->id,
+            'email_scan_id' => $scan->id,
+            'raw_email_id' => 'gmail-msg-unique-001',
+            'status' => 'pending',
+        ]);
+
+        $this->assertSame(1, $user->fresh()->notifications()->count());
+    }
+
+    public function test_scan_marks_failed_when_gmail_fetch_errors(): void
+    {
+        $user = User::factory()->create(['email' => 'scanner-fail@example.com']);
+
+        ConnectedAccount::factory()->create([
+            'user_id' => $user->id,
+            'provider' => 'gmail',
+            'email' => 'user@gmail.com',
+        ]);
+
+        $this->mock(GmailScannerService::class, function ($mock): void {
+            $mock->shouldReceive('fetchEmails')
+                ->once()
+                ->andThrow(new \RuntimeException('Gmail API unavailable'));
+        });
+
+        $response = $this->actingAs($user)->post(route('email-scanner.scan'));
+
+        $response->assertRedirect(route('email-scanner.index'));
+
+        $this->assertDatabaseHas('email_scans', [
+            'user_id' => $user->id,
+            'status' => 'failed',
+        ]);
+
+        $this->assertDatabaseCount('email_scan_results', 0);
     }
 
     public function test_scan_is_not_dispatched_if_one_is_already_running(): void
