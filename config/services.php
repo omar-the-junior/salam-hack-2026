@@ -49,4 +49,9 @@ return [
         'gmail_redirect' => env('GOOGLE_GMAIL_REDIRECT_URI', env('APP_URL', 'http://localhost:8000').'/auth/gmail/callback'),
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
+
 ];
