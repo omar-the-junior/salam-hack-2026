@@ -1,10 +1,9 @@
-﻿import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
     Bot,
     Check,
     ChevronDown,
-    CirclePlay,
     Clock3,
     CreditCard,
     FileText,
@@ -19,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import AppLogo from '@/components/app-logo';
+import { PwaInstallPrompt } from '@/components/pwa-install-prompt';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -29,6 +29,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { dashboard, login, register } from '@/routes';
 
 const navItems = [
@@ -45,6 +46,7 @@ export default function Welcome({
 }) {
     const { auth } = usePage().props;
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { isInstallable, installPWA } = usePWAInstall();
 
     return (
         <>
@@ -189,17 +191,16 @@ export default function Welcome({
                                         جرّبه مجاناً
                                     </Link>
                                 </Button>
-                                <Button
-                                    asChild
-                                    variant="secondary"
-                                    size="lg"
-                                    className="h-11 rounded-xl border border-white/80 bg-white/70 px-8 text-slate-700"
-                                >
-                                    <Link href={auth.user ? dashboard() : login()} className="inline-flex items-center gap-2">
-                                        شاهد كيف يعمل
-                                        <CirclePlay className="size-4" />
-                                    </Link>
-                                </Button>
+                                 {isInstallable && (
+                                    <Button
+                                        onClick={installPWA}
+                                        variant="outline"
+                                        size="lg"
+                                        className="h-11 rounded-xl border-teal-600 text-teal-700 hover:bg-teal-50 px-8"
+                                    >
+                                        تثبيت التطبيق
+                                    </Button>
+                                )}
                             </div>
                         </div>
 
@@ -747,6 +748,7 @@ export default function Welcome({
                     </div>
                 </footer>
             </div>
+            <PwaInstallPrompt />
         </>
     );
 }

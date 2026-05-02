@@ -11,7 +11,7 @@
     "require": {
         "php": "^8.3",
         "inertiajs/inertia-laravel": "^3.0",
-        "jenssegers/agent": "*",
+        "jenssegers/agent": "^2.6",
         "laravel/ai": "^0.6.3",
         "laravel/framework": "^13.0",
         "laravel/socialite": "^5.26",
