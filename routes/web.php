@@ -3,10 +3,15 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Middleware\EnsureOnboardingComplete;
-use App\Http\Middleware\LogVisitToTelegram;
+use App\Services\TelegramVisitService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome', ['canRegister' => true])->name('home')->middleware(LogVisitToTelegram::class);
+Route::get('/', function (Request $request) {
+    TelegramVisitService::logVisit($request);
+
+    return inertia('welcome', ['canRegister' => true]);
+})->name('home');
 Route::inertia('/terms', 'terms')->name('terms');
 Route::inertia('/privacy', 'privacy')->name('privacy');
 Route::inertia('/blog', 'blog')->name('blog');
@@ -15,7 +20,7 @@ Route::get('/auth/google/redirect', [OAuthController::class, 'redirect'])->name(
 Route::get('/auth/google/callback', [OAuthController::class, 'callback'])->name('oauth.google.callback');
 
 Route::middleware(['auth', EnsureOnboardingComplete::class])->group(function (): void {
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(LogVisitToTelegram::class);
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('dashboard/checklist-dismiss', [DashboardController::class, 'dismissChecklist'])->name('dashboard.checklist.dismiss');
 });
 

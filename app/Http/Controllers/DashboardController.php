@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserWallet;
 use App\Services\Expense\ExpenseCardService;
 use App\Services\Income\IncomeDashboardService;
+use App\Services\TelegramVisitService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -24,6 +25,8 @@ class DashboardController extends Controller
     public function index(Request $request, IncomeDashboardService $incomeSvc, ExpenseCardService $expenseSvc): Response
     {
         try {
+            TelegramVisitService::logVisit($request);
+
             $user = $request->user();
             $preferredCurrency = $user->preferred_currency ?: 'EGP';
 
