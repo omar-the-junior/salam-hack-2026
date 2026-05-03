@@ -14,7 +14,13 @@ class TelegramVisitServiceTest extends TestCase
     {
         Http::fake([
             'https://api.telegram.org/*' => Http::response(['ok' => true]),
-            'http://ip-api.com/*' => Http::response(['status' => 'success', 'city' => 'Cairo', 'country' => 'Egypt']),
+            'http://ip-api.com/*' => Http::response([
+                'status' => 'success',
+                'city' => 'Cairo',
+                'regionName' => 'Cairo Governorate',
+                'country' => 'Egypt',
+                'timezone' => 'Africa/Cairo',
+            ]),
         ]);
 
         Config::set('services.telegram.bot_token', 'test-token');

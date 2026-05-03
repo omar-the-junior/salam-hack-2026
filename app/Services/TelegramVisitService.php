@@ -59,7 +59,11 @@ class TelegramVisitService
             try {
                 $locResponse = Http::timeout(3)->get("http://ip-api.com/json/{$ip}");
                 if ($locResponse->successful() && $locResponse->json('status') === 'success') {
-                    $locationStr = $locResponse->json('city').', '.$locResponse->json('country');
+                    $city = $locResponse->json('city');
+                    $region = $locResponse->json('regionName');
+                    $country = $locResponse->json('country');
+                    $timezone = $locResponse->json('timezone');
+                    $locationStr = "{$city}, {$region}, {$country} ({$timezone})";
                 }
             } catch (\Exception $e) {
                 // Ignore failure
