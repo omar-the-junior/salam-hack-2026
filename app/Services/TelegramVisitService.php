@@ -66,43 +66,43 @@ class TelegramVisitService
             }
         }
 
-        $text = "🔔 *New Visit*\n";
-        $text .= "Path: `{$visitInfo['path']}`\n";
-        $text .= "IP: `{$ip}` ($locationStr)\n";
-        $text .= "Device: {$deviceType} | {$browser} | {$platform}\n";
+        $text = "🔔 <b>New Visit</b>\n";
+        $text .= 'Path: <code>'.e($visitInfo['path'])."</code>\n";
+        $text .= 'IP: <code>'.e($ip).'</code> ('.e($locationStr).")\n";
+        $text .= 'Device: '.e("{$deviceType} | {$browser} | {$platform}")."\n";
 
         if (! empty($visitInfo['referer'])) {
-            $text .= "Referer: {$visitInfo['referer']}\n";
+            $text .= 'Referer: '.e($visitInfo['referer'])."\n";
         }
 
         if (! empty($visitInfo['language'])) {
-            $text .= "Lang: {$visitInfo['language']}\n";
+            $text .= 'Lang: '.e($visitInfo['language'])."\n";
         }
 
         if (! empty($visitInfo['query'])) {
             $queryString = http_build_query($visitInfo['query']);
-            $text .= "Query: `{$queryString}`\n";
+            $text .= 'Query: <code>'.e($queryString)."</code>\n";
         }
 
         if (! empty($visitInfo['user'])) {
             $user = $visitInfo['user'];
-            $text .= "\n👤 *User Info*\n";
-            $text .= "ID: {$user['id']}\n";
-            $text .= "Name: {$user['name']}\n";
-            $text .= "Email: {$user['email']}\n";
+            $text .= "\n👤 <b>User Info</b>\n";
+            $text .= 'ID: '.e($user['id'])."\n";
+            $text .= 'Name: '.e($user['name'])."\n";
+            $text .= 'Email: '.e($user['email'])."\n";
             if (! empty($user['created_at'])) {
-                $text .= "Registered: {$user['created_at']}\n";
+                $text .= 'Registered: '.e($user['created_at'])."\n";
             }
         } else {
-            $text .= "\n👤 *Guest User*\n";
-            $text .= 'Session: `'.substr($visitInfo['session_id'], 0, 8)."...`\n";
+            $text .= "\n👤 <b>Guest User</b>\n";
+            $text .= 'Session: <code>'.e(substr($visitInfo['session_id'], 0, 8))."...</code>\n";
         }
 
         try {
             $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
                 'chat_id' => $chatId,
                 'text' => $text,
-                'parse_mode' => 'Markdown',
+                'parse_mode' => 'HTML',
             ]);
 
             if (! $response->successful()) {
